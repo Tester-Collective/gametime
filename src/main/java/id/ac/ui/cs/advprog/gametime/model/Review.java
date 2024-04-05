@@ -27,7 +27,7 @@ public class Review {
         this.reviewText = reviewText;
         this.sellerResponses = new HashSet<>();
 
-        if (rating <= 5.0 || rating >= 0.0){
+        if (rating <= 5.0 && rating >= 0.0){
             this.rating = rating;
         } else{
             throw new IllegalArgumentException();
