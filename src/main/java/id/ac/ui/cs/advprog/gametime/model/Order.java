@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,10 @@ public class Order {
     private int totalPrice;
     private int gamePrice;
     private int stock;
-    private boolean isPaid;
     private boolean orderAccess;
+    private String status;
 
-    public Order(UUID orderId, UUID userId, UUID gameId, int quantity, int gamePrice, int stock, boolean isPaid) {
+    public Order(UUID orderId, UUID userId, UUID gameId, int quantity, int gamePrice, int stock) {
         this.orderId = orderId;
         this.userId = userId;
         this.gameId = gameId;
@@ -26,16 +27,26 @@ public class Order {
         this.gamePrice = gamePrice;
         this.totalPrice = this.gamePrice * this.quantity;
         this.stock = stock;
-        this.isPaid = isPaid;
+        this.status = OrderStatus.WAITING_PAYMENT.getValue();
 
         if (stock == 0 || this.quantity > stock) {
             this.orderAccess = false;
         } else {
             this.orderAccess = true;
         }
+    }
+    public Order(UUID orderId, UUID userId, UUID gameId, int quantity, int gamePrice, int stock, String status) {
+        this(orderId, userId, gameId, quantity, gamePrice, stock);
+        this.setStatus(status);
+    }
 
-        if (this.isPaid) {
-            this.stock -= 1;
+    public void setStatus(String status) {
+        if (OrderStatus.contains(status)) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException();
         }
     }
+
+
 }
