@@ -89,7 +89,6 @@ public class GameTest {
     }
 
     @Test
-    // testGetReview
     void testGetReview() {
         this.game = new Game();
         this.game.addReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));

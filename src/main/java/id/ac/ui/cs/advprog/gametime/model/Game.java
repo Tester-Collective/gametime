@@ -20,7 +20,6 @@ public class Game {
     private String imageLink;
     private Set<UUID> reviewIdSet = new HashSet<>();
 
-    // add a method to add category or remove category
     public void addCategory(String category) {
         this.category.add(category);
     }
