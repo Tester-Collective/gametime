@@ -1,5 +1,6 @@
 plugins {
 	java
+	jacoco
 	id("org.springframework.boot") version "3.2.3"
 	id("io.spring.dependency-management") version "1.1.4"
 }
@@ -21,6 +22,19 @@ repositories {
 	mavenCentral()
 }
 
+//sonar {
+//	properties {
+//		property("sonar.projectKey", "fiardiel_eshop")
+//		property("sonar.organization", "fiardiel")
+//		property("sonar.host.url", "https://sonarcloud.io")
+//	}
+//}
+
+val seleniumJavaVersion = "4.14.1"
+val seleniumJupiterVersion = "5.0.1"
+val webdrivermanagerVersion = "5.6.3"
+val junitJupiterVersion = "5.9.1"
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -30,8 +44,43 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
+	testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
+	testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
-tasks.withType<Test> {
+tasks.register<Test>("unitTest") {
+	description = "Runs unit tests."
+	group = "verification"
+
+	filter {
+		excludeTestsMatching("*FunctionalTest")
+	}
+}
+
+tasks.register<Test>("functionalTest") {
+	description = "Runs functional tests."
+	group = "verification"
+
+	filter {
+		includeTestsMatching("*FunctionalTest")
+	}
+}
+
+tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
+}
+
+tasks.test {
+	filter {
+		excludeTestsMatching("*FunctionalTest")
+	}
+
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
 }
