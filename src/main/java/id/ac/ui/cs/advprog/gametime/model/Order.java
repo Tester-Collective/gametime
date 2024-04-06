@@ -33,12 +33,11 @@ public class Order {
             throw new IllegalArgumentException();
         } else {
             this.games = games;
-        }
-
-        if (stock == 0 || this.quantity > stock) {
-            this.orderAccess = false;
-        } else {
-            this.orderAccess = true;
+            if (stock == 0 || this.quantity > stock) {
+                this.orderAccess = false;
+            } else {
+                this.orderAccess = true;
+            }
         }
     }
     public Order(UUID orderId, UUID userId, List<Game> games, int quantity, int gamePrice, int stock, String status) {
