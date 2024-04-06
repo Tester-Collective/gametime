@@ -39,7 +39,6 @@ class GameServiceTest {
         game.setPrice(100);
         game.setStock(10);
         game.setImageLink("https://example.com/game1.jpg");
-        game.setReviewIdSet(new HashSet<>(Set.of(UUID.fromString("2c8aee1f-df0d-4e36-8814-f5883a8f7db1"))));
     }
 
     @Test
