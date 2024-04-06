@@ -9,5 +9,5 @@ public interface GameRepository {
      public Iterator<Game> findAll();
      public Game findById(String id);
      public boolean deleteById(String id);
-     public Game update(Game game);
+     public Game update(Game game, String id);
 }
