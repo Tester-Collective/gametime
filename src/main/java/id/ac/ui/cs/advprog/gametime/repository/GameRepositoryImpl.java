@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class GameRepositoryImpl implements GameRepository{
@@ -39,13 +40,14 @@ public class GameRepositoryImpl implements GameRepository{
         return false;
     }
 
-    public Game update(Game game) {
+    public Game update(Game game, String id) {
         for (Game curGame : gameData) {
-            if (curGame.getId().equals(game.getId())) {
+            if (curGame.getId().equals(UUID.fromString(id))) {
                 curGame.setTitle(game.getTitle());
                 curGame.setDescription(game.getDescription());
                 curGame.setPrice(game.getPrice());
                 curGame.setImageLink(game.getImageLink());
+                curGame.setPlatform(game.getPlatform());
                 return curGame;
             }
         }

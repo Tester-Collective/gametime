@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameTest {
+class GameTest {
     Game game;
     @Test
     void testGetGameID() {
@@ -93,5 +93,12 @@ public class GameTest {
         this.game = new Game();
         this.game.addReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
         assertTrue(this.game.getReviewIdSet().contains(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6")));
+    }
+
+    @Test
+    void testGetPlatform() {
+        this.game = new Game();
+        this.game.setPlatform("PC");
+        assertEquals("PC", this.game.getPlatform());
     }
 }

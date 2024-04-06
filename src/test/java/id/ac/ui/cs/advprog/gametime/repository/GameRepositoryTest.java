@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.repository;
 
+import enums.Platform;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,10 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
+import org.junit.jupiter.api.TestClassOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameRepositoryTest {
+class GameRepositoryTest {
     GameRepositoryImpl gameRepository;
 
     @BeforeEach
@@ -49,5 +51,23 @@ public class GameRepositoryTest {
         game.setId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
         gameRepository.add(game);
         assertTrue(gameRepository.deleteById("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+    }
+
+    @Test
+    void testUpdate() {
+        Game game = new Game();
+        game.setId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+        gameRepository.add(game);
+
+        Game updatedGame = new Game();
+        updatedGame.setId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+        updatedGame.setTitle("Updated Game");
+        updatedGame.setDescription("new game");
+        updatedGame.setPrice(100);
+        updatedGame.setImageLink("newgame.jpg");
+        updatedGame.setPlatform(Platform.PC.getValue());
+
+        gameRepository.update(updatedGame, "eb558e9f-1c39-460e-8860-71af6af63bd6");
+        assertEquals("Updated Game", gameRepository.findById("eb558e9f-1c39-460e-8860-71af6af63bd6").getTitle());
     }
 }

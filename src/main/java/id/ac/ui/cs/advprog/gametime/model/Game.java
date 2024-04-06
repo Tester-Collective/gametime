@@ -10,14 +10,15 @@ import java.util.UUID;
 @Setter
 @Getter
 public class Game {
-    private UUID sellerId;
     private UUID id;
+    private UUID sellerId;
     private String title;
     private Set<String> category = new HashSet<>();
     private String description;
     private int price;
     private int stock;
     private String imageLink;
+    private String platform;
     private Set<UUID> reviewIdSet = new HashSet<>();
 
     public void addCategory(String category) {

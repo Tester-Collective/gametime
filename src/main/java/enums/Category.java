@@ -41,8 +41,8 @@ public enum Category {
     }
 
     public static boolean contains(String param) {
-        for (Category orderStatus : Category.values()) {
-            if (orderStatus.name().equals(param)) {
+        for (Category category : Category.values()) {
+            if (category.name().equals(param)) {
                 return true;
             }
         }
