@@ -1,5 +1,7 @@
 # GameTime
 
+[Deployment Link](https://gametime-fiardiel-adpro.koyeb.app/)
+
 - Rafif Firmansyah Aulia 2206823291
 - Muhammad Oka 2206046784
 - Rafi Ardiel Erinaldi 2206046802
