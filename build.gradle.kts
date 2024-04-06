@@ -3,6 +3,7 @@ plugins {
 	jacoco
 	id("org.springframework.boot") version "3.2.3"
 	id("io.spring.dependency-management") version "1.1.4"
+	id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -22,13 +23,13 @@ repositories {
 	mavenCentral()
 }
 
-//sonar {
-//	properties {
-//		property("sonar.projectKey", "fiardiel_eshop")
-//		property("sonar.organization", "fiardiel")
-//		property("sonar.host.url", "https://sonarcloud.io")
-//	}
-//}
+sonar {
+	properties {
+		property("sonar.projectKey", "Tester-Collective_gametime")
+		property("sonar.organization", "tester-collective")
+		property("sonar.host.url", "https://sonarcloud.io")
+	}
+}
 
 val seleniumJavaVersion = "4.14.1"
 val seleniumJupiterVersion = "5.0.1"
