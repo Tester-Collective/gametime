@@ -74,28 +74,6 @@ class GameTest {
     }
 
     @Test
-    void testAddReviewId() {
-        this.game = new Game();
-        this.game.addReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        assertTrue(this.game.getReviewIdSet().contains(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6")));
-    }
-
-    @Test
-    void testRemoveReviewId() {
-        this.game = new Game();
-        this.game.addReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        this.game.removeReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        assertFalse(this.game.getReviewIdSet().contains(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6")));
-    }
-
-    @Test
-    void testGetReview() {
-        this.game = new Game();
-        this.game.addReview(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        assertTrue(this.game.getReviewIdSet().contains(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6")));
-    }
-
-    @Test
     void testGetPlatform() {
         this.game = new Game();
         this.game.setPlatform("PC");

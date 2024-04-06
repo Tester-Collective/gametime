@@ -19,20 +19,11 @@ public class Game {
     private int stock;
     private String imageLink;
     private String platform;
-    private Set<UUID> reviewIdSet = new HashSet<>();
 
     public void addCategory(String category) {
         this.category.add(category);
     }
     public void removeCategory(String category) {
         this.category.remove(category);
-    }
-
-    public void addReview(UUID reviewId) {
-        this.reviewIdSet.add(reviewId);
-    }
-
-    public void removeReview(UUID reviewId) {
-        this.reviewIdSet.remove(reviewId);
     }
 }
