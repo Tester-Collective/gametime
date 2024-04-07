@@ -79,4 +79,11 @@ class GameTest {
         this.game.setPlatform("PC");
         assertEquals("PC", this.game.getPlatform());
     }
+
+    @Test
+    void testGetSellerId() {
+        this.game = new Game();
+        this.game.setSellerId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+        assertEquals(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"), this.game.getSellerId());
+    }
 }
