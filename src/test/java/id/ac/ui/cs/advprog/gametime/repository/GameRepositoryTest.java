@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
-import org.junit.jupiter.api.TestClassOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
