@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import enums.Category;
+import enums.Platform;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -46,24 +48,23 @@ class GameTest {
     @Test
     void testAddCategory() {
         this.game = new Game();
-        this.game.addCategory("category");
-        // tests if the category is added
-        assertTrue(this.game.getCategory().contains("category"));
+        this.game.addCategory(Category.ACTION.getValue());
+        assertTrue(this.game.getCategory().contains(Category.ACTION.getValue()));
     }
 
     @Test
     void testRemoveCategory() {
         this.game = new Game();
-        this.game.addCategory("category");
-        this.game.removeCategory("category");
-        assertFalse(this.game.getCategory().contains("category"));
+        this.game.addCategory(Category.ACTION.getValue());
+        this.game.removeCategory(Category.ACTION.getValue());
+        assertFalse(this.game.getCategory().contains(Category.ACTION.getValue()));
     }
 
     @Test
     void testGetCategory() {
         this.game = new Game();
-        this.game.addCategory("category");
-        assertTrue(this.game.getCategory().contains("category"));
+        this.game.addCategory(Category.ACTION.getValue());
+        assertTrue(this.game.getCategory().contains(Category.ACTION.getValue()));
     }
 
     @Test
@@ -76,7 +77,7 @@ class GameTest {
     @Test
     void testGetPlatform() {
         this.game = new Game();
-        this.game.setPlatform("PC");
-        assertEquals("PC", this.game.getPlatform());
+        this.game.setPlatform(Platform.PC.getValue());
+        assertEquals(Platform.PC.getValue(), this.game.getPlatform());
     }
 }
