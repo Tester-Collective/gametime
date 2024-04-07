@@ -38,6 +38,7 @@ val junitJupiterVersion = "5.9.1"
 val javaeeVersion = "8.0"
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("javax:javaee-api:$javaeeVersion")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
