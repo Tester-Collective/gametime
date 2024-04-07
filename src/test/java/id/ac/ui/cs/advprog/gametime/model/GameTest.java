@@ -1,9 +1,10 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
-import enums.Category;
 import enums.Platform;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,24 +48,32 @@ class GameTest {
 
     @Test
     void testAddCategory() {
+        Category category = new Category();
+        category.setName("ACTION");
+
         this.game = new Game();
-        this.game.addCategory(Category.ACTION.getValue());
-        assertTrue(this.game.getCategory().contains(Category.ACTION.getValue()));
+        this.game.addCategory(category);
+        assertTrue(this.game.getCategories().contains(category));
     }
 
     @Test
     void testRemoveCategory() {
+        Category category = new Category();
+        category.setName("ACTION");
+
         this.game = new Game();
-        this.game.addCategory(Category.ACTION.getValue());
-        this.game.removeCategory(Category.ACTION.getValue());
-        assertFalse(this.game.getCategory().contains(Category.ACTION.getValue()));
+        this.game.addCategory(category);
+        this.game.removeCategory(category);
+        assertTrue(this.game.getCategories().isEmpty());
     }
 
     @Test
     void testGetCategory() {
+        Category category = new Category();
+        category.setName("RPG");
         this.game = new Game();
-        this.game.addCategory(Category.ACTION.getValue());
-        assertTrue(this.game.getCategory().contains(Category.ACTION.getValue()));
+        this.game.setCategories(new HashSet<>(Set.of(category)));
+        assertTrue(this.game.getCategories().contains(category));
     }
 
     @Test

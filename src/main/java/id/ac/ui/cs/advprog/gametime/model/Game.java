@@ -2,28 +2,56 @@ package id.ac.ui.cs.advprog.gametime.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import javax.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Setter
+@Entity
+@Table(name = "game")
 @Getter
+@Setter
 public class Game {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(nullable = false, name = "seller_id")
     private UUID sellerId;
+
+    @Column(nullable = false)
     private String title;
-    private Set<String> category = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "game_category",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private int price;
+
+    @Column(nullable = false)
     private int stock;
+
+    @Column(nullable = false)
     private String imageLink;
+
+    @Column(nullable = false)
     private String platform;
 
-    public void addCategory(String category) {
-        this.category.add(category);
+    public void addCategory(Category category) {
+        this.categories.add(category);
+        category.getGames().add(this);
     }
-    public void removeCategory(String category) {
-        this.category.remove(category);
+
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
+        category.getGames().remove(this);
     }
 }
+
