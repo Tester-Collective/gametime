@@ -50,4 +50,29 @@ public class ReviewRepository {
     public List<Review> findAll(){
         return reviewList;
     }
+
+    public Review addSellerResponse(UUID id, String response){
+        for (Review review : reviewList){
+            if (review.getReviewId().equals(id)){
+                review.addSellerResponse(response);
+                return review;
+            }
+        }
+        return null;
+    }
+
+    public Review deleteSellerResponse(UUID id, String response){
+        for (Review review : reviewList){
+            if (review.getReviewId().equals(id)){
+                if (!review.getSellerResponses().contains(response)){
+                    return null;
+                }
+
+                review.removeSellerResponse(response);
+                return review;
+
+            }
+        }
+        return null;
+    }
 }
