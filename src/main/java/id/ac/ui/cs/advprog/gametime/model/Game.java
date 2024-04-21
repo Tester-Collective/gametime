@@ -17,8 +17,9 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false, name = "seller_id")
-    private UUID sellerId;
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "seller_id")
+    private User seller;
 
     @Column(nullable = false)
     private String title;
