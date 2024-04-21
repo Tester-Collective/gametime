@@ -21,7 +21,7 @@ public class ReviewRepository {
         return review;
     }
 
-    public Review findById(String id){
+    public Review findById(UUID id){
         for (Review review : reviewList){
             if (review.getReviewId().equals(id)){
                 return review;
@@ -29,5 +29,7 @@ public class ReviewRepository {
         }
         return null;
     }
+
+    public void delete(UUID id){reviewList.removeIf(review -> review.getReviewId().equals(id));}
 
 }
