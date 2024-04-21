@@ -2,7 +2,7 @@ package id.ac.ui.cs.advprog.gametime.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +24,11 @@ public class Game {
     private String title;
 
     @ManyToMany
-    @JoinTable(name = "game_category",
+    @JoinTable(
+            name = "game_category",
             joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
     private Set<Category> categories = new HashSet<>();
 
     @Column(nullable = false)
