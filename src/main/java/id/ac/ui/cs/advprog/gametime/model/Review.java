@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-@Getter
+@Getter @Setter
 public class Review {
     private UUID reviewId;
     private String reviewTitle;
@@ -21,6 +21,10 @@ public class Review {
     private UUID gameID;
 
 
+    public Review(){
+        this.reviewId = UUID.randomUUID();
+        this.sellerResponses = new HashSet<>();
+    }
     public Review(UUID reviewId, String title, float rating, String reviewText){
         this.reviewId = reviewId;
         this.reviewTitle = title;
