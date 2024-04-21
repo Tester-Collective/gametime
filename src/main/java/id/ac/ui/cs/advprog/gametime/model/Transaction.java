@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import enums.TransactionStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,16 +10,18 @@ import java.util.UUID;
 public class Transaction {
     private UUID transactionId;
     private UUID userId;
-    private List<Game> games; // for seller to get all order by gameid
-    private List<Order> orders; // for buyer to get all order by userid
-    public Transaction(UUID transactionId,UUID userId,List<Game> games,List <Order> orders) {
+    private UUID orderId;
+    private List<Game> games; // list of game in an order
+    private String status;
+    public Transaction(UUID transactionId,UUID userId,List<Game> games,UUID orderId,String status) {
         this.transactionId = transactionId;
         this.userId = userId;
-        if (games.isEmpty() == orders.isEmpty()) {
+        this.orderId = orderId;
+        this.status = TransactionStatus.FAILED.getValue();
+        if (games.isEmpty()) {
             throw new IllegalArgumentException();
         }else{
             this.games = games;
-            this.orders = orders;
         }
     }
 }
