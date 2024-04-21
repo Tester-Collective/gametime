@@ -32,7 +32,7 @@ public class ReviewRepository {
 
     public void delete(UUID id){reviewList.removeIf(review -> review.getReviewId().equals(id));}
 
-    public void update(UUID id, Review updatedReview){
+    public Review update(UUID id, Review updatedReview){
         for(int i = 0; i < reviewList.size(); i++){
             Review review = reviewList.get(i);
             if(review.getReviewId().equals(id)){
@@ -40,10 +40,11 @@ public class ReviewRepository {
                 review.setSellerResponses(updatedReview.getSellerResponses());
                 review.setReviewText(updatedReview.getReviewText());
                 review.setRating(updatedReview.getRating());
-
                 return review;
             }
         }
+
+        return null;
     }
 
     public List<Review> findAll(){
