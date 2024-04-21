@@ -20,7 +20,7 @@ class TransactionTest {
         games = new ArrayList<>();
         Game game = new Game();
         game.setId(UUID.randomUUID());
-        game.setSellerId(UUID.randomUUID());
+        game.setSeller(new User());
         game.setTitle("Mock Game");
         game.setDescription("Mock Game Description");
         game.setPrice(50);

@@ -18,7 +18,8 @@ public class OrderTest {
         this.games = new ArrayList<>();
         Game game = new Game();
         game.setId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        game.setSellerId(UUID.fromString("a2c62328-4a37-4664-83c7-f32db8620155"));
+        // set the game's seller into a mock User
+        game.setSeller(new User());
         game.setTitle("game");
         game.setDescription("description");
         game.setPrice(50);
