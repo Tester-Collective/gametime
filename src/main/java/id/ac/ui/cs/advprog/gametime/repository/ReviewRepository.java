@@ -36,7 +36,7 @@ public class ReviewRepository {
         for(int i = 0; i < reviewList.size(); i++){
             Review review = reviewList.get(i);
             if(review.getReviewId().equals(id)){
-                review.setReviewTitle(updatedReview.getReviewTitle();
+                review.setReviewTitle(updatedReview.getReviewTitle());
                 review.setSellerResponses(updatedReview.getSellerResponses());
                 review.setReviewText(updatedReview.getReviewText());
                 review.setRating(updatedReview.getRating());

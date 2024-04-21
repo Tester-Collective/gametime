@@ -21,6 +21,10 @@ public class Review {
     private UUID gameID;
 
 
+    public Review(){
+        this.reviewId = UUID.randomUUID();
+        this.sellerResponses = new HashSet<>();
+    }
     public Review(UUID reviewId, String title, float rating, String reviewText){
         this.reviewId = reviewId;
         this.reviewTitle = title;

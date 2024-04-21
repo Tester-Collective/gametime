@@ -107,16 +107,13 @@ public class ReviewRepositoryTest {
 
     @Test
     void findAll_PositiveCase() {
-        Review review1 = new Review();
-        review1.setReviewTitle("Review 1");
-        review1.setReviewText("Text 1");
-        review1.setRating(5);
+        UUID id1 = UUID.randomUUID();
+        Review review1 = new Review(id1,"Review 1", 5, "Text 1");
         reviewRepository.create(review1);
 
-        Review review2 = new Review();
-        review2.setReviewTitle("Review 2");
-        review2.setReviewText("Text 2");
-        review2.setRating(4);
+        UUID id2 = UUID.randomUUID();
+        Review review2 = new Review(id2,"Review 2", 4, "Text 2");
+
         reviewRepository.create(review2);
 
         List<Review> allReviews = reviewRepository.findAll();
