@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-@Getter
+@Getter @Setter
 public class Review {
     private UUID reviewId;
     private String reviewTitle;
