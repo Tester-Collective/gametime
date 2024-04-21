@@ -91,9 +91,12 @@ class GameTest {
     }
 
     @Test
-    void testGetSellerId() {
+    void testGetSeller() {
+        User seller = new User();
+        seller.setUsername("seller");
+
         this.game = new Game();
-        this.game.setSellerId(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        assertEquals(UUID.fromString("eb558e9f-1c39-460e-8860-71af6af63bd6"), this.game.getSellerId());
+        this.game.setSeller(seller);
+        assertEquals(seller, this.game.getSeller());
     }
 }

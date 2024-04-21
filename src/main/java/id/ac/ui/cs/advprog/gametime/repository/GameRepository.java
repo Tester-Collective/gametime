@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, UUID> {
+    Game deleteGameById(UUID id);
 }
