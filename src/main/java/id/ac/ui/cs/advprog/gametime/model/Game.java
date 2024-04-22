@@ -48,13 +48,11 @@ public class Game {
     private String platform;
 
     public void addCategory(Category category) {
-        this.categories.add(category);
-        category.getGames().add(this);
+        categories.add(category);
     }
 
     public void removeCategory(Category category) {
-        this.categories.remove(category);
-        category.getGames().remove(this);
+        categories.remove(category);
     }
 }
 

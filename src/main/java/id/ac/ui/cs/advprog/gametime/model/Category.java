@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +17,4 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
-
-    @ManyToMany(mappedBy = "categories")
-    private Set<Game> games = new HashSet<>();
 }
