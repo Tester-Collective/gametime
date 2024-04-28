@@ -3,7 +3,7 @@ package id.ac.ui.cs.advprog.gametime.model;
 import enums.Platform;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,7 +72,7 @@ class GameTest {
         Category category = new Category();
         category.setName("RPG");
         this.game = new Game();
-        this.game.setCategories(new HashSet<>(Set.of(category)));
+        this.game.setCategories(new ArrayList<>(Set.of(category)));
         assertTrue(this.game.getCategories().contains(category));
     }
 

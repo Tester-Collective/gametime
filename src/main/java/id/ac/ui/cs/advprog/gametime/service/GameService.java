@@ -2,8 +2,10 @@ package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
 
+import java.util.List;
+
 public interface GameService {
-    Game deleteGameById(String id);
+    void deleteGameById(String id);
 
     Game getGameById(String id);
 
@@ -11,6 +13,6 @@ public interface GameService {
 
     Game updateGame(String id, Game game);
 
-    Iterable<Game> getAllGames();
+    List<Game> getAllGames();
 
 }

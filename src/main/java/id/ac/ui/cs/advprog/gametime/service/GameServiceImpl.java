@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.gametime.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -12,8 +13,8 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private GameRepository gameRepository;
 
-    public Game deleteGameById(String id) {
-        return gameRepository.deleteGameById(UUID.fromString(id));
+    public void deleteGameById(String id) {
+        gameRepository.deleteById(UUID.fromString(id));
     }
 
     public Game getGameById(String id) {
@@ -29,7 +30,7 @@ public class GameServiceImpl implements GameService {
         return gameRepository.save(game);
     }
 
-    public Iterable<Game> getAllGames() {
+    public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
 }
