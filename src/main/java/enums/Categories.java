@@ -3,7 +3,7 @@ package enums;
 import lombok.Getter;
 
 @Getter
-public enum Category {
+public enum Categories {
     ACTION("ACTION"),
     RPG("RPG"),
     RTS("RTS"),
@@ -36,12 +36,12 @@ public enum Category {
     SANDBOX("SANDBOX");
 
     private final String value;
-    private Category(String value) {
+    private Categories(String value) {
         this.value = value;
     }
 
     public static boolean contains(String param) {
-        for (Category category : Category.values()) {
+        for (Categories category : Categories.values()) {
             if (category.name().equals(param)) {
                 return true;
             }
