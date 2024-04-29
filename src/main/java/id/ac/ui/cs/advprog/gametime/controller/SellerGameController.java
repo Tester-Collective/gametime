@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/game")
+@RequestMapping("/game/seller")
 public class SellerGameController {
     @Autowired
     private GameService gameService;
@@ -23,7 +23,7 @@ public class SellerGameController {
     private CategoryService categoryService;
     @Autowired
     private UserService userService;
-    private static final String GAME_PAGE = "redirect:/game";
+    private static final String SELLER_GAME_PAGE = "redirect:/game/seller";
 
     @GetMapping("")
     public String index(Model model) {
@@ -34,7 +34,7 @@ public class SellerGameController {
         List<Game> soldGames = gameService.findGamesBySeller(seller);
         model.addAttribute("games", soldGames);
         model.addAttribute("seller", seller);
-        return "game/index";
+        return "game/seller/index";
     }
 
     @GetMapping("/sell")
@@ -48,7 +48,7 @@ public class SellerGameController {
                 .getContext()
                 .getAuthentication()
                 .getName()));
-        return "game/sell";
+        return "game/seller/sell";
     }
 
     @PostMapping("/sell")
@@ -59,13 +59,13 @@ public class SellerGameController {
                 .getName()));
         game.setCategories(categories);
         gameService.addGame(game);
-        return GAME_PAGE;
+        return SELLER_GAME_PAGE;
     }
 
     @PostMapping("/delete/{id}")
     public String deleteGamePost(@PathVariable String id) {
         gameService.deleteGameById(id);
-        return GAME_PAGE;
+        return SELLER_GAME_PAGE;
     }
 
     @GetMapping("/edit/{id}")
@@ -74,7 +74,7 @@ public class SellerGameController {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("game", game);
         model.addAttribute("categories", categories);
-        return "game/edit";
+        return "game/seller/edit";
     }
 
     @PostMapping("/edit/{id}")
@@ -85,6 +85,6 @@ public class SellerGameController {
                 .getName()));
         game.setCategories(categories);
         gameService.updateGame(id, game);
-        return GAME_PAGE;
+        return SELLER_GAME_PAGE;
     }
 }
