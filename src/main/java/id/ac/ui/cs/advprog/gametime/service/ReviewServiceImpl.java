@@ -9,25 +9,25 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ReviewServiceImpl{
+public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public void deleteReviewById(String id) {
-        reviewRepository.deleteById(UUID.fromString(id));
+    public void deleteReviewById(UUID id) {
+        reviewRepository.deleteById(id);
     }
 
-    public Review getReviewById(String id) {
-        return reviewRepository.findById(UUID.fromString(id)).orElse(null);
+    public Review getReviewById(UUID id) {
+        return reviewRepository.findById(id).orElse(null);
     }
 
     public Review addReview(Review review) {
         return reviewRepository.save(review);
     }
 
-    public Review updateReview(String id, Review review) {
-        review.setReviewId(UUID.fromString(id));
+    public Review updateReview(UUID id, Review review) {
+        review.setReviewId(id);
         return reviewRepository.save(review);
     }
 
