@@ -25,7 +25,20 @@ public class Review {
     @Column(nullable = false)
     private String reviewText;
 
+    @ManyToOne
+    @JoinTable(
+            name = "user_review",
+            joinColumns = @JoinColumn(name = "userID"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
     private UUID userID;
+
+    @ManyToOne
+    @JoinTable(
+            name = "game_review",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
     private UUID gameID;
 
 
