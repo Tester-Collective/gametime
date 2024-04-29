@@ -51,26 +51,25 @@ public class ReviewRepository {
         return reviewList;
     }
 
-    public Review addSellerResponse(UUID id, String response){
+    public Review addSellerResponse(UUID Id, String response){
         for (Review review : reviewList){
-            if (review.getReviewId().equals(id)){
-                review.addSellerResponse(response);
+            if (review.getReviewId().equals(Id)){
+                String responseId = UUID.randomUUID().toString();
+                review.addSellerResponse(responseId, response);
                 return review;
             }
         }
         return null;
     }
 
-    public Review deleteSellerResponse(UUID id, String response){
+    public Review deleteSellerResponse(UUID id, String responseId){
         for (Review review : reviewList){
             if (review.getReviewId().equals(id)){
-                if (!review.getSellerResponses().contains(response)){
-                    return null;
+                if (review.getSellerResponses().containsKey(responseId)){
+                    review.removeSellerResponse(responseId);
+                    return review;
                 }
-
-                review.removeSellerResponse(response);
-                return review;
-
+                return null;
             }
         }
         return null;
