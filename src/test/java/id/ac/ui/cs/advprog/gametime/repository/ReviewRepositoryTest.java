@@ -3,180 +3,99 @@ package id.ac.ui.cs.advprog.gametime.repository;
 import id.ac.ui.cs.advprog.gametime.model.Review;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReviewRepositoryTest {
 
     private ReviewRepository reviewRepository;
+    private Review review;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         reviewRepository = new ReviewRepository();
+        review = new Review(UUID.randomUUID(), "Title", 4.5f, "Text");
     }
 
     @Test
-    void createReview_PositiveCase() {
-        Review review = new Review();
-        review.setReviewTitle("Test Review");
-        review.setReviewText("This is a test review.");
-        review.setRating(5);
-
+    public void testCreate() {
+        // Positive case: Creating a review
         Review createdReview = reviewRepository.create(review);
-
         assertNotNull(createdReview.getReviewId());
-        assertEquals("Test Review", createdReview.getReviewTitle());
-        assertEquals("This is a test review.", createdReview.getReviewText());
-        assertEquals(5, createdReview.getRating());
+        assertTrue(reviewRepository.findAll().contains(createdReview));
+
+        // Negative case: Attempting to create a review with a non-null reviewId
+        assertThrows(IllegalArgumentException.class, () -> reviewRepository.create(new Review(UUID.randomUUID(), "Title", 4.5f, "Text")));
     }
 
     @Test
-    void findById_PositiveCase() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
-        review.setReviewTitle("Test Review");
-        review.setReviewText("This is a test review.");
-        review.setRating(5);
+    public void testFindById() {
+        // Positive case: Finding an existing review
         reviewRepository.create(review);
+        UUID id = review.getReviewId();
+        Review foundReview = reviewRepository.findById(id);
+        assertEquals(review, foundReview);
 
-        Review foundReview = reviewRepository.findById(reviewId);
-
-        assertNotNull(foundReview);
-        assertEquals("Test Review", foundReview.getReviewTitle());
-        assertEquals("This is a test review.", foundReview.getReviewText());
-        assertEquals(5, foundReview.getRating());
+        // Negative case: Finding a non-existing review
+        assertNull(reviewRepository.findById(UUID.randomUUID()));
     }
 
     @Test
-    void findById_NegativeCase() {
-        // Trying to find a review that doesn't exist
-        Review foundReview = reviewRepository.findById(UUID.randomUUID());
-        assertNull(foundReview);
-    }
-
-    @Test
-    void delete_PositiveCase() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
+    public void testDelete() {
+        // Positive case: Deleting an existing review
         reviewRepository.create(review);
+        UUID id = review.getReviewId();
+        reviewRepository.delete(id);
+        assertNull(reviewRepository.findById(id));
 
-        reviewRepository.delete(reviewId);
-
-        assertNull(reviewRepository.findById(reviewId));
+        // Negative case: Deleting a non-existing review
+        assertDoesNotThrow(() -> reviewRepository.delete(UUID.randomUUID()));
     }
 
     @Test
-    void delete_NegativeCase() {
-        // Trying to delete a review that doesn't exist
-        reviewRepository.delete(UUID.randomUUID());
-        // No exception should be thrown
-    }
-
-    @Test
-    void update_PositiveCase() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
-        review.setReviewTitle("Old Title");
-        review.setReviewText("Old Text");
-        review.setRating(3);
+    public void testUpdate() {
+        // Positive case: Updating an existing review
         reviewRepository.create(review);
+        UUID id = review.getReviewId();
+        Review updatedReview = new Review(id, "Updated Title", 3.5f, "Updated Text");
+        reviewRepository.update(id, updatedReview);
+        Review foundReview = reviewRepository.findById(id);
+        assertEquals("Updated Title", foundReview.getReviewTitle());
+        assertEquals(3.5f, foundReview.getRating());
+        assertEquals("Updated Text", foundReview.getReviewText());
 
-        Review updatedReview = new Review();
-        updatedReview.setReviewTitle("New Title");
-        updatedReview.setReviewText("New Text");
-        updatedReview.setRating(4);
-
-        Review result = reviewRepository.update(reviewId, updatedReview);
-
-        assertNotNull(result);
-        assertEquals("New Title", result.getReviewTitle());
-        assertEquals("New Text", result.getReviewText());
-        assertEquals(4, result.getRating());
+        // Negative case: Attempting to update a non-existing review
+        assertNull(reviewRepository.update(UUID.randomUUID(), updatedReview));
     }
 
     @Test
-    void update_NegativeCase() {
-        // Trying to update a review that doesn't exist
-        Review result = reviewRepository.update(UUID.randomUUID(), new Review());
-        assertNull(result);
-    }
-
-    @Test
-    void findAll_PositiveCase() {
-        UUID id1 = UUID.randomUUID();
-        Review review1 = new Review(id1,"Review 1", 5, "Text 1");
-        reviewRepository.create(review1);
-
-        UUID id2 = UUID.randomUUID();
-        Review review2 = new Review(id2,"Review 2", 4, "Text 2");
-
-        reviewRepository.create(review2);
-
-        List<Review> allReviews = reviewRepository.findAll();
-
-        assertEquals(2, allReviews.size());
-    }
-
-    @Test
-    void addSellerResponse_PositiveCase() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
+    public void testAddSellerResponse() {
+        // Positive case: Adding a seller response to an existing review
         reviewRepository.create(review);
+        UUID id = review.getReviewId();
+        reviewRepository.addSellerResponse(id, "Seller response");
+        Review updatedReview = reviewRepository.findById(id);
+        assertTrue(updatedReview.getSellerResponses().containsValue("Seller response"));
 
-        // Add a seller response
-        String response = "Thank you for your feedback!";
-        Review updatedReview = reviewRepository.addSellerResponse(reviewId, response);
-
-        assertNotNull(updatedReview);
-        assertTrue(updatedReview.getSellerResponses().contains(response));
+        // Negative case: Adding a seller response to a non-existing review
+        assertNull(reviewRepository.addSellerResponse(UUID.randomUUID(), "Seller response"));
     }
 
     @Test
-    void addSellerResponse_NegativeCase_ReviewNotFound() {
-        // Trying to add a seller response to a review that doesn't exist
-        Review updatedReview = reviewRepository.addSellerResponse(UUID.randomUUID(), "Test Response");
-        assertNull(updatedReview);
-    }
-
-    @Test
-    void deleteSellerResponse_PositiveCase() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
-        review.addSellerResponse("Thank you for your feedback!");
+    public void testDeleteSellerResponse() {
+        // Positive case: Deleting a seller response from an existing review
         reviewRepository.create(review);
+        UUID id = review.getReviewId();
+        reviewRepository.addSellerResponse(id, "Seller response");
+        String responseId = review.getSellerResponses().keySet().iterator().next();
+        reviewRepository.deleteSellerResponse(id, responseId);
+        Review updatedReview = reviewRepository.findById(id);
+        assertFalse(updatedReview.getSellerResponses().containsKey(responseId));
 
-        // Delete a seller response
-        Review updatedReview = reviewRepository.deleteSellerResponse(reviewId, "Thank you for your feedback!");
-
-        assertNotNull(updatedReview);
-        assertFalse(updatedReview.getSellerResponses().contains("Thank you for your feedback!"));
+        // Negative case: Deleting a seller response from a non-existing review
+        assertNull(reviewRepository.deleteSellerResponse(UUID.randomUUID(), responseId));
     }
-
-    @Test
-    void deleteSellerResponse_NegativeCase_ReviewNotFound() {
-        // Trying to delete a seller response from a review that doesn't exist
-        Review updatedReview = reviewRepository.deleteSellerResponse(UUID.randomUUID(), "Test Response");
-        assertNull(updatedReview);
-    }
-
-    @Test
-    void deleteSellerResponse_NegativeCase_ResponseNotFound() {
-        Review review = new Review();
-        UUID reviewId = UUID.randomUUID();
-        review.setReviewId(reviewId);
-        reviewRepository.create(review);
-
-        // Trying to delete a seller response that doesn't exist in the review
-        Review updatedReview = reviewRepository.deleteSellerResponse(reviewId, "Non-existent Response");
-        assertNull(updatedReview);
-    }
-
-
-
 }
