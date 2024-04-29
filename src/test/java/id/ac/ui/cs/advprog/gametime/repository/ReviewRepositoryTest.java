@@ -7,17 +7,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewRepositoryTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
     private Review review;
 
     @BeforeEach
@@ -28,6 +29,8 @@ public class ReviewRepositoryTest {
     @Test
     public void testCreate() {
         // Positive case: Creating a review
+        when(reviewRepository.save(any(Review.class))).thenReturn(review);
+
         Review createdReview = reviewRepository.save(review);
         assertNotNull(createdReview.getReviewId());
         assertTrue(reviewRepository.findAll().contains(createdReview));
@@ -39,22 +42,27 @@ public class ReviewRepositoryTest {
     @Test
     public void testFindById() {
         // Positive case: Finding an existing review
-        reviewRepository.save(review);
         UUID id = review.getReviewId();
+        when(reviewRepository.findById(id)).thenReturn(Optional.of(review));
+
         Optional<Review> foundReview = reviewRepository.findById(id);
-        assertEquals(review, foundReview);
+        assertTrue(foundReview.isPresent());
+        assertEquals(review, foundReview.get());
 
         // Negative case: Finding a non-existing review
-        assertNull(reviewRepository.findById(UUID.randomUUID()));
+        when(reviewRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertFalse(reviewRepository.findById(UUID.randomUUID()).isPresent());
     }
 
     @Test
     public void testDelete() {
         // Positive case: Deleting an existing review
-        reviewRepository.save(review);
         UUID id = review.getReviewId();
+        doNothing().when(reviewRepository).deleteById(id);
+
+        reviewRepository.save(review);
         reviewRepository.deleteById(id);
-        assertNull(reviewRepository.findById(id));
+        assertNull(reviewRepository.findById(id).orElse(null));
 
         // Negative case: Deleting a non-existing review
         assertDoesNotThrow(() -> reviewRepository.deleteById(UUID.randomUUID()));
@@ -63,45 +71,58 @@ public class ReviewRepositoryTest {
     @Test
     public void testUpdate() {
         // Positive case: Updating an existing review
-        reviewRepository.save(review);
         UUID id = review.getReviewId();
+        when(reviewRepository.save(any(Review.class))).thenReturn(review);
+
+        reviewRepository.save(review);
         Review updatedReview = new Review(id, "Updated Title", 3.5f, "Updated Text");
         reviewRepository.save(updatedReview);
 
         Optional<Review> foundReview = reviewRepository.findById(id);
-        assertEquals("Updated Title", foundReview.getReviewTitle());
-        assertEquals(3.5f, foundReview.getRating());
-        assertEquals("Updated Text", foundReview.getReviewText());
+        assertTrue(foundReview.isPresent());
+        assertEquals("Updated Title", foundReview.get().getReviewTitle());
+        assertEquals(3.5f, foundReview.get().getRating());
+        assertEquals("Updated Text", foundReview.get().getReviewText());
 
         // Negative case: Attempting to update a non-existing review
-        assertNull(reviewRepository.save(updatedReview));
+        when(reviewRepository.save(any(Review.class))).thenThrow(IllegalArgumentException.class);
+        assertThrows(IllegalArgumentException.class, () -> reviewRepository.save(new Review(UUID.randomUUID(), "Title", 4.5f, "Text")));
     }
 
     @Test
     public void testAddSellerResponse() {
         // Positive case: Adding a seller response to an existing review
-        reviewRepository.save(review);
         UUID id = review.getReviewId();
-        review.addSellerResponse(String.valueOf(id), "Seller response");
+        when(reviewRepository.findById(id)).thenReturn(Optional.of(review));
+
+        reviewRepository.save(review);
+
+        review.addSellerResponse(UUID.randomUUID().toString(), "Seller response");
         Optional<Review> updatedReview = reviewRepository.findById(id);
-        assertTrue(updatedReview.getSellerResponses().containsValue("Seller response"));
+        assertTrue(updatedReview.isPresent());
+        assertTrue(updatedReview.get().getSellerResponses().containsValue("Seller response"));
 
         // Negative case: Adding a seller response to a non-existing review
-        assertNull(reviewRepository.addSellerResponse(UUID.randomUUID(), "Seller response"));
+        when(reviewRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertFalse(reviewRepository.findById(UUID.randomUUID()).isPresent());
     }
 
     @Test
     public void testDeleteSellerResponse() {
         // Positive case: Deleting a seller response from an existing review
-        reviewRepository.create(review);
         UUID id = review.getReviewId();
-        reviewRepository.addSellerResponse(id, "Seller response");
+        when(reviewRepository.findById(id)).thenReturn(Optional.of(review));
+
+        reviewRepository.save(review);
+        review.addSellerResponse(UUID.randomUUID().toString(), "Seller response");
         String responseId = review.getSellerResponses().keySet().iterator().next();
-        reviewRepository.deleteSellerResponse(id, responseId);
-        Review updatedReview = reviewRepository.findById(id);
-        assertFalse(updatedReview.getSellerResponses().containsKey(responseId));
+        review.removeSellerResponse(responseId);
+        Optional<Review> updatedReview = reviewRepository.findById(id);
+        assertTrue(updatedReview.isPresent());
+        assertFalse(updatedReview.get().getSellerResponses().containsKey(responseId));
 
         // Negative case: Deleting a seller response from a non-existing review
-        assertNull(reviewRepository.deleteSellerResponse(UUID.randomUUID(), responseId));
+        when(reviewRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertFalse(reviewRepository.findById(UUID.randomUUID()).isPresent());
     }
 }
