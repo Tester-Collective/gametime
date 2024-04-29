@@ -10,5 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
+    List<Review> findReviewByGameID(UUID gameId);
+    List<Review> findReviewByUserID(UUID userId);
 
 }
