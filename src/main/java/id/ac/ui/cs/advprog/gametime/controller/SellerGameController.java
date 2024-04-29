@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.gametime.controller;
 
 import id.ac.ui.cs.advprog.gametime.model.Category;
 import id.ac.ui.cs.advprog.gametime.model.Game;
+import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.CategoryService;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/game")
-public class GameController {
+public class SellerGameController {
     @Autowired
     private GameService gameService;
     @Autowired
@@ -26,8 +27,13 @@ public class GameController {
 
     @GetMapping("")
     public String index(Model model) {
-        List<Game> games = gameService.getAllGames();
-        model.addAttribute("games", games);
+        User seller = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        List<Game> soldGames = gameService.findGamesBySeller(seller);
+        model.addAttribute("games", soldGames);
+        model.addAttribute("seller", seller);
         return "game/index";
     }
 
@@ -66,7 +72,6 @@ public class GameController {
     public String editGamePage(@PathVariable String id, Model model) {
         Game game = gameService.getGameById(id);
         List<Category> categories = categoryService.findAll();
-
         model.addAttribute("game", game);
         model.addAttribute("categories", categories);
         return "game/edit";
