@@ -19,7 +19,10 @@ public class Review {
     @Column(nullable = false)
     private float rating;
 
-    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "seller_response", joinColumns = @JoinColumn(name = "review_id"))
+    @MapKeyColumn(name = "response_id")
+    @Column(name="seller_response")
     private Map<String, String> sellerResponses;
 
     @Column(nullable = false)
@@ -63,7 +66,6 @@ public class Review {
     }
 
     public void removeSellerResponse(String responseId){
-
         this.sellerResponses.remove(responseId);
     }
 
