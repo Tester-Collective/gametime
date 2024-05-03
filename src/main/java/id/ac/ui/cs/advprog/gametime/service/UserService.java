@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +28,39 @@ public class UserService implements UserDetailsService {
         } else {
             throw new UsernameNotFoundException("User not found");
         }
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    public User registerUser(String username, String email, String password, String matchingPassword) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || matchingPassword.isEmpty()) {
+            throw new IllegalArgumentException("Please fill all the form");
+        } else if (isEmailExist(email)) {
+            throw new IllegalArgumentException("Email already exist");
+        } else if (isUsernameExist(username)) {
+            throw new IllegalArgumentException("Username already exist");
+        } else {
+            User user = new User();
+
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(new BCryptPasswordEncoder().encode(password));
+            user.setBalance(0);
+            user.setSeller(false);
+            user.setAdmin(false);
+
+            return userRepository.save(user);
+        }
+    }
+
+    private boolean isUsernameExist(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    private boolean isEmailExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     private String[] getRoles(User user) {
