@@ -34,7 +34,7 @@ public class Review {
             joinColumns = @JoinColumn(name = "userID"),
             inverseJoinColumns = @JoinColumn(name = "review_id")
     )
-    private UUID userID;
+    private User user;
 
     @ManyToOne
     @JoinTable(
@@ -42,7 +42,7 @@ public class Review {
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "review_id")
     )
-    private UUID gameID;
+    private Game game;
 
 
     public Review(){
