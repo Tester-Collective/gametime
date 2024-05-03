@@ -36,15 +36,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public List<Review> findReviewsByGameId(UUID gameId) {
-        return reviewRepository.findReviewByGameID(gameId);
+        return reviewRepository.findReviewsByGameID(gameId);
     }
     public List<Review> findReviewsByUser(UUID userId) {
-        return reviewRepository.findReviewByUserID(userId);
+        return reviewRepository.findReviewsByUserID(userId);
     }
 
     public List<Review> findReviewsByGameIdAndUserId(UUID gameId, UUID userId) {
-        List<Review> reviews = reviewRepository.findReviewByGameID(gameId);
-        List<Review> userReviews = reviewRepository.findReviewByUserID(userId);
+        List<Review> reviews = reviewRepository.findReviewsByGameID(gameId);
+        List<Review> userReviews = reviewRepository.findReviewsByUserID(userId);
         reviews.retainAll(userReviews);
         return reviews;
     }
