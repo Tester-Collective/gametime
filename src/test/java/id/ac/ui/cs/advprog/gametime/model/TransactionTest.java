@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransactionTest {
 
     private List<Game> games;
-    private List<Order> orders;
+    private List<Cart> carts;
     private UUID userId = UUID.randomUUID();
     private UUID orderId = UUID.randomUUID();
 
