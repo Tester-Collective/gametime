@@ -5,49 +5,69 @@
     <title>Game List</title>
     <link rel="stylesheet" href="/output.css">
 </head>
-<body class="bg-gray-100">
+<body class="bg-tokyo-night-bg text-white">
 
-<div class="container mx-auto my-8">
-    <h2 class="text-2xl font-bold mb-4" th:text="${seller.username} + '\'s Sold Games'"></h2>
-    <a th:href="@{/game/seller/sell}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block mb-4">Sell Game</a>
-
-    <table class="w-full bg-white border border-gray-200 rounded-lg shadow-md">
-        <caption class="sr-only">List of Games</caption>
-        <thead class="bg-gray-100">
-        <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (in Rp)</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Platform</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operations</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="game: ${games}" class="border-t border-gray-200">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${game.title}"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${game.price}"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${game.platform}"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${game.description}"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${game.stock}"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${game.imageLink}"></td>
-            <td>
-                <span th:each="category, iterStat : ${game.categories}">
-                    <span th:text="${category.name}"></span>
-                    <span th:if="${!iterStat.last}">, </span>
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <form th:action="@{/game/seller/delete/{id}(id=${game.id})}" method="post" >
-                    <button type="submit" class="text-red-600 hover:text-red-900"> Delete </button>
-                </form>
-                <a th:href="@{/game/seller/edit/{id}(id=${game.id})}" class="text-indigo-600 hover:text-indigo-900"> Edit </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="flex flex-col justify-between items-center container mx-auto my-8">
+    <h2 class="text-2xl font-bold mb-4 w-full text-center"></h2>
+    <a th:href="@{/game/seller/sell}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6">Sell Game</a>
+    <div class="flex items-center justify-between mx-auto pl-2">
+        <div class="grid grid-cols-3 gap-3 content-start mx-auto mr-0">
+            <div th:each="game : ${games}" class="max-w-80 min-w-80 max-h-70 min-h-70 border rounded-2xl shadow bg-gray-800 border-gray-700 mt-4 mb-4 mx-4 justify-between h-70 w-80">
+                <div class="p-5 justify-between">
+                    <div class="flex flex-row justify-between">
+                        <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white overflow-y-auto max-h-6 pb-9">
+                            <span th:text="${game.title}"></span>
+                        </h5>
+                        <span th:if="${game.platform == 'PS5'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-playstation" viewBox="0 0 16 16">
+                              <path d="M15.858 11.451c-.313.395-1.079.676-1.079.676l-5.696 2.046v-1.509l4.192-1.493c.476-.17.549-.412.162-.538-.386-.127-1.085-.09-1.56.08l-2.794.984v-1.566l.161-.054s.807-.286 1.942-.412c1.135-.125 2.525.017 3.616.43 1.23.39 1.368.962 1.056 1.356M9.625 8.883v-3.86c0-.453-.083-.87-.508-.988-.326-.105-.528.198-.528.65v9.664l-2.606-.827V2c1.108.206 2.722.692 3.59.985 2.207.757 2.955 1.7 2.955 3.825 0 2.071-1.278 2.856-2.903 2.072Zm-8.424 3.625C-.061 12.15-.271 11.41.304 10.984c.532-.394 1.436-.69 1.436-.69l3.737-1.33v1.515l-2.69.963c-.474.17-.547.411-.161.538.386.126 1.085.09 1.56-.08l1.29-.469v1.356l-.257.043a8.45 8.45 0 0 1-4.018-.323Z"/>
+                            </svg>
+                        </span>
+                        <span th:if="${game.platform == 'PC'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pc-display" viewBox="0 0 16 16">
+                              <path d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0m2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0M9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5M1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2z"/>
+                            </svg>
+                        </span>
+                        <span th:if="${game.platform == 'XBOX'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-xbox" viewBox="0 0 16 16">
+                              <path d="M7.202 15.967a8 8 0 0 1-3.552-1.26c-.898-.585-1.101-.826-1.101-1.306 0-.965 1.062-2.656 2.879-4.583C6.459 7.723 7.897 6.44 8.052 6.475c.302.068 2.718 2.423 3.622 3.531 1.43 1.753 2.088 3.189 1.754 3.829-.254.486-1.83 1.437-2.987 1.802-.954.301-2.207.429-3.239.33m-5.866-3.57C.589 11.253.212 10.127.03 8.497c-.06-.539-.038-.846.137-1.95.218-1.377 1.002-2.97 1.945-3.95.401-.417.437-.427.926-.263.595.2 1.23.638 2.213 1.528l.574.519-.313.385C4.056 6.553 2.52 9.086 1.94 10.653c-.315.852-.442 1.707-.306 2.063.091.24.007.15-.3-.319Zm13.101.195c.074-.36-.019-1.02-.238-1.687-.473-1.443-2.055-4.128-3.508-5.953l-.457-.575.494-.454c.646-.593 1.095-.948 1.58-1.25.381-.237.927-.448 1.161-.448.145 0 .654.528 1.065 1.104a8.4 8.4 0 0 1 1.343 3.102c.153.728.166 2.286.024 3.012a9.5 9.5 0 0 1-.6 1.893c-.179.393-.624 1.156-.82 1.404-.1.128-.1.127-.043-.148ZM7.335 1.952c-.67-.34-1.704-.705-2.276-.803a4 4 0 0 0-.759-.043c-.471.024-.45 0 .306-.358A7.8 7.8 0 0 1 6.47.128c.8-.169 2.306-.17 3.094-.005.85.18 1.853.552 2.418.9l.168.103-.385-.02c-.766-.038-1.88.27-3.078.853-.361.176-.676.316-.699.312a12 12 0 0 1-.654-.319Z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="mb-4 text-gray-500 text-xs overflow-y-auto max-h-3 pb-4 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-900 scrollbar-medium">
+                        <span th:each="category, iterStat : ${game.categories}">
+                            <span th:text="${#strings.capitalize(category.name)}"></span>
+                            <span th:if="${!iterStat.last && not #lists.isEmpty(game.categories)}">, </span>
+                        </span>
+                        <span th:if="${#lists.isEmpty(game.categories)}">No categories</span>
+                    </p>
+                    <p class="mb-1 mt-4 text-gray-700 dark:text-gray-400 overflow-y-auto max-h-6 pt-5 pb-24 pr-5 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-900 scrollbar-medium"><span class="font-semibold"></span><span th:text="${game.description}"></span></p>
+                </div>
+                <div class="p-5 mt-auto flex flex-row justify-between">
+                    <div class="flex flex-row gap-4">
+                        <form th:action="@{/game/seller/delete/{id}(id=${game.id})}" method="post">
+                            <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </button>
+                        </form>
+                        <a th:href="@{/game/seller/edit/{id}(id=${game.id})}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-400 pt-2 pr-1">
+                        <span th:if="${game.price == 0}">FREE</span>
+                        <span th:if="${game.price != 0}" th:text="'Rp' + ${game.price}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

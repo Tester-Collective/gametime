@@ -3,7 +3,6 @@ package id.ac.ui.cs.advprog.gametime.model;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
-
 import java.util.*;
 
 @Entity
@@ -16,7 +15,7 @@ public class Game {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "seller_id")
+    @JoinColumn(nullable = true, name = "seller_id")
     private User seller;
 
     @Column(nullable = false)
@@ -40,10 +39,10 @@ public class Game {
     private int stock;
 
     @Column(nullable = false)
-    private String imageLink;
+    private String platform;
 
     @Column(nullable = false)
-    private String platform;
+    private String imageName;
 
     public void addCategory(Category category) {
         categories.add(category);
