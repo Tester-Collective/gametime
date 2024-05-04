@@ -33,7 +33,7 @@ public class SellerReviewController {
                 .getName());
         List<Review> seller_reviews  = reviewService.findReviewsByGameSeller(seller);
         model.addAttribute("reviews", seller_reviews);
-        return "game/review/seller/index";
+        return SELLER_REVIEW_PAGE;
     }
 
     @GetMapping("/responses/{reviewId}")
@@ -58,7 +58,7 @@ public class SellerReviewController {
     public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId) {
         Review review = reviewService.getReviewById(reviewId);
         review.removeSellerResponse(responseId);
-        return SELLER_REVIEW_PAGE;
+        return "game/review/seller/responses";
     }
 
 
