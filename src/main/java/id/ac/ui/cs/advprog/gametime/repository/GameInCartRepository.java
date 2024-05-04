@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 @Transactional
 public interface GameInCartRepository extends JpaRepository<GameInCart, UUID> {
-    List<GameInCart> findGameInCartsByCart_CartId(UUID cartId);
-
     void deleteAllByCart_CartId(UUID cartId);
+
+    GameInCart findGameInCartByCart_CartId(UUID gameId);
 }
