@@ -23,7 +23,7 @@ public class Review {
     @CollectionTable(name = "seller_response", joinColumns = @JoinColumn(name = "review_id"))
     @MapKeyColumn(name = "response_id")
     @Column(name="seller_response")
-    private Map<String, String> sellerResponses;
+    private Map<UUID, String> sellerResponses;
 
     @Column(nullable = false)
     private String reviewText;
@@ -61,13 +61,14 @@ public class Review {
             throw new IllegalArgumentException();
         }
     }
-    public void addSellerResponse(String responseId, String response){
+    public void addSellerResponse(UUID responseId, String response){
         this.sellerResponses.put(responseId, response);
     }
 
-    public void removeSellerResponse(String responseId){
+    public void removeSellerResponse(UUID responseId){
         this.sellerResponses.remove(responseId);
     }
+
 
 
 }
