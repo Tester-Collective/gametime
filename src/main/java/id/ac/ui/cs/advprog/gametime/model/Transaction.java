@@ -14,27 +14,28 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID transactionId;
-    @Column(nullable = false)
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(nullable = true, name = "userId")
+    private User user;
     @OneToOne
     @JoinColumn(
             name = "order_id",
             referencedColumnName = "orderId",
             nullable = false
     )
-    private Order order;
+    private Cart cart;
     @Column(nullable = false)
     private String status;
-    public Transaction(UUID transactionId,UUID userId,Order order) {
+    public Transaction(UUID transactionId,User user,Cart cart) {
         this.transactionId = transactionId;
-        this.userId = userId;
-        this.order = order;
+        this.user = user;
+        this.cart = cart;
         this.status = TransactionStatus.FAILED.getValue();
     }
 
     public Transaction() {
     }
     public List<Game> getGames() {
-        return order.getGames();
+        return cart.getGames();
     }
 }

@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.repository;
 
-import id.ac.ui.cs.advprog.gametime.model.Order;
+import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import enums.TransactionStatus;
@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,8 +21,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TransactionRepositoryTest {
     private List<Game> games;
-    private UUID userId = UUID.randomUUID();
-    private Order order = new Order();
+    private User user = new User();
+    private Cart cart = new Cart();
 
     @Mock
     private TransactionRepository transactionRepository;
@@ -36,23 +37,20 @@ class TransactionRepositoryTest {
         game.setDescription("Mock Game Description");
         game.setPrice(50);
         game.setStock(5);
-        game.setImageLink("http://example.com/mockgame.jpg");
         games.add(game);
-        order.setGames(games);
-        order.setOrderId(UUID.randomUUID());
-        order.setOrderAccess(true);
-        order.setStatus("WAITING_PAYMENT");
-        order.setQuantity(1);
-        order.setGamePrice(50);
-        order.setTotalPrice(50);
-        order.setUserId(userId);
-        order.setStock(5);
+        cart.setGames(games);
+        cart.setCartId(UUID.randomUUID());
+        cart.setOrderAccess(true);
+        cart.setStatus("WAITING_PAYMENT");
+        cart.setGameQuantity(Map.of(game, 1));
+        cart.setGamePrice(Map.of(game, 50));
+        cart.setCustomer(user);
 
     }
 
     @Test
     void testSave_PositiveCase() {
-        Transaction transaction = new Transaction(UUID.randomUUID(), userId, order);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
         when(transactionRepository.save(transaction)).thenReturn(transaction);
         assertEquals(transaction, transactionRepository.save(transaction));
     }
@@ -66,7 +64,7 @@ class TransactionRepositoryTest {
     @Test
     void testFindById_PositiveCase() {
         UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Transaction(transactionId, userId, order);
+        Transaction transaction = new Transaction(transactionId, user, cart);
         when(transactionRepository.findById(transactionId)).thenReturn(java.util.Optional.of(transaction));
         assertTrue(transactionRepository.findById(transactionId).isPresent());
     }
@@ -77,27 +75,27 @@ class TransactionRepositoryTest {
     @Test
     void testFindByOrder_PositiveCase() {
         List<Transaction> transactions = new ArrayList<>();
-        Transaction transaction = new Transaction(UUID.randomUUID(), userId, order);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
         transactions.add(transaction);
-        when(transactionRepository.findByOrder(order)).thenReturn(transactions);
-        assertEquals(transactions, transactionRepository.findByOrder(order));
+        when(transactionRepository.findByCart(cart)).thenReturn(transactions);
+        assertEquals(transactions, transactionRepository.findByCart(cart));
     }
     @Test
     void testFindByOrder_NegativeCase() {
-        when(transactionRepository.findByOrder(order)).thenReturn(null);
-        assertNull(transactionRepository.findByOrder(order));
+        when(transactionRepository.findByCart(cart)).thenReturn(null);
+        assertNull(transactionRepository.findByCart(cart));
     }
     @Test
     void testFindByUserId_PositiveCase() {
         List<Transaction> transactions = new ArrayList<>();
-        Transaction transaction = new Transaction(UUID.randomUUID(), userId, order);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
         transactions.add(transaction);
-        when(transactionRepository.findByUserId(userId)).thenReturn(transactions);
-        assertEquals(transactions, transactionRepository.findByUserId(userId));
+        when(transactionRepository.findByUser(user)).thenReturn(transactions);
+        assertEquals(transactions, transactionRepository.findByUser(user));
     }
     @Test
     void testFindByUserId_NegativeCase() {
-        when(transactionRepository.findByUserId(userId)).thenReturn(null);
-        assertNull(transactionRepository.findByUserId(userId));
+        when(transactionRepository.findByUser(user)).thenReturn(null);
+        assertNull(transactionRepository.findByUser(user));
     }
 }
