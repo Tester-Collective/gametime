@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.Review;
+import id.ac.ui.cs.advprog.gametime.model.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,5 +15,6 @@ public interface ReviewService{
     public List<Review> findReviewsByGameId(UUID gameId);
     List<Review> findReviewsByUser(UUID userId);
     List<Review> findReviewsByGameIdAndUserId(UUID gameId, UUID userId);
+    List<Review> findReviewsByGameSeller(User seller);
 
 }

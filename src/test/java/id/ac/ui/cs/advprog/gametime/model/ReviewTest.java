@@ -28,17 +28,17 @@ public class ReviewTest {
 
     @Test
     public void testAddSellerResponse() {
-        review.addSellerResponse("1", "Response");
-        assertTrue(review.getSellerResponses().containsKey("1"));
-        assertEquals("Response", review.getSellerResponses().get("1"));
+        review.addSellerResponse(UUID.fromString("1"), "Response");
+        assertTrue(review.getSellerResponses().containsKey(UUID.fromString("1")));
+        assertEquals("Response", review.getSellerResponses().get(UUID.fromString("1")));
     }
 
     @Test
     public void testRemoveSellerResponse() {
-        review.addSellerResponse("1", "Response");
-        assertTrue(review.getSellerResponses().containsKey("1"));
+        review.addSellerResponse(UUID.fromString("1"), "Response");
+        assertTrue(review.getSellerResponses().containsKey(UUID.fromString("1")));
 
-        review.removeSellerResponse("1");
-        assertFalse(review.getSellerResponses().containsKey("1"));
+        review.removeSellerResponse(UUID.fromString("1"));
+        assertFalse(review.getSellerResponses().containsKey(UUID.fromString("1")));
     }
 }

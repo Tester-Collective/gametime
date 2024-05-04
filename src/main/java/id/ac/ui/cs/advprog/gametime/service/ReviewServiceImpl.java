@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.Review;
+import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,17 +37,22 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public List<Review> findReviewsByGameId(UUID gameId) {
-        return reviewRepository.findReviewByGameID(gameId);
+        return reviewRepository.findReviewsByGameId(gameId);
     }
     public List<Review> findReviewsByUser(UUID userId) {
-        return reviewRepository.findReviewByUserID(userId);
+        return reviewRepository.findReviewsByUser_UserID(userId);
     }
 
     public List<Review> findReviewsByGameIdAndUserId(UUID gameId, UUID userId) {
-        List<Review> reviews = reviewRepository.findReviewByGameID(gameId);
-        List<Review> userReviews = reviewRepository.findReviewByUserID(userId);
+        List<Review> reviews = reviewRepository.findReviewsByGameId(gameId);
+        List<Review> userReviews = reviewRepository.findReviewsByUser_UserID(userId);
         reviews.retainAll(userReviews);
         return reviews;
+    }
+
+    public List<Review> findReviewsByGameSeller(User seller) {
+
+        return reviewRepository.findReviewsByGameSeller(seller);
     }
 
 }
