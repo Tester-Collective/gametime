@@ -11,9 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransactionTest {
 
     private List<Game> games;
-    private List<Order> orders;
     private UUID userId = UUID.randomUUID();
-    private UUID orderId = UUID.randomUUID();
+    private Order order = new Order();
 
     @BeforeEach
     void setUp() {
@@ -27,27 +26,45 @@ class TransactionTest {
         game.setStock(5);
         game.setImageLink("http://example.com/mockgame.jpg");
         games.add(game);
+        order.setGames(games);
+        order.setOrderId(UUID.randomUUID());
+        order.setOrderAccess(true);
+        order.setStatus("WAITING_PAYMENT");
+        order.setQuantity(1);
+        order.setGamePrice(50);
+        order.setTotalPrice(50);
+        order.setUserId(userId);
+        order.setStock(5);
     }
 
     @Test
-    void testCreateTransactionEmptyGames() {
-        this.games.clear();
-        UUID transactionId = UUID.randomUUID();
-        assertThrows(IllegalArgumentException.class, () -> {
-            Transaction transaction = new Transaction(transactionId, userId, games, orderId, TransactionStatus.FAILED.getValue() );
-        });
+    void testGetGames() {
+        Transaction transaction = new Transaction(UUID.randomUUID(), userId, order);
+        assertEquals(games, transaction.getGames());
     }
-
     @Test
-    void testCreateTransactionWithNonEmptyGames() {
+    void testSetTransactionId() {
+        Transaction transaction = new Transaction();
         UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Transaction(transactionId, userId, games, orderId, TransactionStatus.FAILED.getValue());
-
-        assertNotNull(transaction);
+        transaction.setTransactionId(transactionId);
         assertEquals(transactionId, transaction.getTransactionId());
+    }
+    @Test
+    void testSetUserId() {
+        Transaction transaction = new Transaction();
+        transaction.setUserId(userId);
         assertEquals(userId, transaction.getUserId());
-        assertEquals(orderId, transaction.getOrderId());
+    }
+    @Test
+    void testSetOrder() {
+        Transaction transaction = new Transaction();
+        transaction.setOrder(order);
+        assertEquals(order, transaction.getOrder());
+    }
+    @Test
+    void testSetStatus() {
+        Transaction transaction = new Transaction();
+        transaction.setStatus(TransactionStatus.FAILED.getValue());
         assertEquals(TransactionStatus.FAILED.getValue(), transaction.getStatus());
-        assertFalse(transaction.getGames().isEmpty());
     }
 }
