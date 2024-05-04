@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Entity
-@Table(name = "game_order")
+@Table(name = "cart")
 @Getter
 @Setter
 public class Cart {
@@ -21,32 +20,33 @@ public class Cart {
     @JoinColumn(nullable = true, name = "customer_id")
     private User customer;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_game",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "game_id")
-    )
-    private List<Game> games;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GameInCart> games;
 
-    @Column(nullable = false)
-    private boolean orderAccess;
-
-    @Column(nullable = false)
-    private String status;
-
-    @ElementCollection
-    private Map<Game, Integer> gameQuantity;
-
-    @ElementCollection
-    private Map<Game, Integer> gamePrice;
-
-    public Cart(UUID cartId, User customer, List<Game> games, Map<Game, Integer> gameQuantity, Map<Game, Integer> gamePrice) {
+    public Cart(UUID cartId, User customer, List<GameInCart> games) {
         this.cartId = cartId;
         this.customer = customer;
         this.games = games;
-        this.gameQuantity = gameQuantity;
-        this.gamePrice = gamePrice;
+    }
+
+    public void addGame(GameInCart game) {
+        games.add(game);
+    }
+
+    public void removeGame(GameInCart game) {
+        games.remove(game);
+    }
+
+    public void increaseGameQuantity(GameInCart game) {
+        game.setQuantity(game.getQuantity() + 1);
+    }
+
+    public void decreaseGameQuantity(GameInCart game) {
+        game.setQuantity(game.getQuantity() - 1);
+    }
+
+    public void clearCart() {
+        games.clear();
     }
 
     public Cart() {
