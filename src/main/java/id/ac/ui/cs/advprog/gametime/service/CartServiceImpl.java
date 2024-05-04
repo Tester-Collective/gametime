@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -21,6 +22,11 @@ public class CartServiceImpl implements CartService{
     @Override
     public Cart getCartByUser(String username) {
         return cartRepository.findCartByCustomer_Username(username);
+    }
+
+    @Override
+    public GameInCart getGameInCartByGameId(String gameId) {
+        return gameInCartRepository.findGameInCartByCart_CartId(UUID.fromString(gameId));
     }
 
     @Override

@@ -8,11 +8,14 @@ import id.ac.ui.cs.advprog.gametime.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/cart")
@@ -27,7 +30,14 @@ public class CartController {
     private UserService userService;
 
     @GetMapping("")
-    public String index() {
+    public String index(Model model) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        Cart cart = cartService.getCartByUser(customer.getUsername());
+        List<GameInCart> games = cart.getGames();
+        model.addAttribute("games", games);
         return "cart/index";
     }
 
@@ -44,5 +54,48 @@ public class CartController {
         gameInCart.setCart(cart);
         cartService.addGameToCart(customer.getUsername(),gameInCart);
         return "redirect:/game/buyer";
+    }
+
+    @PostMapping("/remove/{gameId}")
+    public String removeGameFromCart(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        cartService.removeGameFromCart(customer.getUsername(),gameInCart);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/increase/{gameId}")
+    public String increaseGameQuantity(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        cartService.increaseGameQuantity(customer.getUsername(),gameInCart);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/decrease/{gameId}")
+    public String decreaseGameQuantity(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        cartService.decreaseGameQuantity(customer.getUsername(),gameInCart);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/clear")
+    public String clearCart() {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        cartService.clearCart(customer.getUsername());
+        return "redirect:/cart";
     }
 }
