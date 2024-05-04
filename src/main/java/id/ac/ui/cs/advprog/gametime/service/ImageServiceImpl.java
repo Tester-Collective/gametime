@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -16,8 +17,9 @@ public class ImageServiceImpl implements ImageService {
     private ImageRepository imageRepository;
     @Override
     public Image uploadImage(MultipartFile file) throws IOException {
+        Date date = new Date();
         Image image = new Image();
-        image.setName(file.getOriginalFilename());
+        image.setName(date.getTime() + file.getOriginalFilename());
         image.setType(file.getContentType());
         image.setImageData(ImageUtil.compressImage(file.getBytes()));
         imageRepository.save(image);

@@ -32,7 +32,7 @@ public class GameServiceImpl implements GameService {
     }
 
     public List<Game> getAllGames() {
-        return gameRepository.findAll();
+        return gameRepository.findByOrderByTitle();
     }
 
     public List<Game> findGamesBySeller(User seller) {
