@@ -3,19 +3,20 @@ package id.ac.ui.cs.advprog.gametime.service;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
+import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
 
 import java.util.List;
 
 public interface CartService {
 
-    Cart getCartByUser(String username);
+    Cart getCartByUser(User user);
     GameInCart getGameInCartByGameId(String gameId);
-    void addGameToCart(String username, GameInCart game);
-    void removeGameFromCart(String username, GameInCart game);
-    void increaseGameQuantity(String username, GameInCart game);
-    void decreaseGameQuantity(String username, GameInCart game);
-    void clearCart(String username);
+    void addGameToCart(User user, GameInCart game);
+    void removeGameFromCart(User user, GameInCart game);
+    void increaseGameQuantity(User user, GameInCart game);
+    void decreaseGameQuantity(User user, GameInCart game);
+    void clearCart(User user);
 
     List<Cart> getAllCarts();
 
