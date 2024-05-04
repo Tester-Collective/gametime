@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.gametime.controller;
 import id.ac.ui.cs.advprog.gametime.model.Category;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.dto.GameDto;
+import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.CategoryService;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
@@ -60,7 +61,7 @@ public class SellerGameController {
 
     @PostMapping("/sell")
     public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("categories") List<Category> categories, @RequestParam("image") MultipartFile image) throws IOException {
-        imageService.uploadImage(image);
+        Image image1 = imageService.uploadImage(image);
 
         Game game = new Game();
         game.setTitle(gameDto.getTitle());
@@ -73,7 +74,7 @@ public class SellerGameController {
         game.setCategories(categories);
         game.setStock(gameDto.getStock());
         game.setPlatform(gameDto.getPlatform());
-        game.setImageName(image.getOriginalFilename());
+        game.setImageName(image1.getName());
 
         gameService.addGame(game);
         return SELLER_GAME_PAGE;
