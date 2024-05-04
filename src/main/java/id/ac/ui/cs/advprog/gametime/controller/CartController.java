@@ -1,0 +1,48 @@
+package id.ac.ui.cs.advprog.gametime.controller;
+
+import id.ac.ui.cs.advprog.gametime.model.Cart;
+import id.ac.ui.cs.advprog.gametime.model.GameInCart;
+import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.service.CartService;
+import id.ac.ui.cs.advprog.gametime.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import id.ac.ui.cs.advprog.gametime.service.UserService;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private GameService gameService;
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("")
+    public String index() {
+        return "cart/index";
+    }
+
+    @PostMapping("/add/{gameId}")
+    public String addGameToCart(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        GameInCart gameInCart = new GameInCart();
+        Cart cart = cartService.getCartByUser(customer.getUsername());
+        gameInCart.setGame(gameService.getGameById(gameId));
+        gameInCart.setQuantity(1);
+        gameInCart.setCart(cart);
+        cartService.addGameToCart(customer.getUsername(),gameInCart);
+        return "redirect:/game/buyer";
+    }
+}

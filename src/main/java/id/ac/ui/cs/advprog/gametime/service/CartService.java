@@ -2,14 +2,22 @@ package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
+import id.ac.ui.cs.advprog.gametime.model.GameInCart;
+
+import java.util.List;
+
 public interface CartService {
-    void deleteGameFromCart(String cartId,Game game);
 
-    Cart decreaseGameQuantity(String cartId, Game game);
+    Cart getCartByUser(String username);
+    void addGameToCart(String username, GameInCart game);
+    void removeGameFromCart(String username, GameInCart game);
 
-    Cart increaseGameQuantity(String cartId, Game game);
+    void increaseGameQuantity(String username, GameInCart game);
 
-    Cart addGameToCart(String cartId, Game game);
+    void decreaseGameQuantity(String username, GameInCart game);
 
+    void clearCart(String username);
+
+    List<Cart> getAllCarts();
 
 }
