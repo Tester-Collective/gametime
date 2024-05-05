@@ -1,32 +1,23 @@
 package id.ac.ui.cs.advprog.gametime.repository;
 
-import id.ac.ui.cs.advprog.gametime.model.Filter;
+import id.ac.ui.cs.advprog.gametime.model.Category;
 import id.ac.ui.cs.advprog.gametime.model.Game;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public class FilterRepository {
-    private List<Game> games = new ArrayList<>();
+public interface FilterRepository extends JpaRepository<Game, UUID> {
 
-    public List<Game> searchGames(Filter filter) {
-        List<Game> filteredGames = new ArrayList<>();
-        for (Game game : games) {
-            // Apply filtering logic based on the provided filter
-            if (matchesFilter(game, filter)) {
-                filteredGames.add(game);
-            }
-        }
-        return filteredGames;
-    }
+    @Query("SELECT g FROM Game g WHERE g.title LIKE %?1%")
+    List<Game> findByTitle(String keyword);
 
-    private boolean matchesFilter(Game game, Filter filter) {
-        // Check if the game matches the filter criteria
-        return (filter.getSearchQuery() == null || game.getTitle().contains(filter.getSearchQuery()))
-                && (filter.getCategory() == null || game.getCategories().stream().anyMatch(category -> category.getName().equalsIgnoreCase(filter.getCategory()))
-                && (filter.getPlatform() == null || game.getPlatform().equalsIgnoreCase(filter.getPlatform()))
-                && (game.getPrice() >= filter.getMinPrice() && game.getPrice() <= filter.getMaxPrice()));
-    }
+    List<Game> findByCategory(Category category);
+
+    List<Game> findByPlatform(String platform);
+
+    List<Game> findByPrice(int minPrice, int maxPrice);
 }
