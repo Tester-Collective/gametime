@@ -41,11 +41,7 @@
                     </h5>
                 </a>
                 <p class="text-gray-500 text-xs overflow-y-auto max-h-4 max-w-52 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-900 scrollbar-medium pr-3">
-                        <span th:each="category, iterStat : ${game.getGame().getCategories()}">
-                            <span th:text="${#strings.capitalize(category.name)}"></span>
-                            <span th:if="${!iterStat.last && not #lists.isEmpty(game.getGame().getCategories())}">, </span>
-                        </span>
-                    <span th:if="${#lists.isEmpty(game.getGame().getCategories())}">No categories</span>
+                    <span th:text="${game.getGame().getCategory().getName()}"></span>
                 </p>
                 <p class="text-gray-400 font-semibold pt-0.5">
                     <span th:if="${game.getGame().getPrice() == 0}">FREE</span>
