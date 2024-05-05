@@ -21,15 +21,11 @@ public class Game {
     @Column(nullable = false)
     private String title;
 
-    @ManyToMany
-    @JoinTable(
-            name = "game_category",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "category_id")
+    private Category category;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -43,13 +39,5 @@ public class Game {
 
     @Column(nullable = false)
     private String imageName;
-
-    public void addCategory(Category category) {
-        categories.add(category);
-    }
-
-    public void removeCategory(Category category) {
-        categories.remove(category);
-    }
 }
 

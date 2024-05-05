@@ -8,5 +8,6 @@ import java.io.IOException;
 public interface ImageService {
     public Image uploadImage(MultipartFile file) throws IOException;
     public byte[] downloadImage(String fileName);
+    public void deleteImage(String fileName);
 
 }

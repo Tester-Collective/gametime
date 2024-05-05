@@ -9,4 +9,5 @@ import java.util.UUID;
 @Service
 public interface CategoryService {
     List<Category> findAll();
+    Category findById(String id);
 }
