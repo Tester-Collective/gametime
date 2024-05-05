@@ -57,6 +57,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User editUser(String username, String email, String bio, String profilePicture) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        } else {
+            user.setEmail(email);
+            user.setBio(bio);
+            user.setProfilePicture(profilePicture);
+            return userRepository.save(user);
+        }
+    }
+
     private boolean isUsernameExist(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
