@@ -49,11 +49,10 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> result = new ArrayList<>();
         for (Transaction transaction : transactions) {
             for (Game game : games) {
-                transaction.getGames().forEach(gameInCart -> {
-                    if (gameInCart.getGame().equals(game)) {
-                        result.add(transaction);
-                    }
-                });
+                if (transaction.getGames().contains(game)) {
+                    result.add(transaction);
+                    break;
+                }
             }
         }
         return result;
