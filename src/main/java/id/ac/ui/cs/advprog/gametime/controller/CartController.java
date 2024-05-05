@@ -53,12 +53,17 @@ public class CartController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        GameInCart gameInCart = new GameInCart();
         Cart cart = cartService.getCartByUser(customer);
-        gameInCart.setGame(gameService.getGameById(gameId));
-        gameInCart.setQuantity(1);
-        gameInCart.setCart(cart);
-        cartService.addGameToCart(customer,gameInCart);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        if (gameInCart != null) {
+            cartService.increaseGameQuantity(customer, gameInCart);
+        } else {
+            gameInCart = new GameInCart();
+            gameInCart.setGame(gameService.getGameById(gameId));
+            gameInCart.setQuantity(1);
+            gameInCart.setCart(cart);
+            cartService.addGameToCart(customer, gameInCart);
+        }
         return "redirect:/game/buyer";
     }
 
