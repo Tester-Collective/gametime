@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import enums.OrderStatus;
 import enums.TransactionStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID transactionId;
     @ManyToOne
-    @JoinColumn(nullable = true, name = "userId")
+    @JoinColumn(nullable = false, name = "userId")
     private User user;
     @OneToOne
     @JoinColumn(
@@ -23,19 +24,31 @@ public class Transaction {
             referencedColumnName = "orderId",
             nullable = false
     )
-    private Cart cart;
+    private Order order;
     @Column(nullable = false)
     private String status;
-    public Transaction(UUID transactionId,User user,Cart cart) {
+    public Transaction(UUID transactionId,User user,Order order) {
         this.transactionId = transactionId;
         this.user = user;
-        this.cart = cart;
+        this.order = order;
         this.status = TransactionStatus.FAILED.getValue();
+    }
+    public Transaction (UUID transactionId,User user,Order order, String status) {
+        this(transactionId, user, order);
+        this.setStatus(status);
+    }
+
+    public void setStatus(String status) {
+        if (TransactionStatus.contains(status)) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Transaction() {
     }
-    public List<Game> getGames() {
-        return cart.getGames();
+    public List<GameInCart> getGames() {
+        return order.getCart().getGames();
     }
 }

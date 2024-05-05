@@ -1,10 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.repository;
 
-import id.ac.ui.cs.advprog.gametime.model.Cart;
-import id.ac.ui.cs.advprog.gametime.model.Transaction;
-import id.ac.ui.cs.advprog.gametime.model.Game;
+import id.ac.ui.cs.advprog.gametime.model.*;
 import enums.TransactionStatus;
-import id.ac.ui.cs.advprog.gametime.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,16 +17,17 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionRepositoryTest {
-    private List<Game> games;
-    private User user = new User();
-    private Cart cart = new Cart();
-
     @Mock
     private TransactionRepository transactionRepository;
 
+    private List<GameInCart> games = new ArrayList<>();
+    private User user = new User();
+    private Order order = new Order();
+    private Cart cart = new Cart();
+    private GameInCart gameInCart = new GameInCart();
+
     @BeforeEach
     void setUp() {
-        games = new ArrayList<>();
         Game game = new Game();
         game.setId(UUID.randomUUID());
         game.setSeller(new User());
@@ -37,20 +35,22 @@ class TransactionRepositoryTest {
         game.setDescription("Mock Game Description");
         game.setPrice(50);
         game.setStock(5);
-        games.add(game);
         cart.setGames(games);
-        cart.setCartId(UUID.randomUUID());
-        cart.setOrderAccess(true);
-        cart.setStatus("WAITING_PAYMENT");
-        cart.setGameQuantity(Map.of(game, 1));
-        cart.setGamePrice(Map.of(game, 50));
         cart.setCustomer(user);
-
+        cart.setCartId(UUID.randomUUID());
+        gameInCart.setGame(game);
+        gameInCart.setQuantity(1);
+        gameInCart.setCart(cart);
+        gameInCart.setGameInCartId(UUID.randomUUID());
+        games.add(gameInCart);
+        cart.setGames(games);
+        order.setCart(cart);
+        order.setOrderId(UUID.randomUUID());
     }
 
     @Test
     void testSave_PositiveCase() {
-        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order);
         when(transactionRepository.save(transaction)).thenReturn(transaction);
         assertEquals(transaction, transactionRepository.save(transaction));
     }
@@ -64,7 +64,7 @@ class TransactionRepositoryTest {
     @Test
     void testFindById_PositiveCase() {
         UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Transaction(transactionId, user, cart);
+        Transaction transaction = new Transaction(transactionId, user, order);
         when(transactionRepository.findById(transactionId)).thenReturn(java.util.Optional.of(transaction));
         assertTrue(transactionRepository.findById(transactionId).isPresent());
     }
@@ -75,20 +75,20 @@ class TransactionRepositoryTest {
     @Test
     void testFindByOrder_PositiveCase() {
         List<Transaction> transactions = new ArrayList<>();
-        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order);
         transactions.add(transaction);
-        when(transactionRepository.findByCart(cart)).thenReturn(transactions);
-        assertEquals(transactions, transactionRepository.findByCart(cart));
+        when(transactionRepository.findByOrder(order)).thenReturn(transactions);
+        assertEquals(transactions, transactionRepository.findByOrder(order));
     }
     @Test
     void testFindByOrder_NegativeCase() {
-        when(transactionRepository.findByCart(cart)).thenReturn(null);
-        assertNull(transactionRepository.findByCart(cart));
+        when(transactionRepository.findByOrder(order)).thenReturn(null);
+        assertNull(transactionRepository.findByOrder(order));
     }
     @Test
     void testFindByUserId_PositiveCase() {
         List<Transaction> transactions = new ArrayList<>();
-        Transaction transaction = new Transaction(UUID.randomUUID(), user, cart);
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order);
         transactions.add(transaction);
         when(transactionRepository.findByUser(user)).thenReturn(transactions);
         assertEquals(transactions, transactionRepository.findByUser(user));
