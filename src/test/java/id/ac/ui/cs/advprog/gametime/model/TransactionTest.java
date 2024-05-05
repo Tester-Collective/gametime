@@ -10,7 +10,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransactionTest {
-    private List<GameInCart> games = new ArrayList<>();
+    private List<GameInCart> gamesincart = new ArrayList<>();
+    private List<Game> games = new ArrayList<>();
     private User user = new User();
     private Order order = new Order();
     private Cart cart = new Cart();
@@ -25,15 +26,16 @@ class TransactionTest {
         game.setDescription("Mock Game Description");
         game.setPrice(50);
         game.setStock(5);
-        cart.setGames(games);
+        games.add(game);
+        cart.setGames(gamesincart);
         cart.setCustomer(user);
         cart.setCartId(UUID.randomUUID());
         gameInCart.setGame(game);
         gameInCart.setQuantity(1);
         gameInCart.setCart(cart);
         gameInCart.setGameInCartId(UUID.randomUUID());
-        games.add(gameInCart);
-        cart.setGames(games);
+        gamesincart.add(gameInCart);
+        cart.setGames(gamesincart);
         order.setCart(cart);
         order.setOrderId(UUID.randomUUID());
     }
