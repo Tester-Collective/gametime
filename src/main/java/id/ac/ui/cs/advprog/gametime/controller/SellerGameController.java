@@ -60,7 +60,7 @@ public class SellerGameController {
     }
 
     @PostMapping("/sell")
-    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("categories") List<Category> categories, @RequestParam("image") MultipartFile image) throws IOException {
+    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException {
         Image image1 = imageService.uploadImage(image);
 
         Game game = new Game();
@@ -71,7 +71,7 @@ public class SellerGameController {
                 .getContext()
                 .getAuthentication()
                 .getName()));
-        game.setCategories(categories);
+        game.setCategory(gameDto.getCategory());
         game.setStock(gameDto.getStock());
         game.setPlatform(gameDto.getPlatform());
         game.setImageName(image1.getName());
@@ -82,7 +82,9 @@ public class SellerGameController {
 
     @PostMapping("/delete/{id}")
     public String deleteGamePost(@PathVariable String id) {
-        gameService.deleteGameById(id);
+        Game game = gameService.getGameById(id);
+        imageService.deleteImage(game.getImageName());
+        gameService.deleteGameById(game.getId().toString());
         return SELLER_GAME_PAGE;
     }
 
@@ -97,13 +99,13 @@ public class SellerGameController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editGamePost(@ModelAttribute GameDto gameDto, @RequestParam("categories") List<Category> categories, @PathVariable String id) {
+    public String editGamePost(@ModelAttribute GameDto gameDto, @PathVariable String id) {
         Game game = gameService.getGameById(id);
         Game editedGame = new Game();
         editedGame.setTitle(gameDto.getTitle());
         editedGame.setDescription(gameDto.getDescription());
         editedGame.setPrice(gameDto.getPrice());
-        editedGame.setCategories(categories);
+        editedGame.setCategory(game.getCategory());
         editedGame.setStock(gameDto.getStock());
         editedGame.setPlatform(gameDto.getPlatform());
         editedGame.setSeller(game.getSeller());

@@ -15,6 +15,6 @@ public class GameDto {
     private String platform;
     private int price;
     private int stock;
-    private List<Category> categories;
+    private Category category;
     private MultipartFile image;
 }

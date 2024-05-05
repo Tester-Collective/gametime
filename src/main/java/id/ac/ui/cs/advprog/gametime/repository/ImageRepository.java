@@ -12,5 +12,5 @@ import java.util.UUID;
 @Transactional
 public interface ImageRepository extends JpaRepository<Image, UUID> {
     Optional<Image> findByName(String fileName);
-    
+    void deleteByName(String fileName);
 }

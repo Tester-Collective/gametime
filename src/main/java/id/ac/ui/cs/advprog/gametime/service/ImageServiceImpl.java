@@ -35,4 +35,9 @@ public class ImageServiceImpl implements ImageService {
         Optional<Image> dbImageData = imageRepository.findByName(fileName);
         return ImageUtil.decompressImage(dbImageData.get().getImageData());
     }
+
+    @Override
+    public void deleteImage(String fileName) {
+        imageRepository.deleteByName(fileName);
+    }
 }

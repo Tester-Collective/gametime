@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Game List</title>
+    <title>Sold Game List</title>
     <link rel="stylesheet" href="/output.css">
 </head>
 <body class="bg-tokyo-night-bg text-white">
@@ -34,12 +34,7 @@
                             </svg>
                         </span>
                     </div>
-                    <p class="mb-4 text-gray-500 text-xs overflow-y-auto max-h-3 pb-4 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-900 scrollbar-medium">
-                        <span th:each="category, iterStat : ${game.categories}">
-                            <span th:text="${#strings.capitalize(category.name)}"></span>
-                            <span th:if="${!iterStat.last && not #lists.isEmpty(game.categories)}">, </span>
-                        </span>
-                        <span th:if="${#lists.isEmpty(game.categories)}">No categories</span>
+                    <p th:text="${game.category.name}" class="text-gray-500 text-xs overflow-y-auto max-h-4 max-w-52 mb-1 pr-3">
                     </p>
                     <p class="mb-1 mt-4 text-gray-700 dark:text-gray-400 overflow-y-auto max-h-6 pt-5 pb-24 pr-5 scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-900 scrollbar-medium"><span class="font-semibold"></span><span th:text="${game.description}"></span></p>
                 </div>

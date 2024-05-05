@@ -42,38 +42,18 @@ class GameTest {
     @Test
     void testGetGamePicture() {
         this.game = new Game();
-        this.game.setImageLink("game.jpg");
-        assertEquals("game.jpg", this.game.getImageLink());
+        this.game.setImageName("game.jpg");
+        assertEquals("game.jpg", this.game.getImageName());
     }
 
-    @Test
-    void testAddCategory() {
-        Category category = new Category();
-        category.setName("ACTION");
-
-        this.game = new Game();
-        this.game.addCategory(category);
-        assertTrue(this.game.getCategories().contains(category));
-    }
-
-    @Test
-    void testRemoveCategory() {
-        Category category = new Category();
-        category.setName("ACTION");
-
-        this.game = new Game();
-        this.game.addCategory(category);
-        this.game.removeCategory(category);
-        assertTrue(this.game.getCategories().isEmpty());
-    }
 
     @Test
     void testGetCategory() {
         Category category = new Category();
         category.setName("RPG");
         this.game = new Game();
-        this.game.setCategories(new ArrayList<>(Set.of(category)));
-        assertTrue(this.game.getCategories().contains(category));
+        this.game.setCategory(category);
+        assertEquals(category, this.game.getCategory());
     }
 
     @Test
