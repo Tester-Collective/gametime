@@ -23,12 +23,6 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameInCart> games;
 
-    public Cart(UUID cartId, User customer, List<GameInCart> games) {
-        this.cartId = cartId;
-        this.customer = customer;
-        this.games = games;
-    }
-
     public void addGame(GameInCart game) {
         games.add(game);
     }
@@ -47,9 +41,6 @@ public class Cart {
 
     public void clearCart() {
         games.clear();
-    }
-
-    public Cart() {
     }
 
 
