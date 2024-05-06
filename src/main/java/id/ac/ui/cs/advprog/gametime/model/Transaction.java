@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 @Entity
-@Table(name = "transaction")
+@Table(name = "transactions")
 @Setter @Getter
 public class Transaction {
     @Id
