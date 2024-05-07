@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,17 +37,27 @@ public class Transaction {
             inverseJoinColumns = @JoinColumn(name = "game_id")
     )
     private List<Game> games;
+    @Column(nullable = false)
+    private String transactionDate;
     public Transaction(UUID transactionId,User user,Order order) {
         this.transactionId = transactionId;
         this.user = user;
         this.order = order;
         this.status = TransactionStatus.FAILED.getValue();
         this.games = convertGamesInCartToGames();
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formatDateTime = dateTime.format(format);
+        this.transactionDate = formatDateTime;
     }
     public Transaction (UUID transactionId,User user,Order order,String status) {
         this(transactionId, user, order);
         this.games = convertGamesInCartToGames();
         this.setStatus(status);
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formatDateTime = dateTime.format(format);
+        this.transactionDate = formatDateTime;
     }
 
     public void setStatus(String status) {
@@ -67,5 +79,12 @@ public class Transaction {
     }
     public List<GameInCart> getGamesInCart() {
         return order.getCart().getGames();
+    }
+    public Integer getTotalPrice() {
+        Integer totalPrice = 0;
+        for (Game game : games) {
+            totalPrice += game.getPrice();
+        }
+        return totalPrice;
     }
 }
