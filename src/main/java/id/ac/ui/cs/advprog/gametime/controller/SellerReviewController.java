@@ -37,28 +37,20 @@ public class SellerReviewController {
         return "review/sellerResponses/index";
     }
 
-    @GetMapping("/responses/{reviewId}")
-    public String responses(Model model, @PathVariable UUID reviewId) {
-        Review review = reviewService.getReviewById(reviewId);
-        Map<UUID, String> seller_responses = review.getSellerResponses();
-        model.addAttribute("review", review);
-        model.addAttribute("responses", seller_responses);
-        return "review/sellerResponses/responses";
-    }
 
-    @PostMapping("/responses/{reviewId}")
+    @PostMapping("/add/{reviewId}")
     public String addResponse(@PathVariable UUID reviewId, String response) {
         Review review = reviewService.getReviewById(reviewId);
         UUID responseId = UUID.randomUUID();
         review.addSellerResponse(responseId, response);
-        return"redirect:review/sellerResponses/responses";
+        return"redirect:review/sellerResponses/index";
     }
 
-    @PostMapping("/responses/{reviewId}/{responseId}")
+    @PostMapping("/delete/{reviewId}/{responseId}")
     public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId) {
         Review review = reviewService.getReviewById(reviewId);
         review.removeSellerResponse(responseId);
-        return "redirect:review/sellerResponses/responses";
+        return "redirect:review/sellerResponses/index";
     }
 
 
