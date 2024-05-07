@@ -12,12 +12,11 @@ import java.util.UUID;
 @Repository
 public interface FilterRepository extends JpaRepository<Game, UUID> {
 
-    @Query("SELECT g FROM Game g WHERE g.title LIKE %?1%")
-    List<Game> findByTitle(String keyword);
+    List<Game> findByOrderByTitle();
+    List<Game> findByTitleContainingOrderByTitle(String keyword);
+    List<Game> findByCategoryOrderByTitle(Category category);
 
-    List<Game> findByCategory(Category category);
+    List<Game> findByPlatformOrderByTitle(String platform);
 
-    List<Game> findByPlatform(String platform);
-
-    List<Game> findByPrice(int minPrice, int maxPrice);
+    List<Game> findByPriceBetweenOrderByTitle(int minPrice, int maxPrice);
 }
