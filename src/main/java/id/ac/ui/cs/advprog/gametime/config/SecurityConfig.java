@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -27,7 +26,15 @@ public class SecurityConfig {
                         .requestMatchers("/input.css", "/output.css", "/").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(httpSecurityFormLoginConfigurer -> {
+                    httpSecurityFormLoginConfigurer
+                            .loginPage("/auth/login")
+                            .permitAll()
+                            .defaultSuccessUrl("/")
+                            .failureUrl("/auth/login?error=true")
+                            .usernameParameter("username")
+                            .passwordParameter("password");
+                })
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
