@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class FilterServiceImpl implements FilterService {
@@ -16,39 +18,25 @@ public class FilterServiceImpl implements FilterService {
     private FilterRepository filterRepository;
 
     public List<Game> filterGame(String keyword, Category category, String platform, int minPrice, int maxPrice) {
-        List<Game> games = new ArrayList<>();
+        Set<Game> gamesSet = new HashSet<>();
 
         if (category != null) {
-            List<Game> temp = filterRepository.findByCategory(category);
-            games.addAll(temp);
+            gamesSet.addAll(filterRepository.findByCategory(category));
         }
 
         if (platform != null) {
-            List<Game> temp = filterRepository.findByPlatform(platform);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+            gamesSet.addAll(filterRepository.findByPlatform(platform));
         }
 
-        if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
-            List<Game> temp = filterRepository.findByPrice(minPrice, maxPrice);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+        if (minPrice != 0 || maxPrice != Integer.MAX_VALUE) {
+            gamesSet.addAll(filterRepository.findByPrice(minPrice, maxPrice));
         }
 
         if (keyword != null) {
-            List<Game> temp = filterRepository.findByTitle(keyword);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+            gamesSet.addAll(filterRepository.findByTitle(keyword));
         }
-        return games;
+
+        return new ArrayList<>(gamesSet);
     }
+
 }
