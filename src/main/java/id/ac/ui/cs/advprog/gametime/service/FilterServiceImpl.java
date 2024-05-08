@@ -28,8 +28,8 @@ public class FilterServiceImpl implements FilterService {
             gamesSet.addAll(filterRepository.findByPlatform(platform));
         }
 
-        if (minPrice != 0 || maxPrice != Integer.MAX_VALUE) {
-            gamesSet.addAll(filterRepository.findByPrice(minPrice, maxPrice));
+        if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
+            gamesSet.addAll(filterRepository.findByPriceBetween(minPrice, maxPrice));
         }
 
         if (keyword != null) {
