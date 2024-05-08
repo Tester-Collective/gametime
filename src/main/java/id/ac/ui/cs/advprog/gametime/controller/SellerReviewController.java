@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.*;
 
 @Controller
-@RequestMapping("/game/review/seller")
+@RequestMapping("/review/seller")
 public class SellerReviewController {
     @Autowired
     private ReviewService reviewService;
     @Autowired
     private UserService userService;
 
-    private static final String SELLER_REVIEW_PAGE = "redirect:/game/review/seller";
+    private static final String SELLER_REVIEW_PAGE = "redirect:/review/seller";
 
     @GetMapping("")
     public String index(Model model) {
@@ -33,32 +33,24 @@ public class SellerReviewController {
                 .getName());
         List<Review> seller_reviews  = reviewService.findReviewsByGameSeller(seller);
         model.addAttribute("reviews", seller_reviews);
-        return SELLER_REVIEW_PAGE;
+
+        return "review/sellerResponses/index";
     }
 
-    @GetMapping("/responses/{reviewId}")
-    public String responses(Model model, @PathVariable UUID reviewId) {
-        Review review = reviewService.getReviewById(reviewId);
-        List<String> seller_responses = new ArrayList<>();
-        review.getSellerResponses().forEach((k, v) -> {seller_responses.add(v);});
-        model.addAttribute("review", review);
-        model.addAttribute("responses", seller_responses);
-        return "game/review/seller/responses";
-    }
 
-    @PostMapping("/response/{reviewId}")
+    @PostMapping("/add/{reviewId}")
     public String addResponse(@PathVariable UUID reviewId, String response) {
         Review review = reviewService.getReviewById(reviewId);
         UUID responseId = UUID.randomUUID();
         review.addSellerResponse(responseId, response);
-        return"game/review/seller/responses";
+        return"redirect:review/sellerResponses/index";
     }
 
-    @PostMapping("/response/{reviewId}/{responseId}")
+    @PostMapping("/delete/{reviewId}/{responseId}")
     public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId) {
         Review review = reviewService.getReviewById(reviewId);
         review.removeSellerResponse(responseId);
-        return "game/review/seller/responses";
+        return "redirect:review/sellerResponses/index";
     }
 
 
