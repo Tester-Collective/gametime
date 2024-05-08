@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import id.ac.ui.cs.advprog.gametime.service.ImageService;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class SellerGameController {
     }
 
     @PostMapping("/sell")
-    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException {
+    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException, NoSuchAlgorithmException {
         Image image1 = imageService.uploadImage(image);
 
         Game game = new Game();

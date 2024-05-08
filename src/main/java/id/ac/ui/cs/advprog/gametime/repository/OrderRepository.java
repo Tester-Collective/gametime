@@ -11,6 +11,6 @@ import java.util.UUID;
 @Transactional
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    Order findOrderByUser_UserID(UUID userId);
-    List<Order> findOrdersByUser_UserID(UUID userId);
+    Order findOrderByCart_Customer_UserID(UUID userId);
+    List<Order> findOrdersByCart_Customer_UserID(UUID userId);
 }

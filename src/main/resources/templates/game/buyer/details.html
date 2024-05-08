@@ -18,7 +18,7 @@
                 </p>
                 <div class="flex flex-row items-center">
                     <p
-                            class="text-2xl font-semibold text-gray-900 dark:text-white"
+                            class="text-2xl font-semibold text-white"
                             th:text="${game.title}"
                     >
                     </p>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="mt-2 sm:items-center sm:gap-4 sm:flex">
                     <p
-                            class="text-3xl font-extrabold text-gray-900 dark:text-white"
+                            class="text-3xl font-extrabold text-white"
                             th:text="'Rp' + ${game.price}"
                     >
                     </p>
@@ -127,13 +127,13 @@
                             </svg>
                         </div>
                         <p
-                                class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
+                                class="text-sm font-medium leading-none text-gray-400"
                         >
                             (5.0)
                         </p>
                         <a
                                 href="#"
-                                class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
+                                class="text-sm font-medium leading-none underline hover:no-underline text-white"
                         >
                             345 Reviews
                         </a>
@@ -144,7 +144,7 @@
                     <a
                             th:href="@{/game/buyer/cart/add/{id}(id=${game.id})}"
                             title=""
-                            class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"
+                            class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-primary-800 flex items-center justify-center"
                             role="button"
                     >
                         <svg
@@ -168,9 +168,9 @@
                     </a>
                 </div>
 
-                <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+                <hr class="my-6 md:my-8 border-gray-200" />
 
-                <p class="mb-6 text-gray-500 dark:text-gray-400" th:text="${game.getDescription()}">
+                <p class="mb-6 text-gray-400" th:text="${game.getDescription()}">
                 </p>
 
             </div>
