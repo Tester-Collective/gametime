@@ -19,12 +19,12 @@ public class FilterServiceImpl implements FilterService {
         List<Game> games = new ArrayList<>();
 
         if (category != null) {
-            List<Game> temp = filterRepository.findByCategory(category);
+            List<Game> temp = filterRepository.findByCategoryOrderByTitle(category);
             games.addAll(temp);
         }
 
         if (platform != null) {
-            List<Game> temp = filterRepository.findByPlatform(platform);
+            List<Game> temp = filterRepository.findByPlatformOrderByTitle(platform);
             for (Game game : temp) {
                 if (!games.contains(game)) {
                     games.add(game);
@@ -33,7 +33,14 @@ public class FilterServiceImpl implements FilterService {
         }
 
         if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
-            List<Game> temp = filterRepository.findByPrice(minPrice, maxPrice);
+            List<Game> temp = filterRepository.findByPriceBetweenOrderByTitle(minPrice, maxPrice);
+            for (Game game : temp) {
+                if (!games.contains(game)) {
+                    games.add(game);
+                }
+            }
+        } else if (maxPrice == 0) {
+            List<Game> temp = filterRepository.findByPriceBetweenOrderByTitle(minPrice, Integer.MAX_VALUE);
             for (Game game : temp) {
                 if (!games.contains(game)) {
                     games.add(game);
@@ -41,14 +48,19 @@ public class FilterServiceImpl implements FilterService {
             }
         }
 
-        if (keyword != null) {
-            List<Game> temp = filterRepository.findByTitle(keyword);
+        if (keyword != null && !keyword.isEmpty()) {
+            List<Game> temp = filterRepository.findByTitleContainingOrderByTitle(keyword);
             for (Game game : temp) {
                 if (!games.contains(game)) {
                     games.add(game);
                 }
             }
         }
+
+        if ((keyword == null || keyword.isEmpty()) && category == null && platform == null && (minPrice == 0 && maxPrice == Integer.MAX_VALUE)) {
+            games = filterRepository.findByOrderByTitle();
+        }
+
         return games;
     }
 }
