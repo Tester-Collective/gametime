@@ -32,6 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepository.findById(id).orElse(null);
         if (transaction != null) {
             transaction.setStatus(status);
+            transactionRepository.delete(transaction);
             transactionRepository.save(transaction);
             return transaction;
         }
