@@ -34,8 +34,7 @@ public class SecurityConfig {
                             .failureUrl("/auth/login?error=true")
                             .usernameParameter("username")
                             .passwordParameter("password");
-                })
-                .logout(LogoutConfigurer::permitAll);
+                });
 
         return http.build();
     }
