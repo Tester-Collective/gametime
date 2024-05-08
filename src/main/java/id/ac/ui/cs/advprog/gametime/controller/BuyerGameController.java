@@ -1,9 +1,12 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
+import id.ac.ui.cs.advprog.gametime.service.FilterService;
+import id.ac.ui.cs.advprog.gametime.service.FilterServiceImpl;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +21,12 @@ public class BuyerGameController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private FilterService filterService;
+
     @GetMapping("")
-    public String index(Model model) {
-        List<Game> games = gameService.getAllGames();
+    public String index(Model model, @Param("keyword") String keyword) {
+        List<Game> games = filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
         model.addAttribute("games", games);
         return "game/buyer/index";
     }
