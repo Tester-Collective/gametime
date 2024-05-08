@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -16,9 +19,17 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     private ImageRepository imageRepository;
     @Override
-    public Image uploadImage(MultipartFile file) throws IOException {
+    public Image uploadImage(MultipartFile file) throws IOException, NoSuchAlgorithmException {
         Date date = new Date();
         Image image = new Image();
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+        byte[] fileTimeStampBytes = Long.toString(date.getTime()).getBytes(StandardCharsets.UTF_8);
+        byte[] fileNameBytes = file.getOriginalFilename().getBytes(StandardCharsets.UTF_8);
+        messageDigest.update(fileTimeStampBytes);
+        messageDigest.update(fileNameBytes);
+        byte[] digest = messageDigest.digest();
+
         image.setName(date.getTime() + file.getOriginalFilename());
         image.setType(file.getContentType());
         image.setImageData(ImageUtil.compressImage(file.getBytes()));
