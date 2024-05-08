@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @RequestMapping("/image")
 @RestController
@@ -20,7 +21,7 @@ public class ImageRestController {
     @Autowired
     private ImageService imageService;
     @PostMapping("")
-    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException {
+    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException, NoSuchAlgorithmException {
         Image uploadImage = imageService.uploadImage(image);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
