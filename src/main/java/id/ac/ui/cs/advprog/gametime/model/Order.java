@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter @Setter
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
     @Id
     private UUID orderId;
