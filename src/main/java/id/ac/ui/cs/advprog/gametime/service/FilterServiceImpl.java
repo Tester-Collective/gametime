@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class FilterServiceImpl implements FilterService {
@@ -16,51 +18,25 @@ public class FilterServiceImpl implements FilterService {
     private FilterRepository filterRepository;
 
     public List<Game> filterGame(String keyword, Category category, String platform, int minPrice, int maxPrice) {
-        List<Game> games = new ArrayList<>();
+        Set<Game> gamesSet = new HashSet<>();
 
         if (category != null) {
-            List<Game> temp = filterRepository.findByCategoryOrderByTitle(category);
-            games.addAll(temp);
+            gamesSet.addAll(filterRepository.findByCategory(category));
         }
 
         if (platform != null) {
-            List<Game> temp = filterRepository.findByPlatformOrderByTitle(platform);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+            gamesSet.addAll(filterRepository.findByPlatform(platform));
         }
 
         if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
-            List<Game> temp = filterRepository.findByPriceBetweenOrderByTitle(minPrice, maxPrice);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
-        } else if (maxPrice == 0) {
-            List<Game> temp = filterRepository.findByPriceBetweenOrderByTitle(minPrice, Integer.MAX_VALUE);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+            gamesSet.addAll(filterRepository.findByPriceBetween(minPrice, maxPrice));
         }
 
-        if (keyword != null && !keyword.isEmpty()) {
-            List<Game> temp = filterRepository.findByTitleContainingOrderByTitle(keyword);
-            for (Game game : temp) {
-                if (!games.contains(game)) {
-                    games.add(game);
-                }
-            }
+        if (keyword != null) {
+            gamesSet.addAll(filterRepository.findByTitle(keyword));
         }
 
-        if ((keyword == null || keyword.isEmpty()) && category == null && platform == null && (minPrice == 0 && maxPrice == Integer.MAX_VALUE)) {
-            games = filterRepository.findByOrderByTitle();
-        }
-
-        return games;
+        return new ArrayList<>(gamesSet);
     }
+
 }
