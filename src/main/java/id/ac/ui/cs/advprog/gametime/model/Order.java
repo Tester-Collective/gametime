@@ -14,10 +14,6 @@ public class Order {
     private UUID orderId;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "user_id")
-    private User user;
-
-    @ManyToOne
     @JoinColumn(
             name = "cart_id",
             referencedColumnName = "cartId",
