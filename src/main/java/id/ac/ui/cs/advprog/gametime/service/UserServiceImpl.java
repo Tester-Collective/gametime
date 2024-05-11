@@ -4,7 +4,6 @@ import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +42,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email already exist");
         } else if (isUsernameExist(username)) {
             throw new IllegalArgumentException("Username already exist");
+        } else if (!password.equals(matchingPassword)) {
+            throw new IllegalArgumentException("Password doesn't match");
         } else {
             User user = new User();
 

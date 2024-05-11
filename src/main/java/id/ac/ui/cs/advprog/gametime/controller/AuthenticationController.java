@@ -9,11 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -41,12 +41,19 @@ public class AuthenticationController {
         return "redirect:/";
     }
     @PostMapping("/register")
-    public String registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password, @RequestParam String matchingPassword) {
+    public String registerUser(
+            @RequestParam String username,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String matchingPassword,
+            RedirectAttributes redirectAttributes
+    ) {
         try {
-            userService.registerUser(username, email, password, matchingPassword);
+            User user = userService.registerUser(username, email, password, matchingPassword);
             return "redirect:/auth/login";
         } catch (IllegalArgumentException e) {
-            return "auth/register";
+            redirectAttributes.addAttribute("error", e.getMessage());
+            return "redirect:/auth/register";
         }
     }
 }
