@@ -11,16 +11,19 @@
         <div class="flex flex-col justify-center items-end border-r-white border-r-2 p-8">
             <h1 class="text-5xl font-bold">Login</h1>
         </div>
-        <form action="/auth/login" method="post" class="flex flex-col justify-center items-center gap-8">
-            <div class="flex flex-col gap-2">
+        <form action="/auth/login" method="post" class="flex flex-col justify-center items-center gap-4">
+            <div class="flex flex-col gap-2 w-2/5">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" class="bg-gray-600 px-4 py-2 text-white rounded-full">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" class="bg-gray-600 px-4 py-2 text-white rounded-full">
             </div>
+            <div th:if="${param.error}" class="bg-red-600 text-white px-4 py-2 rounded">
+                <p>Invalid username or password</p>
+            </div>
             <a href="/auth/register" class="text-gray-400 hover:text-blue-500">No account? Register here!</a>
-            <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded mb-6">Login</button>
+            <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded mb-6 text-white">Login</button>
         </form>
     </div>
 </body>
