@@ -97,7 +97,7 @@
                     </div>
                     <p class="text-2xl text-tokyo-night-variable font-bold">
                         <span th:if="${game.price == 0}">FREE</span>
-                        <span th:if="${game.price != 0}" th:text="'Rp' + ${game.price}"></span>
+                        <span th:if="${game.price != 0}" th:text="'Rp' + ${#numbers.formatDecimal(game.price, 3, 'POINT', 0, 'COMMA')}"></span>
                     </p>
                     <form th:action="@{/game/buyer/cart/add/{id}(id=${game.id})}" class="absolute bottom-0 right-0 p-5" method="post">
                         <button type="submit" class="inline-flex items-center px-3 text-sm font-medium text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 bg-blue-500 py-2 transition ease-in-out hover:-translate-y-1 hover:scale-125 origin-bottom-right duration-150 hover:bg-blue-600">
