@@ -13,6 +13,7 @@ public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
 
-    User editUser(String username, String email, String bio, String profilePicture);
+    User editUser(User user);
 
+    User changePassword(User user, String password, String matchingPassword);
 }

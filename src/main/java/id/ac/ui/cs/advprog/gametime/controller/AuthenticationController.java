@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
-import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,7 +48,7 @@ public class AuthenticationController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            User user = userService.registerUser(username, email, password, matchingPassword);
+            userService.registerUser(username, email, password, matchingPassword);
             return "redirect:/auth/login";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("error", e.getMessage());

@@ -59,16 +59,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editUser(String username, String email, String bio, String profilePicture) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        } else {
-            user.setEmail(email);
-            user.setBio(bio);
-            user.setProfilePicture(profilePicture);
-            return userRepository.save(user);
+    public User changePassword(User user, String password, String matchingPassword) {
+        if (!password.equals(matchingPassword)) {
+            throw new IllegalArgumentException("Passwords does not match!");
         }
+
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User editUser(User user) {
+        return userRepository.save(user);
     }
 
     private boolean isUsernameExist(String username) {
@@ -81,11 +83,11 @@ public class UserServiceImpl implements UserService {
 
     private String[] getRoles(User user) {
         if (user.isAdmin()) {
-            return new String[]{"ADMIN"};
+            return new String[] { "ADMIN" };
         } else if (user.isSeller()) {
-            return new String[]{"SELLER"};
+            return new String[] { "SELLER" };
         } else {
-            return new String[]{"USER"};
+            return new String[] { "USER" };
         }
     }
 }

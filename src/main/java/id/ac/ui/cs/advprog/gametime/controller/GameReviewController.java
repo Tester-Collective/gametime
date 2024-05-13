@@ -45,7 +45,7 @@ public class GameReviewController {
     public String addReviewPage(Model model, @PathVariable String gameId){
         Review review = new Review();
         model.addAttribute("review", review);
-        return "game/buyer/details/{gameId}/addReview";
+        return "game/buyer/review/addReview";
 
     }
 
@@ -70,7 +70,7 @@ public class GameReviewController {
     public String editReviewPage(Model model, @PathVariable String reviewId, @PathVariable String gameId){
         Review review = reviewService.getReviewById(UUID.fromString(reviewId));
         model.addAttribute("review", review);
-        return "game/buyer/details/{gameId}/editReview/{reviewId}";
+        return "game/buyer/review/editReview";
     }
 
 
