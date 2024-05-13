@@ -15,4 +15,5 @@ public interface UserService extends UserDetailsService {
 
     User editUser(User user);
 
+    User changePassword(User user, String password, String matchingPassword);
 }

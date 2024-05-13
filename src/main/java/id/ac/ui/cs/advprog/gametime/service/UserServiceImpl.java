@@ -59,7 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User changePassword(User user, String password, String matchingPassword) {
+        if (!password.equals(matchingPassword)) {
+            throw new IllegalArgumentException("Passwords does not match!");
         }
+
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        return userRepository.save(user);
+    }
+
+    @Override
     public User editUser(User user) {
         return userRepository.save(user);
     }
