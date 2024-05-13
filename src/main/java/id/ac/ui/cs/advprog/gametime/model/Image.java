@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Getter @Setter
+@Getter
+@Setter
 @Entity
 @Table(name = "images")
 @AllArgsConstructor
@@ -25,6 +26,6 @@ public class Image {
     private String type;
 
     @Lob
-    @Column (nullable = false)
+    @Column(nullable = false)
     private byte[] imageData;
 }
