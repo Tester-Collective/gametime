@@ -55,4 +55,13 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findReviewsByGameSeller(seller);
     }
 
+    public float calculateGameRatingAverage(UUID gameId) {
+        List<Review> reviews = reviewRepository.findReviewsByGameId(gameId);
+        float totalRating = 0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+        return Math.round(totalRating / reviews.size());
+    }
+
 }
