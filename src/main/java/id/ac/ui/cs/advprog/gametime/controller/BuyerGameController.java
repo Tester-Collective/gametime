@@ -31,10 +31,4 @@ public class BuyerGameController {
         return "game/buyer/index";
     }
 
-    @GetMapping("/details/{id}")
-    public String details(@PathVariable String id, Model model) {
-        Game game = gameService.getGameById(id);
-        model.addAttribute("game", game);
-        return "game/buyer/details";
-    }
 }
