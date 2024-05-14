@@ -7,10 +7,7 @@ import id.ac.ui.cs.advprog.gametime.repository.FilterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FilterServiceImpl implements FilterService {
@@ -18,22 +15,28 @@ public class FilterServiceImpl implements FilterService {
     private FilterRepository filterRepository;
 
     public List<Game> filterGame(String keyword, Category category, String platform, int minPrice, int maxPrice) {
-        Set<Game> gamesSet = new HashSet<>();
+        SortedSet<Game> gamesSet = new TreeSet<>(Comparator.comparing(Game::getTitle));
 
         if (category != null) {
-            gamesSet.addAll(filterRepository.findByCategory(category));
+            gamesSet.addAll(filterRepository.findByCategoryOrderByTitle(category));
         }
 
         if (platform != null) {
-            gamesSet.addAll(filterRepository.findByPlatform(platform));
+            gamesSet.addAll(filterRepository.findByPlatformOrderByTitle(platform));
         }
 
         if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
-            gamesSet.addAll(filterRepository.findByPriceBetween(minPrice, maxPrice));
+            gamesSet.addAll(filterRepository.findByPriceBetweenOrderByTitle(minPrice, maxPrice));
+        } else if (maxPrice == 0) {
+            gamesSet.addAll(filterRepository.findByPriceBetweenOrderByTitle(minPrice, Integer.MAX_VALUE));
         }
 
-        if (keyword != null) {
-            gamesSet.addAll(filterRepository.findByTitle(keyword));
+        if (keyword != null && !keyword.isEmpty()) {
+            gamesSet.addAll(filterRepository.findByTitleIgnoreCaseOrderByTitle(keyword));
+        }
+
+        if ((keyword == null || keyword.isEmpty()) && category == null && platform == null && minPrice == 0 && maxPrice == Integer.MAX_VALUE) {
+            gamesSet.addAll(filterRepository.findByOrderByTitle());
         }
 
         return new ArrayList<>(gamesSet);
