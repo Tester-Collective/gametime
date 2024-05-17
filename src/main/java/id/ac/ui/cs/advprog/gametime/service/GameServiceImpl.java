@@ -38,4 +38,9 @@ public class GameServiceImpl implements GameService {
     public List<Game> findGamesBySeller(User seller) {
         return gameRepository.findGamesBySeller(seller);
     }
+
+    public Game decreaseStock(Game game, int sub) {
+        game.setStock(game.getStock() - sub);
+        return gameRepository.save(game);
+    }
 }
