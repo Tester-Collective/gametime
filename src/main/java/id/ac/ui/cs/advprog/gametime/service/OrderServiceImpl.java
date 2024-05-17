@@ -21,4 +21,9 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderByUserId(UUID userId) {
         return orderRepository.findOrderByCart_Customer_UserID(userId);
     }
+
+    @Override
+    public void deleteOrderById(String id) {
+        orderRepository.deleteById(UUID.fromString(id));
+    }
 }
