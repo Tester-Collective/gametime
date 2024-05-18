@@ -8,9 +8,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 @Entity
 @Table(name = "transactions")
 @Setter @Getter
@@ -30,13 +29,6 @@ public class Transaction {
     private Order order;
     @Column(nullable = false)
     private String status;
-    @ManyToMany
-    @JoinTable(
-            name = "transaction_games",
-            joinColumns = @JoinColumn(name = "transaction_id"),
-            inverseJoinColumns = @JoinColumn(name = "game_id")
-    )
-    private List<Game> games;
     @Column(nullable = false)
     private String transactionDate;
     public Transaction(UUID transactionId,User user,Order order) {
@@ -44,7 +36,6 @@ public class Transaction {
         this.user = user;
         this.order = order;
         this.status = TransactionStatus.FAILED.getValue();
-        this.games = convertGamesInCartToGames();
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formatDateTime = dateTime.format(format);
@@ -52,7 +43,6 @@ public class Transaction {
     }
     public Transaction (UUID transactionId,User user,Order order,String status) {
         this(transactionId, user, order);
-        this.games = convertGamesInCartToGames();
         this.setStatus(status);
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -67,23 +57,13 @@ public class Transaction {
             throw new IllegalArgumentException();
         }
     }
-    public List<Game> convertGamesInCartToGames() {
-        List<Game> games = new ArrayList<>();
-        for (GameInCart gameInCart : getGamesInCart()) {
-            games.add(gameInCart.getGame());
-        }
-        return games;
-    }
 
     public Transaction() {
     }
-    public List<GameInCart> getGamesInCart() {
-        return order.getCart().getGames();
-    }
     public Integer getTotalPrice() {
         Integer totalPrice = 0;
-        for (Game game : games) {
-            totalPrice += game.getPrice();
+        for (Game game : order.getGameQuantity().keySet()) {
+            totalPrice += game.getPrice() * order.getGameQuantity().get(game);
         }
         return totalPrice;
     }
