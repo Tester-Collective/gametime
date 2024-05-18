@@ -1,10 +1,9 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
+import enums.OrderStatus;
+import enums.PaymentMethod;
 import id.ac.ui.cs.advprog.gametime.model.*;
-import id.ac.ui.cs.advprog.gametime.service.CartService;
-import id.ac.ui.cs.advprog.gametime.service.GameService;
-import id.ac.ui.cs.advprog.gametime.service.OrderService;
-import id.ac.ui.cs.advprog.gametime.service.UserService;
+import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,6 +30,9 @@ public class OrderController {
 
     @Autowired
     private GameService gameService;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @GetMapping("")
     public String order(Model model) {
@@ -76,6 +78,9 @@ public class OrderController {
                 .getAuthentication()
                 .getName());
         // TODO: Deduct the user's balance (oka's module)
+
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order, OrderStatus.SUCCESS.getValue());
+        transactionService.create(transaction);
 
         Cart cart = order.getCart();
         List<GameInCart> cartGames = cart.getGames();
