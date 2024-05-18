@@ -33,7 +33,7 @@
                 </td>
                 <td class="py-4 px-6">
                     <ul>
-                        <li th:each="game : ${transaction.games}" th:text="${game.title} + ' - ' + ${game.platform}"></li>
+                        <li th:each="game : ${transaction.getOrder().getGameQuantity().keySet()}" th:text="${game.title} + ' - ' + ${game.platform}"></li>
                     </ul>
                 </td>
                 <td class="py-4 px-6">

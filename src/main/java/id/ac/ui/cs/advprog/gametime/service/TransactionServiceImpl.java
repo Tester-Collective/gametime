@@ -50,7 +50,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> result = new ArrayList<>();
         for (Transaction transaction : transactions) {
             for (Game game : games) {
-                if (transaction.getGames().contains(game)) {
+                if (transaction.getOrder().getGameQuantity().containsKey(game)) {
                     result.add(transaction);
                     break;
                 }
