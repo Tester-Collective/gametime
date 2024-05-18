@@ -22,12 +22,7 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findById(UUID.fromString(id)).orElse(null);
     }
 
-    public Game addGame(Game game) {
-        return gameRepository.save(game);
-    }
-
-    public Game updateGame(String id, Game game) {
-        game.setId(UUID.fromString(id));
+    public Game saveGame(Game game) {
         return gameRepository.save(game);
     }
 
