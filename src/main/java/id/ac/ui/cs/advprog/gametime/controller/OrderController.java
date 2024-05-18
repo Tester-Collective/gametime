@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,13 +38,13 @@ public class OrderController {
                 .getContext()
                 .getAuthentication()
                 .getName()).getUserID();
-        Order order = orderService.getOrderByUserId(userId);
+        Order order = orderService.getLatestOrder(userId.toString());
 
         int totalPrice = 0;
         int totalQuantity = 0;
-        for (GameInCart game : order.getCart().getGames()) {
-            totalPrice += game.getGame().getPrice() * game.getQuantity();
-            totalQuantity += game.getQuantity();
+        for (Game game : order.getGameQuantity().keySet()) {
+            totalPrice += game.getPrice() * order.getGameQuantity().get(game);
+            totalQuantity += order.getGameQuantity().get(game);
         }
 
         model.addAttribute("order", order);
@@ -62,35 +60,53 @@ public class OrderController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        Order checkOrder = orderService.getOrderByUserId(user.getUserID());
-        if (checkOrder == null) {
-            Order order = new Order();
-            order.setCart(cartService.getCartByUser(user));
-            orderService.createOrder(order);
+        Cart cart = cartService.getCartByUser(user);
+        Order order = orderService.getLatestOrder(user.getUserID().toString());
+        if (order == null
+                || !order.getOrderStatus().equals(OrderStatus.WAITING_PAYMENT.getValue())) {
+            order = new Order();
+            order.setOrderDate(LocalDateTime.now());
+            order.setOrderStatus(OrderStatus.WAITING_PAYMENT.getValue());
         }
+        orderService.save(order, cart);
         return "redirect:/order";
     }
 
-    @PostMapping("/pay")
-    public String pay(@ModelAttribute("totalPrice") int totalPrice, @ModelAttribute("order") Order order) {
+    @PostMapping("/pay/{id}")
+    public String pay(@PathVariable String id) {
         User user = userService.findByUsername(SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getName());
+
+        Order order = orderService.getOrderById(id);
+        List<GameInCart> cartGames = order.getCart().getGames();
+        int totalPrice = 0;
+        for (GameInCart gameInCart : cartGames) {
+            Game game = gameInCart.getGame();
+            totalPrice += gameInCart.getQuantity() * game.getPrice();
+        }
+
+
+
         // TODO: Deduct the user's balance (oka's module)
+
+        for (GameInCart gameInCart : cartGames) {
+            Game game = gameInCart.getGame();
+            game.getSeller().setBalance(gameInCart.getQuantity() * game.getPrice() + game.getSeller().getBalance());
+        }
+
+        for (GameInCart gameInCart : cartGames) {
+            Game game = gameInCart.getGame();
+            gameService.decreaseStock(game, gameInCart.getQuantity());
+        }
 
         Transaction transaction = new Transaction(UUID.randomUUID(), user, order, OrderStatus.SUCCESS.getValue());
         transactionService.create(transaction);
 
-        Cart cart = order.getCart();
-        List<GameInCart> cartGames = cart.getGames();
-        for (GameInCart cartGame : cartGames) {
-            Game game = cartGame.getGame();
-            gameService.decreaseStock(game, cartGame.getQuantity());
-        }
+        orderService.setStatus(OrderStatus.SUCCESS.getValue(), order);
         cartService.clearCart(user);
 
-        orderService.deleteOrderById(order.getOrderId().toString());
         return "redirect:/game/buyer";
     }
 }
