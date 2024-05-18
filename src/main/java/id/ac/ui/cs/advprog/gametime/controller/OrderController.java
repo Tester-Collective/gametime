@@ -87,17 +87,11 @@ public class OrderController {
             totalPrice += gameInCart.getQuantity() * game.getPrice();
         }
 
-
-
         // TODO: Deduct the user's balance (oka's module)
 
         for (GameInCart gameInCart : cartGames) {
             Game game = gameInCart.getGame();
             game.getSeller().setBalance(gameInCart.getQuantity() * game.getPrice() + game.getSeller().getBalance());
-        }
-
-        for (GameInCart gameInCart : cartGames) {
-            Game game = gameInCart.getGame();
             gameService.decreaseStock(game, gameInCart.getQuantity());
         }
 
