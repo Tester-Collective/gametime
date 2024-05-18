@@ -77,9 +77,9 @@
 
                     <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8 ">
                         <form th:action="@{/cart/add/{id}(id=${game.id})}" method="POST">
-                            <p
-                                    class="text-white mt-4 sm:mt-0 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-primary-800 flex items-center justify-center"
-                                    role="button"
+                            <button
+                                    class="text-white mt-4 sm:mt-0 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
+                                    type="submit"
                             >
                                 <svg
                                         class="w-5 h-5 -ms-2 me-2"
@@ -99,7 +99,7 @@
                                     />
                                 </svg>
                                 Add to cart
-                            </p>
+                            </button>
                         </form>
                     </div>
 
