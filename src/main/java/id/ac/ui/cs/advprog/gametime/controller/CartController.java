@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
-@RequestMapping("/game/buyer/cart")
+@RequestMapping("/cart")
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -33,17 +34,21 @@ public class CartController {
     @GetMapping("")
     public String index(Model model) {
         int totalPrice = 0;
+        int totalQuantity = 0;
         User customer = userService.findByUsername(SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getName());
         Cart cart = cartService.getCartByUser(customer);
         List<GameInCart> games = (cart != null) ? cart.getGames() : new ArrayList<>();
+        games.sort(Comparator.comparing(g -> g.getGame().getTitle()));
         for (GameInCart game : games) {
             totalPrice += game.getGame().getPrice() * game.getQuantity();
+            totalQuantity += game.getQuantity();
         }
         model.addAttribute("games", games);
         model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("totalQuantity", totalQuantity);
         return "game/buyer/cart/index";
     }
 
@@ -54,7 +59,7 @@ public class CartController {
                 .getAuthentication()
                 .getName());
         Cart cart = cartService.getCartByUser(customer);
-        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
         if (gameInCart != null) {
             cartService.increaseGameQuantity(customer, gameInCart);
         } else {
@@ -73,7 +78,8 @@ public class CartController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
         cartService.removeGameFromCart(customer,gameInCart);
         return "redirect:/cart";
     }
@@ -84,7 +90,8 @@ public class CartController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
         cartService.increaseGameQuantity(customer,gameInCart);
         return "redirect:/cart";
     }
@@ -95,7 +102,8 @@ public class CartController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId);
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
         cartService.decreaseGameQuantity(customer,gameInCart);
         return "redirect:/cart";
     }
