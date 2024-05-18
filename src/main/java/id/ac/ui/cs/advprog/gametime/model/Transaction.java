@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
-import enums.OrderStatus;
 import enums.TransactionStatus;
 import lombok.Getter;
 import lombok.Setter;
