@@ -109,4 +109,16 @@ public class OrderController {
 
         return "redirect:/game/buyer";
     }
+
+    @PostMapping("/remove/{gameId}")
+    public String remove(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
+        cartService.removeGameFromCart(customer,gameInCart);
+        return "redirect:/order";
+    }
 }
