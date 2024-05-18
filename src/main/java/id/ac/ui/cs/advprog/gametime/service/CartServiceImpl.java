@@ -1,7 +1,8 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
+import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy;
+import id.ac.ui.cs.advprog.gametime.service.strategy.QuantityManagementStrategy;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
-import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
@@ -21,10 +22,16 @@ public class CartServiceImpl implements CartService{
     @Autowired
     private GameInCartRepository gameInCartRepository;
 
+    @Autowired
+    private CartStockManagementStrategy cartStockManagementStrategy;
+
     @Override
     public Cart getCartByUser(User user) {
         return cartRepository.findCartByCustomer(user);
     }
+
+    @Autowired
+    private QuantityManagementStrategy quantityManagementStrategy;
 
     @Override
     public GameInCart getGameInCartByGameId(String gameId, String cartId) {
@@ -34,6 +41,7 @@ public class CartServiceImpl implements CartService{
     @Override
     public void addGameToCart(User user, GameInCart game) {
         Cart cart = cartRepository.findCartByCustomer(user);
+        cartStockManagementStrategy.checkStockAvailability(game);
         cart.addGame(game);
         gameInCartRepository.save(game);
     }
@@ -48,6 +56,7 @@ public class CartServiceImpl implements CartService{
     @Override
     public void increaseGameQuantity(User user, GameInCart game) {
         Cart cart = cartRepository.findCartByCustomer(user);
+        cartStockManagementStrategy.checkStockAvailability(game);
         cart.increaseGameQuantity(game);
         gameInCartRepository.save(game);
     }
@@ -55,6 +64,7 @@ public class CartServiceImpl implements CartService{
     @Override
     public void decreaseGameQuantity(User user, GameInCart game) {
         Cart cart = cartRepository.findCartByCustomer(user);
+        quantityManagementStrategy.validateQuantity(game.getQuantity());
         cart.decreaseGameQuantity(game);
         gameInCartRepository.save(game);
     }
