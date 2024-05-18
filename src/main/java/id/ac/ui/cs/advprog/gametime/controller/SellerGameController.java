@@ -77,7 +77,7 @@ public class SellerGameController {
         game.setPlatform(gameDto.getPlatform());
         game.setImageName(image1.getName());
 
-        gameService.addGame(game);
+        gameService.saveGame(game);
         return SELLER_GAME_PAGE;
     }
 
@@ -93,27 +93,29 @@ public class SellerGameController {
     public String editGamePage(@PathVariable String id, Model model) {
         Game game = gameService.getGameById(id);
         List<Category> categories = categoryService.findAll();
-        model.addAttribute("gameDto", new GameDto());
-        model.addAttribute("game", game);
+        model.addAttribute("editGame", new GameDto(game));
         model.addAttribute("categories", categories);
         return "game/seller/edit";
     }
 
     @PostMapping("/edit/{id}")
-    public String editGamePost(@ModelAttribute GameDto gameDto, @PathVariable String id) {
-        Game game = gameService.getGameById(id);
-        Game editedGame = new Game();
-        editedGame.setTitle(gameDto.getTitle());
-        editedGame.setDescription(gameDto.getDescription());
-        editedGame.setPrice(gameDto.getPrice());
-        editedGame.setCategory(game.getCategory());
-        editedGame.setStock(gameDto.getStock());
-        editedGame.setPlatform(gameDto.getPlatform());
-        editedGame.setSeller(game.getSeller());
-        editedGame.setImageName(game.getImageName());
-        editedGame.setId(UUID.fromString(id));
+    public String editGamePost(@ModelAttribute("editGame") GameDto gameDto, @PathVariable String id) {
+        User seller = userService.findByUsername(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
 
-        gameService.updateGame(id, editedGame);
+        Game game = gameService.getGameById(id);
+        game.setTitle(gameDto.getTitle());
+        game.setImageName(game.getImageName());
+        game.setStock(gameDto.getStock());
+        game.setPrice(gameDto.getPrice());
+        game.setCategory(gameDto.getCategory());
+        game.setPlatform(gameDto.getPlatform());
+        game.setDescription(gameDto.getDescription());
+        game.setSeller(seller);
+
+        gameService.saveGame(game);
         return SELLER_GAME_PAGE;
     }
 }

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter @Setter
@@ -11,6 +14,7 @@ import java.util.UUID;
 @Table(name = "orders")
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID orderId;
 
     @ManyToOne
@@ -20,4 +24,11 @@ public class Order {
             nullable = false
     )
     private Cart cart;
+
+    @ElementCollection
+    private Map<Game, Integer> gameQuantity = new HashMap<>();
+
+    private LocalDateTime orderDate;
+
+    private String orderStatus;
 }

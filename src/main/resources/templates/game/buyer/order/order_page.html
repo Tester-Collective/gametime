@@ -65,7 +65,9 @@
                         <span th:text="'Rp' + ${totalPrice}"></span>
                     </td>
                     <td class="px-6 py-3">
-                        <a href="#" class="font-medium text-green-500 hover:underline">Checkout</a>
+                        <form method="post" th:action="@{/order/pay/{id}(id=${order.orderId})}">
+                            <button type="submit" class="font-medium text-green-500 hover:underline">PAY</button>
+                        </form>
                     </td>
                 </tr>
             </table>
