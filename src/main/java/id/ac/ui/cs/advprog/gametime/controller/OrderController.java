@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import enums.OrderStatus;
+import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy;
 import id.ac.ui.cs.advprog.gametime.model.*;
 import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class OrderController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private CartStockManagementStrategy cartStockManagementStrategy;
+
     @GetMapping("")
     public String order(Model model) {
         UUID userId = userService.findByUsername(SecurityContextHolder
@@ -59,7 +63,12 @@ public class OrderController {
                 .getContext()
                 .getAuthentication()
                 .getName());
+
         Cart cart = cartService.getCartByUser(user);
+        for (GameInCart gameInCart : cart.getGames()) {
+            cartStockManagementStrategy.checkStockAvailability(gameInCart);
+        }
+
         Order order = orderService.getLatestOrder(user.getUserID().toString());
         if (order == null
                 || !order.getOrderStatus().equals(OrderStatus.WAITING_PAYMENT.getValue())) {
@@ -67,6 +76,7 @@ public class OrderController {
             order.setOrderDate(LocalDateTime.now());
             order.setOrderStatus(OrderStatus.WAITING_PAYMENT.getValue());
         }
+
         orderService.save(order, cart);
         return "redirect:/order";
     }
@@ -79,6 +89,11 @@ public class OrderController {
                 .getName());
 
         Order order = orderService.getOrderById(id);
+
+        for (GameInCart gameInCart : order.getCart().getGames()) {
+            cartStockManagementStrategy.checkStockAvailability(gameInCart);
+        }
+
         List<GameInCart> cartGames = order.getCart().getGames();
         int totalPrice = 0;
         for (GameInCart gameInCart : cartGames) {
