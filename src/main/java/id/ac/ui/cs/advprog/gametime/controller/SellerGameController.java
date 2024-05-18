@@ -5,16 +5,13 @@ import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.dto.GameDto;
 import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.model.User;
-import id.ac.ui.cs.advprog.gametime.service.CategoryService;
-import id.ac.ui.cs.advprog.gametime.service.GameService;
-import id.ac.ui.cs.advprog.gametime.service.UserService;
+import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import id.ac.ui.cs.advprog.gametime.service.ImageService;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -32,6 +29,8 @@ public class SellerGameController {
     private UserService userService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ReviewService reviewService;
     private static final String SELLER_GAME_PAGE = "redirect:/game/seller";
 
     @GetMapping("")
@@ -61,7 +60,7 @@ public class SellerGameController {
     }
 
     @PostMapping("/sell")
-    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException, NoSuchAlgorithmException {
+    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) {
         Image image1 = imageService.uploadImage(image);
 
         Game game = new Game();
@@ -117,5 +116,14 @@ public class SellerGameController {
 
         gameService.saveGame(game);
         return SELLER_GAME_PAGE;
+    }
+
+    @GetMapping("/{id}")
+    public String gameDetails(Model model, @PathVariable String id){
+        model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(id)));
+        model.addAttribute("game", gameService.getGameById(id));
+        model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(id)));
+        model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(id)));
+        return "game/seller/details";
     }
 }
