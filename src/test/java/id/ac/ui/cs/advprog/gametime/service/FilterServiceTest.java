@@ -57,6 +57,7 @@ public class FilterServiceTest {
         gameList.add(game2);
     }
 
+    // Test commit because Rafif used different github account (ACCIDENTALLY)
     @Test
     public void testFilterGameByCategory() {
         Category FPS = new Category();
