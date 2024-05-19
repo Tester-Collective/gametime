@@ -13,6 +13,6 @@ import java.util.UUID;
 @Repository
 public interface GameRepository extends JpaRepository<Game, UUID> {
     Game deleteGameById(UUID id);
-    List<Game> findByOrderByTitle();
+    List<Game> findGamesByGameDeletedOrderByTitle(boolean gameDeleted);
     List<Game> findGamesBySeller(User seller);
 }
