@@ -28,7 +28,7 @@ public class FilterServiceImpl implements FilterService {
         if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
             gamesSet.addAll(filterRepository.findByPriceBetweenOrderByTitle(minPrice, maxPrice));
         } else if (maxPrice == 0) {
-            gamesSet.addAll(filterRepository.findByPriceBetweenOrderByTitle(minPrice, Integer.MAX_VALUE));
+            gamesSet.addAll(filterRepository.findByPriceEqualsOrderByTitle(maxPrice));
         }
 
         if (keyword != null && !keyword.isEmpty()) {
