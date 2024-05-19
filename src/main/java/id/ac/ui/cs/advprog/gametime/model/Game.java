@@ -39,5 +39,8 @@ public class Game {
 
     @Column(nullable = false)
     private String imageName;
+
+    @Column
+    private boolean gameDeleted = false;
 }
 

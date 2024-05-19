@@ -80,7 +80,7 @@
                         <span th:text="'Rp' + ${totalPrice}"></span>
                     </td>
                     <td class="px-6 py-3 text-center">
-                        <form method="post" th:action="@{/order/checkout}">
+                        <form method="get" th:action="@{/order}">
                             <button type="submit" class="font-medium text-green-500 hover:underline">CHECKOUT</button>
                         </form>
                     </td>
