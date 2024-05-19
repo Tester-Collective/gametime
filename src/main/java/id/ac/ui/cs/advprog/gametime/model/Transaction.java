@@ -58,6 +58,11 @@ public class Transaction {
     }
 
     public Transaction() {
+        this.status = TransactionStatus.FAILED.getValue();
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formatDateTime = dateTime.format(format);
+        this.transactionDate = formatDateTime;
     }
     public Integer getTotalPrice() {
         Integer totalPrice = 0;
