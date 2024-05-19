@@ -15,4 +15,6 @@ public interface GameInCartRepository extends JpaRepository<GameInCart, UUID> {
     void deleteAllByCart_CartId(UUID cartId);
 
     GameInCart findGameInCartByCart_CartId(UUID gameId);
+
+    GameInCart findGameInCartByGame_IdAndCart_CartId(UUID gameId, UUID cartId);
 }
