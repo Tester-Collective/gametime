@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Review Response</title>
+    <link rel="stylesheet" href="/output.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"  rel="stylesheet" />
+</head>
+<body class="bg-tokyo-night-bg dark">
+
+<div th:include="navbar::navbar" class="shadow-2xl">
+</div>
+
+<div class="container mx-auto p-4 mt-20">
+    <section class="bg-tokyo-night-bg">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add a review</h2>
+            <form th:action="@{/game/seller/{gameId}/add-seller-response/{reviewId}(gameId=${gameId}, reviewId=${reviewId})}" method="post">
+                <div class="w-full mb-4">
+                    <label for="reviewText" class="block mb-2 text-sm font-medium text-white">Review</label>
+                    <textarea id="reviewText" placeholder="Enter seller's response" name="response"
+                              class="text-white placeholder-gray-400 bg-gray-700 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 rounded-md"></textarea>
+                </div>
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-blue-700">
+                    Add Seller's Response
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</body>
+</html>
