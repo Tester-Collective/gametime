@@ -50,6 +50,7 @@ public class CartServiceImpl implements CartService{
     public void removeGameFromCart(User user, GameInCart game) {
         Cart cart = cartRepository.findCartByCustomer(user);
         cart.removeGame(game);
+        cartRepository.save(cart);
         gameInCartRepository.delete(game);
     }
 
@@ -74,6 +75,7 @@ public class CartServiceImpl implements CartService{
     public void clearCart(User user) {
         Cart cart = cartRepository.findCartByCustomer(user);
         cart.clearCart();
+        cartRepository.save(cart);
         gameInCartRepository.deleteAllByCart_CartId(cart.getCartId());
     }
 
