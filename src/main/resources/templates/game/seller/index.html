@@ -72,7 +72,7 @@
                             <form method="get" th:action="@{/game/seller/edit/{gameId}(gameId=${game.id})}">
                                 <button type="submit" class="mr-2 px-3 py-2 font-medium text-white bg-yellow-400 hover:bg-yellow-500 rounded-lg">Edit</button>
                             </form>
-                            <form method="post" th:action="@{/game/seller/edit/{gameId}(gameId=${game.id})}">
+                            <form method="post" th:action="@{/game/seller/delete/{gameId}(gameId=${game.id})}">
                                 <button type="submit" class="px-3 py-2 font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg">Delete</button>
                             </form>
                         </div>
