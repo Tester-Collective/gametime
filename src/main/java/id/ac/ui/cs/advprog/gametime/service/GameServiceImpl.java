@@ -27,7 +27,7 @@ public class GameServiceImpl implements GameService {
     }
 
     public List<Game> getAllGames() {
-        return gameRepository.findByOrderByTitle();
+        return gameRepository.findGamesByGameDeletedOrderByTitle(false);
     }
 
     public List<Game> findGamesBySeller(User seller) {
