@@ -80,6 +80,7 @@
                         const row = document.createElement('tr');
 
                         // Populate table row with game details
+                        row.classList.add('hover:bg-gray-800')
                         row.innerHTML = `
                             <td class="p-4">
                                 <img src="/image/${gameData.imageName}" class="w-16 md:w-32 max-w-full max-h-full" alt="Game Image">

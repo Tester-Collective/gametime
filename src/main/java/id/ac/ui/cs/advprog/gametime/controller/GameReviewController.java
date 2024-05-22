@@ -57,6 +57,7 @@ public class GameReviewController {
     public String addReviewPage(Model model, @PathVariable String gameId){
         Review review = new Review();
         review.setGame(gameService.getGameById(gameId));
+        review.setRating(0);
         model.addAttribute("review", review);
         return "game/buyer/review/addReview";
 
