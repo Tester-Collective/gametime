@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" class="dark">
 <head>
     <meta charset="UTF-8">
+    <meta th:name="_csrf" th:content="${_csrf.token}">
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Game Detail</title>
     <link rel="stylesheet" href="/output.css">
 </head>
@@ -76,27 +78,13 @@
                     </div>
 
                     <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8 ">
-                        <form th:action="@{/cart/add/{id}(id=${game.id})}" method="POST">
+                        <form th:action="@{/api/cart/add/{id}(id=${game.id})}" method="POST" class="add-to-cart-form">
                             <button
-                                    class="text-white mt-4 sm:mt-0 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
+                                    class="text-white mt-4 sm:mt-0 font-medium rounded-lg text-sm px-4 py-2.5 bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
                                     type="submit"
                             >
-                                <svg
-                                        class="w-5 h-5 -ms-2 me-2"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                >
-                                    <path
-                                            stroke="currentColor"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                                    />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                                 </svg>
                                 Add to cart
                             </button>
@@ -177,5 +165,67 @@
             </div>
         </section>
     </div>
+
+    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 bottom-0 left-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="relative p-4 max-w-md">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="p-4 md:p-5 space-y-4">
+                    <p class="text-xl leading-relaxed text-gray-500 dark:text-gray-400">
+                        Game inserted to cart
+                    </p>
+                </div>
+                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <button data-modal-hide="default-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+            addToCartForms.forEach(form => {
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const formData = new FormData(form);
+                    const gameId = form.action.split('/').pop();
+                    const csrfToken = formData.get('_csrf');
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({}) // You can send additional data here if needed
+                        });
+
+                        if (response.ok) {
+                            // Item added successfully, open the modal
+                            toggleModal();
+                        } else {
+                            console.error('Failed to add item to cart');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', toggleModal);
+            });
+        });
+
+        function toggleModal() {
+            const modal = document.getElementById('default-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+
+
 </body>
 </html>

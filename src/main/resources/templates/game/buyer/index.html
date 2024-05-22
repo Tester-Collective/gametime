@@ -74,11 +74,10 @@
                             'X-CSRF-TOKEN': csrfToken,
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({}) // You can send additional data here if needed
+                        body: JSON.stringify({})
                     });
 
                     if (response.ok) {
-                        // Item added successfully, open the modal
                         toggleModal();
                     } else {
                         console.error('Failed to add item to cart');
@@ -87,12 +86,6 @@
                     console.error('Error:', error);
                 }
             });
-        });
-
-        // Attach event listeners to close buttons
-        const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', toggleModal);
         });
     });
 
@@ -141,7 +134,6 @@
             const ratingDiv = document.createElement('div');
             getAverageRatingByGameId(game.id)
                 .then(rating => {
-                    // Create rating elements and append them to the DOM
                     const ratingDiv = document.createElement('div');
                     ratingDiv.classList.add('flex', 'items-center', 'mt-1');
                     const starsP = document.createElement('p');
@@ -270,6 +262,11 @@
             } catch (error) {
                 console.error('Error:', error);
             }
+        });
+
+        const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', toggleModal);
         });
         return form;
     }
