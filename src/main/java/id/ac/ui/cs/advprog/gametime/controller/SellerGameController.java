@@ -83,8 +83,7 @@ public class SellerGameController {
     @PostMapping("/delete/{id}")
     public String deleteGamePost(@PathVariable String id) {
         Game game = gameService.getGameById(id);
-        imageService.deleteImage(game.getImageName());
-        gameService.deleteGameById(game.getId().toString());
+        gameService.lazyDeleteGame(game);
         return SELLER_GAME_PAGE;
     }
 

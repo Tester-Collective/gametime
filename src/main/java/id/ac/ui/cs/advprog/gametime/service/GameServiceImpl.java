@@ -31,11 +31,17 @@ public class GameServiceImpl implements GameService {
     }
 
     public List<Game> findGamesBySeller(User seller) {
-        return gameRepository.findGamesBySeller(seller);
+        return gameRepository.findGamesBySellerAndGameDeletedOrderByTitle(seller, false);
     }
 
     public Game decreaseStock(Game game, int sub) {
         game.setStock(game.getStock() - sub);
         return gameRepository.save(game);
+    }
+
+    public boolean lazyDeleteGame(Game game) {
+        game.setGameDeleted(true);
+        gameRepository.save(game);
+        return true;
     }
 }
