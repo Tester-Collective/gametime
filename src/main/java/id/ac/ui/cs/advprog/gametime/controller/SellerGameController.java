@@ -106,7 +106,15 @@ public class SellerGameController {
 
         Game game = gameService.getGameById(id);
         game.setTitle(gameDto.getTitle());
-        game.setImageName(game.getImageName());
+
+        if (gameDto.getImage().getSize() != 0) {
+            Image uploadedImage = imageService.uploadImage(gameDto.getImage());
+            if (game.getImageName() != null) {
+                imageService.deleteImage(game.getImageName());
+            }
+            game.setImageName(uploadedImage.getName());
+        }
+
         game.setStock(gameDto.getStock());
         game.setPrice(gameDto.getPrice());
         game.setCategory(gameDto.getCategory());
