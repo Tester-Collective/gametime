@@ -32,7 +32,7 @@ public class GameRestController {
 
     @GetMapping("")
     public List<Game> fetchAll(@RequestParam(value = "keyword", required = false) String keyword) {
-        return filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
+        return gameService.getAllGames();
     }
 
     @GetMapping("/search")

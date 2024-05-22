@@ -16,7 +16,7 @@
         <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16 flex flex-col">
             <h2 class="mb-6 text-3xl font-bold text-tokyo-night-variable text-start">Add a review</h2>
             <form th:action="@{/game/buyer/details/{gameId}/addReview(gameId=${review.game.id})}" th:object="${review}" method="post" class="w-3/4">
-                <div class="w-full mb-5 text-3xl">
+                <div class="w-full mb-7 text-3xl">
                     <div class="flex">
                         <input type="hidden" name="rating" th:field="*{rating}" id="rating" value="0.0">
                         <span class="star text-gray-600">&#9733;</span>
@@ -26,11 +26,11 @@
                         <span class="star text-gray-600">&#9733;</span>
                     </div>
                 </div>
-                <div class="w-full mb-5">
+                <div class="w-full mb-7">
                     <label for="title" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Title</label>
                     <input th:field="*{reviewTitle}" type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Review Title" required="">
                 </div>
-                <div class="w-full mb-5">
+                <div class="w-full mb-7">
                     <label for="reviewText" class="mb-2 text-sm font-medium text-white hidden">Review</label>
                     <textarea th:field="*{reviewText}" id="reviewText" placeholder="Enter game's review"
                               class="text-white placeholder-gray-400 bg-gray-700 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 rounded-md"></textarea>
