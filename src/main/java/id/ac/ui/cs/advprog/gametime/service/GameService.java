@@ -17,5 +17,5 @@ public interface GameService {
     public List<Game> findGamesBySeller(User seller);
 
     Game decreaseStock(Game game, int sub);
-
+    public boolean lazyDeleteGame(Game game);
 }

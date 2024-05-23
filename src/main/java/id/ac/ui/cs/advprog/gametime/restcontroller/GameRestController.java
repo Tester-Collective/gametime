@@ -6,14 +6,11 @@ import id.ac.ui.cs.advprog.gametime.service.FilterService;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/game")
@@ -34,8 +31,13 @@ public class GameRestController {
     }
 
     @GetMapping("")
-    public List<Game> fetchAll(@Param("keyword") String keyword) {
-        return filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
+    public List<Game> fetchAll(@RequestParam(value = "keyword", required = false) String keyword) {
+        return gameService.getAllGames();
+    }
+
+    @GetMapping("/search")
+    public CompletableFuture<List<Game>> searchGames(@RequestParam(value = "keyword", required = false) String keyword) {
+        return CompletableFuture.supplyAsync(() -> filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE));
     }
 
     @GetMapping("reviews/{id}")
