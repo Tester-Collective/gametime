@@ -13,11 +13,11 @@
 
 <div class="flex flex-col justify-between items-center container mx-auto my-8">
     <div class="mt-24 mb-8">
-        <div class="relative overflow-x-auto shadow-md rounded-lg">
+        <div class="relative overflow-x-auto shadow-md rounded-lg rounded-br-none">
             <table class="table-auto max-w-screen-xl text-sm text-left rtl:text-right text-gray-400">
                 <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                 <tr>
-                    <th scope="col" class="px-16 py-3 w-52">
+                    <th scope="col" class="px-16 py-3 w-56">
                         <span class="sr-only">Image</span>
                     </th>
                     <th scope="col" class="px-6 py-3 w-56">
@@ -26,16 +26,12 @@
                     <th scope="col" class="px-6 py-3 w-32">
                         Qty
                     </th>
-                    <th scope="col" class="px-6 py-3 w-40">
+                    <th scope="col" class="px-6 py-3 w-48">
                         Price
-                    </th>
-                    <th scope="col" class="px-6 py-3 w-32">
-                        Action
                     </th>
                 </tr>
                 </thead>
                 <tbody id="orderDetailsBody">
-                <!-- Data will be inserted here by JavaScript -->
                 </tbody>
                 <tfoot class="text-xs uppercase bg-gray-700 text-gray-400">
                 <tr>
@@ -43,16 +39,19 @@
                         Total
                     </td>
                     <td class="px-6 py-3 font-semibold text-white">
-                        <span id="totalPrice"></span>
-                    </td>
-                    <td class="px-6 py-3">
-                        <form method="post" th:action="@{/order/pay}">
-                            <button type="submit" class="font-medium text-green-500 hover:underline">PAY</button>
-                        </form>
+                        <div class="flex flex-row">
+                            <span id="totalPrice" class="self-center mr-4"></span>
+                            <form th:action="@{/order/pay}" method="post">
+                                <button class="bg-gray-500 hover:bg-green-500 text-white px-4 py-2 rounded">PAY</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 </tfoot>
             </table>
+        </div>
+        <div class="flex justify-end">
+
         </div>
     </div>
 </div>
@@ -88,11 +87,6 @@
                             <td class="px-6 py-4 font-semibold text-white">${gameData.title}</td>
                             <td class="px-6 py-4">${quantity}</td>
                             <td class="px-6 py-4 font-semibold text-white">${gameData.price}</td>
-                            <td class="px-6 py-4">
-                                <form method="post" action="/order/remove/${gameId}">
-                                    <button type="submit" class="font-medium text-red-500 hover:underline">Remove</button>
-                                </form>
-                            </td>
                         `;
 
                         // Append row to the table body
