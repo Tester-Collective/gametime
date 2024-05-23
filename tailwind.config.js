@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      width: {
+        '108': '27rem',
+        '128': '32rem',
+        '144': '36rem',
+      },
       colors: {
         'tokyo-night-bg': '#1a1b26',
         'card-bg': '#1f202d',

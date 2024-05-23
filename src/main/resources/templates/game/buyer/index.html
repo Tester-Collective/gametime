@@ -29,7 +29,7 @@
     </div>
 
     <div class="flex items-center mx-auto">
-        <div id="game-container" class="grid grid-cols-3 gap-3 content-start mx-auto mr-0">
+        <div id="game-container" class="grid lg:grid-cols-3 md:grid-cols-2 gap-3 sm:grid-cols-1 content-start mx-auto mr-0">
         </div>
     </div>
 </div>
@@ -55,45 +55,6 @@
             .then(response => response.json())
             .then(games => displayGames(games))
             .catch(error => console.error('Error fetching game data:', error));
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-        addToCartForms.forEach(form => {
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                const formData = new FormData(form);
-                const gameId = form.action.split('/').pop();
-                const csrfToken = formData.get('_csrf');
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({}) // You can send additional data here if needed
-                    });
-
-                    if (response.ok) {
-                        // Item added successfully, open the modal
-                        toggleModal();
-                    } else {
-                        console.error('Failed to add item to cart');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-
-        // Attach event listeners to close buttons
-        const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', toggleModal);
-        });
     });
 
     function toggleModal() {
@@ -141,7 +102,6 @@
             const ratingDiv = document.createElement('div');
             getAverageRatingByGameId(game.id)
                 .then(rating => {
-                    // Create rating elements and append them to the DOM
                     const ratingDiv = document.createElement('div');
                     ratingDiv.classList.add('flex', 'items-center', 'mt-1');
                     const starsP = document.createElement('p');
@@ -270,6 +230,11 @@
             } catch (error) {
                 console.error('Error:', error);
             }
+        });
+
+        const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', toggleModal);
         });
         return form;
     }
