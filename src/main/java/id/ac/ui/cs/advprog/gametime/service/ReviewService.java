@@ -16,5 +16,7 @@ public interface ReviewService{
     List<Review> findReviewsByUser(UUID userId);
     List<Review> findReviewsByGameIdAndUserId(UUID gameId, UUID userId);
     List<Review> findReviewsByGameSeller(User seller);
+    float calculateGameRatingAverage(UUID gameId);
+    Integer getReviewCountByGame(UUID gameId);
 
 }

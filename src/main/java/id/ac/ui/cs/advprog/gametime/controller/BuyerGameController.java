@@ -1,10 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
-import id.ac.ui.cs.advprog.gametime.service.FilterService;
-import id.ac.ui.cs.advprog.gametime.service.FilterServiceImpl;
-import id.ac.ui.cs.advprog.gametime.service.GameService;
-import id.ac.ui.cs.advprog.gametime.service.ImageService;
+import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -19,7 +16,7 @@ import java.util.List;
 @RequestMapping("/game/buyer")
 public class BuyerGameController {
     @Autowired
-    private GameService gameService;
+    private ReviewService reviewService;
 
     @Autowired
     private FilterService filterService;
@@ -28,13 +25,8 @@ public class BuyerGameController {
     public String index(Model model, @Param("keyword") String keyword) {
         List<Game> games = filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
         model.addAttribute("games", games);
+        model.addAttribute("reviewService", reviewService);
         return "game/buyer/index";
     }
 
-    @GetMapping("/details/{id}")
-    public String details(@PathVariable String id, Model model) {
-        Game game = gameService.getGameById(id);
-        model.addAttribute("game", game);
-        return "game/buyer/details";
-    }
 }

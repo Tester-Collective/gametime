@@ -33,7 +33,7 @@
                 </td>
                 <td class="py-4 px-6">
                     <ul>
-                        <li th:each="cartItem : ${transaction.getGamesInCart()}" th:if="${cartItem.game.seller == seller}" th:text="${cartItem.game.title} + ' - ' + ${cartItem.game.platform}"></li>
+                        <li th:each="cartItem : ${transaction.getOrder().getGameQuantity().keySet()}" th:if="${cartItem.seller == seller}" th:text="${cartItem.title} + ' - ' + ${cartItem.platform}"></li>
                     </ul>
                 </td>
                 <td th:each="revenue, status : ${revenues}" class="py-4 px-6">

@@ -11,7 +11,7 @@ import java.util.List;
 public interface CartService {
 
     Cart getCartByUser(User user);
-    GameInCart getGameInCartByGameId(String gameId);
+    GameInCart getGameInCartByGameId(String gameId, String cartId);
     void addGameToCart(User user, GameInCart game);
     void removeGameFromCart(User user, GameInCart game);
     void increaseGameQuantity(User user, GameInCart game);
