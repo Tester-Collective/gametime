@@ -31,13 +31,14 @@ public class GameRestController {
     }
 
     @GetMapping("")
-    public List<Game> fetchAll(@RequestParam(value = "keyword", required = false) String keyword) {
+    public List<Game> fetchAll() {
         return gameService.getAllGames();
     }
 
-    @GetMapping("/search")
-    public CompletableFuture<List<Game>> searchGames(@RequestParam(value = "keyword", required = false) String keyword) {
-        return CompletableFuture.supplyAsync(() -> filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE));
+    @GetMapping("/filter")
+    public CompletableFuture<List<Game>> filter(@RequestParam("query") String keyword) {
+        List<Game> games = filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
+        return CompletableFuture.completedFuture(games);
     }
 
     @GetMapping("reviews/{id}")
