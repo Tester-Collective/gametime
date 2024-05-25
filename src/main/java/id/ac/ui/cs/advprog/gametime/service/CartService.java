@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface CartService {
@@ -17,6 +18,8 @@ public interface CartService {
     void increaseGameQuantity(User user, GameInCart game);
     void decreaseGameQuantity(User user, GameInCart game);
     void clearCart(User user);
+    Integer getTotalPrice(User user);
+    Integer getTotalQuantity(User user);
 
     List<Cart> getAllCarts();
 
