@@ -45,14 +45,11 @@ public class UserServiceImpl implements UserService {
         } else if (!password.equals(matchingPassword)) {
             throw new IllegalArgumentException("Password doesn't match");
         } else {
-            User user = new User();
-
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setPassword(new BCryptPasswordEncoder().encode(password));
-            user.setBalance(0);
-            user.setSeller(false);
-            user.setAdmin(false);
+            User user = new User.Builder()
+                    .username(username)
+                    .password(new BCryptPasswordEncoder().encode(password))
+                    .email(email)
+                    .build();
 
             return userRepository.save(user);
         }
