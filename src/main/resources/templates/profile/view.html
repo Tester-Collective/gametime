@@ -16,11 +16,10 @@
         <div class="flex items-center gap-8" th:if="${user != null}">
             <img class="rounded-full object-contain w-24"
                 th:if="${user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()}"
-                th:src="@{/image/{name}(name=${user?.getProfilePicture()})}" alt="Game Image">
+                th:src="@{/image/{name}(name=${user?.getProfilePicture()})}">
             <img class="rounded-full object-contain w-24"
                 th:if="${user.getProfilePicture() == null || user.getProfilePicture().isEmpty()}"
-                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                alt="Game Image">
+                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg">
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-4">
                     <h1 th:text="${user?.getUsername()}" class="text-4xl font-bold"></h1>
