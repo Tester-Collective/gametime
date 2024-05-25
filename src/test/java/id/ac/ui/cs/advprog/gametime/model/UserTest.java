@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserTest {
     User user;
+
     @Test
     void testGetUserID() {
         this.user = new User();
@@ -70,5 +72,28 @@ class UserTest {
         this.user = new User();
         this.user.setAdmin(true);
         assertTrue(this.user.isAdmin());
+    }
+
+    @Test
+    void testBuilder() {
+        User user = new User.Builder()
+                .email("test@email.com")
+                .password("password")
+                .username("username")
+                .profilePicture("profile.jpg")
+                .bio("bio")
+                .balance(100)
+                .isSeller(true)
+                .isAdmin(false)
+                .build();
+
+        assertEquals("test@email.com", user.getEmail());
+        assertEquals("password", user.getPassword());
+        assertEquals("username", user.getUsername());
+        assertEquals("profile.jpg", user.getProfilePicture());
+        assertEquals("bio", user.getBio());
+        assertEquals(100, user.getBalance());
+        assertTrue(user.isSeller());
+        assertFalse(user.isAdmin());
     }
 }
