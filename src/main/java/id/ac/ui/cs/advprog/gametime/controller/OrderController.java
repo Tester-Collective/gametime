@@ -37,10 +37,7 @@ public class OrderController {
 
     @PostMapping("/pay")
     public String removeGameFromCart() {
-        User user = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User user = userService.getLoggedInUser();
 
         int totalPrice = 0;
         Cart cart = cartService.getCartByUser(user);

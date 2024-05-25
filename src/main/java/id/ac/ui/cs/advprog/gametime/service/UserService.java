@@ -11,7 +11,7 @@ public interface UserService extends UserDetailsService {
 
     User getLoggedInUser();
 
-    User registerUser(String username, String email, String password, String matchingPassword);
+    User registerUser(String username, String email, String password, String matchingPassword, boolean isSeller);
 
     User findByUsername(String username);
 

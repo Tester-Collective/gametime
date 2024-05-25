@@ -29,10 +29,7 @@ public class OrderRestController {
 
     @GetMapping("/create")
     public OrderDto createOrder() {
-        User user = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User user = userService.getLoggedInUser();
 
         Cart cart = cartService.getCartByUser(user);
         for (GameInCart gameInCart : cart.getGames()) {

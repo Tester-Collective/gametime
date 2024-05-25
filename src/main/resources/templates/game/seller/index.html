@@ -65,7 +65,8 @@
                         <span th:text="${game.stock}"></span>
                     </td>
                     <td class="px-8 py-4 font-semibold text-white">
-                        <span th:text="'Rp' + ${game.price}"></span>
+                        <span th:if="${game.price == 0}" >FREE</span>
+                        <span th:if="${game.price != 0}" th:text="'Rp' + ${game.price}"></span>
                     </td>
                     <td class="px-8 py-4">
                         <div class="flex flex-row">
