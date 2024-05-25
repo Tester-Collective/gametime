@@ -28,20 +28,12 @@ public class Review {
     @Column(nullable = false)
     private String reviewText;
 
-    @ManyToOne
-    @JoinTable(
-            name = "user_review",
-            joinColumns = @JoinColumn(name = "userID"),
-            inverseJoinColumns = @JoinColumn(name = "review_id")
-    )
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "userID")
     private User user;
 
-    @ManyToOne
-    @JoinTable(
-            name = "game_review",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "review_id")
-    )
+    @ManyToOne (cascade = CascadeType.ALL)
+    @JoinColumn(name = "game_id", referencedColumnName = "id")
     private Game game;
 
 
