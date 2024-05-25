@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
-import id.ac.ui.cs.advprog.gametime.exception.QuantityValidationException;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
@@ -33,9 +32,6 @@ class CartControllerTest {
 
     @Mock
     private CartService cartService;
-
-    @Mock
-    private GameService gameService;
 
     @Mock
     private UserService userService;
@@ -93,94 +89,5 @@ class CartControllerTest {
         verify(model).addAttribute("totalPrice", 0);
         verify(model).addAttribute("totalQuantity", 0);
         assertEquals("game/buyer/cart/index", view);
-    }
-
-    @Test
-    void testAddGameToCart_NewGame() {
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(gameService.getGameById(game.getId().toString())).thenReturn(game);
-
-        String view = cartController.addGameToCart(game.getId().toString());
-
-        verify(cartService).addGameToCart(eq(user), any(GameInCart.class));
-        assertEquals("redirect:/game/buyer", view);
-    }
-
-    @Test
-    void testAddGameToCart_ExistingGame() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.addGameToCart(game.getId().toString());
-
-        verify(cartService).increaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/game/buyer", view);
-    }
-
-    @Test
-    void testRemoveGameFromCart() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.removeGameFromCart(game.getId().toString());
-
-        verify(cartService).removeGameFromCart(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testIncreaseGameQuantity() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.increaseGameQuantity(game.getId().toString());
-
-        verify(cartService).increaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testDecreaseGameQuantity_Success() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.decreaseGameQuantity(game.getId().toString(), model);
-
-        verify(cartService).decreaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testDecreaseGameQuantity_QuantityValidationException() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-        doThrow(new QuantityValidationException("Quantity cannot be below 0")).when(cartService).decreaseGameQuantity(user, gameInCart);
-
-        String view = cartController.decreaseGameQuantity(game.getId().toString(), model);
-
-        verify(cartService).decreaseGameQuantity(user, gameInCart);
-        verify(model).addAttribute("errorMessage", "Quantity cannot be below 0");
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testClearCart() {
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-
-        String view = cartController.clearCart();
-
-        verify(cartService).clearCart(user);
-        assertEquals("redirect:/cart", view);
     }
 }

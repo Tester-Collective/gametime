@@ -4,7 +4,6 @@ import id.ac.ui.cs.advprog.gametime.model.*;
 import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
 import id.ac.ui.cs.advprog.gametime.repository.GameInCartRepository;
 import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy;
-import id.ac.ui.cs.advprog.gametime.service.strategy.QuantityManagementStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,7 +12,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,9 +27,6 @@ public class CartServiceTest {
 
     @Mock
     private CartStockManagementStrategy cartStockManagementStrategy;
-
-    @Mock
-    private QuantityManagementStrategy quantityManagementStrategy;
 
     @InjectMocks
     private CartServiceImpl cartService;
@@ -125,13 +120,11 @@ public class CartServiceTest {
     @Test
     void testDecreaseGameQuantity() {
         when(cartRepository.findCartByCustomer(user)).thenReturn(cart);
-        doNothing().when(quantityManagementStrategy).validateQuantity(gameInCart.getQuantity());
         when(gameInCartRepository.save(gameInCart)).thenReturn(gameInCart);
 
         cartService.decreaseGameQuantity(user, gameInCart);
 
         verify(cartRepository, times(1)).findCartByCustomer(user);
-        verify(quantityManagementStrategy, times(0)).validateQuantity(gameInCart.getQuantity());
         verify(gameInCartRepository, times(1)).save(gameInCart);
         assertEquals(0, gameInCart.getQuantity());
     }
@@ -160,5 +153,29 @@ public class CartServiceTest {
 
         assertEquals(carts, foundCarts);
         verify(cartRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetTotalPrice() {
+        when(cartRepository.findCartByCustomer(user)).thenReturn(cart);
+        when(gameInCartRepository.save(gameInCart)).thenReturn(gameInCart);
+
+        cartService.addGameToCart(user, gameInCart);
+
+        Integer totalPrice = cartService.getTotalPrice(user);
+
+        assertEquals(200000, totalPrice);
+    }
+
+    @Test
+    void testGetTotalQuantity() {
+        when(cartRepository.findCartByCustomer(user)).thenReturn(cart);
+        when(gameInCartRepository.save(gameInCart)).thenReturn(gameInCart);
+
+        cartService.addGameToCart(user, gameInCart);
+
+        Integer totalQuantity = cartService.getTotalQuantity(user);
+
+        assertEquals(1, totalQuantity);
     }
 }

@@ -40,4 +40,76 @@ public class CartRestController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/increase/{gameId}")
+    public ResponseEntity<?> increaseGameQuantity(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
+
+        if (gameInCart != null) {
+            cartService.increaseGameQuantity(customer, gameInCart);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/decrease/{gameId}")
+    public ResponseEntity<?> decreaseGameQuantity(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
+
+        cartService.decreaseGameQuantity(customer, gameInCart);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/remove/{gameId}")
+    public ResponseEntity<?> removeGameFromCart(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
+
+        if (gameInCart != null) {
+            cartService.removeGameFromCart(customer, gameInCart);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/quantity/{gameId}")
+    public Integer getGameQuantity(@PathVariable String gameId) {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(gameId, cart.getCartId().toString());
+
+        if (gameInCart != null) {
+            return gameInCart.getQuantity();
+        }
+
+        return 0;
+    }
+
+    @GetMapping("/total-quantity")
+    public Integer getTotalQuantity() {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+        return cartService.getTotalQuantity(customer);
+    }
+
+    @GetMapping("/total-price")
+    public Integer getTotalPrice() {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cart cart = cartService.getCartByUser(customer);
+
+        return cartService.getTotalPrice(customer);
+    }
+    @PostMapping("/clear")
+    public ResponseEntity<?> clearCart() {
+        User customer = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        cartService.clearCart(customer);
+
+        return ResponseEntity.ok().build();
+    }
 }
