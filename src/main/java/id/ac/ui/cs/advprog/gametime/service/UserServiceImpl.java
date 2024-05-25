@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Please fill all the form");
         } else if (isEmailExist(email)) {
             throw new IllegalArgumentException("Email already exist");
+        } else if (username.equals("edit")) {
+            throw new IllegalArgumentException("Username already exist");
         } else if (isUsernameExist(username)) {
             throw new IllegalArgumentException("Username already exist");
         } else if (!password.equals(matchingPassword)) {
