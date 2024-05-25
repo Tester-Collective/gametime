@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import enums.TransactionStatus;
 import id.ac.ui.cs.advprog.gametime.model.state.InitialState;
 import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
@@ -19,9 +20,11 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID transactionId;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false, name = "userId")
     private User user;
+    @JsonIgnore
     @OneToOne
     @JoinColumn(
             name = "order_id",
@@ -33,6 +36,7 @@ public class Transaction {
     private String status;
     @Column(nullable = false)
     private String transactionDate;
+    @JsonIgnore
     @Transient
     private TransactionState state = new InitialState();
     public Transaction(UUID transactionId,User user,Order order) {
