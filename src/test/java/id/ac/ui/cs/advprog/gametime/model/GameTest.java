@@ -79,4 +79,11 @@ class GameTest {
         this.game.setSeller(seller);
         assertEquals(seller, this.game.getSeller());
     }
+
+    @Test
+    void testGetGameDeleted() {
+        this.game = new Game();
+        this.game.setGameDeleted(true);
+        assertTrue(this.game.isGameDeleted());
+    }
 }
