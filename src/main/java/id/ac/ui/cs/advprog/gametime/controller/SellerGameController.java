@@ -40,6 +40,10 @@ public class SellerGameController {
                 .getAuthentication()
                 .getName());
         List<Game> soldGames = gameService.findGamesBySeller(seller);
+        if (soldGames.isEmpty()) {
+            return "game/seller/empty";
+        }
+
         model.addAttribute("games", soldGames);
         model.addAttribute("seller", seller);
         return "game/seller/index";
@@ -75,6 +79,7 @@ public class SellerGameController {
         game.setStock(gameDto.getStock());
         game.setPlatform(gameDto.getPlatform());
         game.setImageName(image1.getName());
+        game.setGameDeleted(false);
 
         gameService.saveGame(game);
         return SELLER_GAME_PAGE;
@@ -122,6 +127,7 @@ public class SellerGameController {
         game.setPlatform(gameDto.getPlatform());
         game.setDescription(gameDto.getDescription());
         game.setSeller(seller);
+        game.setGameDeleted(false);
 
         gameService.saveGame(game);
         return SELLER_GAME_PAGE;
