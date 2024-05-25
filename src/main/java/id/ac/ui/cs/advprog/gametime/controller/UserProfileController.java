@@ -1,8 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +27,7 @@ public class UserProfileController {
 
     @GetMapping("/edit")
     public String editProfile(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User currentUser = userService.findByUsername(authentication.getName());
+        User currentUser = userService.getLoggedInUser();
         UserDto userDto = new UserDto();
         userDto.setCurrentProfilePicture(currentUser.getProfilePicture());
         userDto.setBio(currentUser.getBio());
@@ -42,9 +38,7 @@ public class UserProfileController {
 
     @PostMapping("/edit")
     public String postEditProfile(@ModelAttribute UserDto userDto, Model model, RedirectAttributes redirectAttributes) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User currentUser = userService.findByUsername(authentication.getName());
+        User currentUser = userService.getLoggedInUser();
         if (!userDto.getBio().isEmpty()) {
             currentUser.setBio(userDto.getBio());
         }
@@ -69,17 +63,14 @@ public class UserProfileController {
 
     @GetMapping("/{username}")
     public String viewProfile(@PathVariable String username, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        model.addAttribute("user", userService.findByUsername(username));
-        model.addAttribute("can_edit", username.equals(authentication.getName()));
+        User currentUser = userService.findByUsername(username);
+        model.addAttribute("user", currentUser);
+        model.addAttribute("can_edit", username.equals(currentUser.getUsername()));
         return "profile/view";
     }
 
     @GetMapping("")
     public String viewLoggedInProfile(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        return "redirect:/profile/" + authentication.getName();
+        return "redirect:/profile/" + userService.getLoggedInUser().getUsername();
     }
 }

@@ -21,15 +21,17 @@
                 th:if="${user.getProfilePicture() == null || user.getProfilePicture().isEmpty()}"
                 src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
                 alt="Game Image">
-            <div>
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-4">
-                        <h1 th:text="${user?.getUsername()}" class="text-4xl font-bold"></h1>
-                        <p th:if="${user?.isSeller() && !user?.isAdmin()}" class="bg-red-500 px-3 py-1 rounded-xl">
-                            Seller
-                        </p>
-                        <p th:if="${user?.isAdmin()}" class="bg-blue-500 px-3 py-1 rounded-xl">Admin</p>
-                    </div>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-4">
+                    <h1 th:text="${user?.getUsername()}" class="text-4xl font-bold"></h1>
+                    <p th:if="${user?.isSeller() && !user?.isAdmin()}" class="bg-red-500 px-3 py-1 rounded-xl">
+                        Seller
+                    </p>
+                    <p th:if="${user?.isAdmin()}" class="bg-blue-500 px-3 py-1 rounded-xl">Admin</p>
+                    <a href="/profile/edit">
+                        <img src="https://static-00.iconduck.com/assets.00/edit-icon-511x512-ir85i9io.png"
+                            alt="Edit Profile" class="w-6 h-6">
+                    </a>
                 </div>
                 <p th:text="${user?.getEmail()}"></p>
             </div>
