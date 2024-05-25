@@ -1,12 +1,15 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.Review;
+import id.ac.ui.cs.advprog.gametime.model.SellerResponse;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.ReviewRepository;
+import id.ac.ui.cs.advprog.gametime.repository.SellerResponseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -14,6 +17,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private SellerResponseRepository sellerResponseRepository;
 
     public void deleteReviewById(UUID id) {
         reviewRepository.deleteById(id);
@@ -66,6 +72,21 @@ public class ReviewServiceImpl implements ReviewService {
 
     public Integer getReviewCountByGame(UUID gameId) {
         return reviewRepository.countByGame_Id(gameId);
+    }
+
+    public void addSellerResponse(Review review, String response){
+        SellerResponse sellerResponse = new SellerResponse();
+        sellerResponse.setReview(review);
+        sellerResponse.setResponse(response);
+        sellerResponseRepository.save(sellerResponse);
+    }
+
+    public void deleteSellerResponse(UUID responseId){
+        sellerResponseRepository.deleteById(responseId);
+    }
+
+    public SellerResponse getSellerResponse(UUID reviewId){
+        return sellerResponseRepository.findByReview_ReviewId(reviewId);
     }
 
 }
