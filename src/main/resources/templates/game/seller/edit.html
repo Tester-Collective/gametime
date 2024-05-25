@@ -1,63 +1,68 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="h-full">
 <head>
   <meta charset="UTF-8">
   <title>Edit Sold Game</title>
   <link rel="stylesheet" href="/output.css">
 </head>
-<body class="bg-tokyo-night-bg dark">
+<body class="bg-tokyo-night-bg dark flex flex-col items-center justify-center h-full">
 
-<div class="container mx-auto p-4 items-center h-screen">
-  <div th:replace="navbar :: navbar" class="shadow-2xl">
-  </div>
-  <h3 class="text-3xl font-bold mb-4 mt-24 self-center text-tokyo-night-variable text-center">Edit Sold Game</h3>
-  <form class="max-w-md mx-auto" enctype="multipart/form-data" th:action="@{/game/seller/edit/{id}(id=${editGame.id})}" th:object="${editGame}" method="post">
-    <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-      <div class="mb-5 col-span-2">
-        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-        <input th:value="*{title}" th:field="*{title}"  type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-      </div>
-      <div class="mb-5">
-        <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-        <input th:value="*{price}" th:field="*{price}" type="number" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-      </div>
-      <div class="mb-5">
-        <label for="stock" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
-        <input th:value="*{stock}" th:field="*{stock}" type="number" id="stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-      </div>
-      <div class="mb-5">
-        <label for="platform" class="block text-sm font-medium text-white mb-2">Platform</label>
-        <select th:value="*{platform}" th:field="*{platform}" id="platform"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
-          <option value="" class="text-gray-400">Select Platform</option>
-          <option th:value="PC" name="PC">PC</option>
-          <option th:value="XBOX" name="XBOX">XBOX</option>
-          <option th:value="PS5" name="PC">PS5</option>
-          <option th:value="SWITCH" name="SWITCH">Switch</option>
-          <option th:value="MOBILE" name="PC">Mobile</option>
-        </select>
-      </div>
-      <div class="mb-5">
-        <label for="genre" class="block text-sm font-medium text-white mb-2">Genre</label>
-        <select th:value="*{category.name}" th:field="*{category}" id="genre"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
-          <option class="text-gray-400" value="">Select Genre</option>
-          <option th:each="category : ${categories}" th:value="${category.id}" name="genre"
-                  th:text="${category.name}">Genre Name</option>
-        </select>
-      </div>
-      <div class="mb-5 col-span-2">
-        <label for="description" class="block text-sm font-medium text-white mb-2">Description</label>
-        <textarea th:value="*{description}" th:field="*{description}" id="description"
-                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md placeholder-gray-400 text-white"></textarea>
-      </div>
-      <div class="mb-10 col-span-2">
-        <label for="image" class="block text-sm font-medium text-white mb-2">Image</label>
-        <input th:value="*{image}" th:field="*{image}" type="file" name="image" id="image" class="form-control shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-gray-400">
-      </div>
+<div th:include="navbar::navbar" class="shadow-2xl">
+</div>
+
+<div class="container mx-auto p-4">
+  <section class="bg-tokyo-night-bg">
+    <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16 flex flex-col">
+      <h2 class="mb-6 text-3xl font-bold text-tokyo-night-variable text-start">Edit game</h2>
+      <form enctype="multipart/form-data" th:action="@{/game/seller/edit/{id}(id=${editGame.id})}" th:object="${editGame}" method="post">
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+          <div class="mb-5 col-span-2">
+            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+            <input th:value="*{title}" th:field="*{title}"  type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+          </div>
+          <div class="mb-5">
+            <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+            <input th:value="*{price}" th:field="*{price}" type="number" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+          </div>
+          <div class="mb-5">
+            <label for="stock" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
+            <input th:value="*{stock}" th:field="*{stock}" type="number" id="stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+          </div>
+          <div class="mb-5">
+            <label for="platform" class="block text-sm font-medium text-white mb-2">Platform</label>
+            <select th:value="*{platform}" th:field="*{platform}" id="platform"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
+              <option value="" class="text-gray-400">Select Platform</option>
+              <option th:value="PC" name="PC">PC</option>
+              <option th:value="XBOX" name="XBOX">XBOX</option>
+              <option th:value="PS5" name="PC">PS5</option>
+              <option th:value="SWITCH" name="SWITCH">Switch</option>
+              <option th:value="MOBILE" name="PC">Mobile</option>
+            </select>
+          </div>
+          <div class="mb-5">
+            <label for="genre" class="block text-sm font-medium text-white mb-2">Genre</label>
+            <select th:value="*{category.name}" th:field="*{category}" id="genre"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
+              <option class="text-gray-400" value="">Select Genre</option>
+              <option th:each="category : ${categories}" th:value="${category.id}" name="genre"
+                      th:text="${category.name}">Genre Name</option>
+            </select>
+          </div>
+          <div class="mb-5 col-span-2">
+            <label for="description" class="block text-sm font-medium text-white mb-2">Description</label>
+            <textarea th:value="*{description}" th:field="*{description}" id="description"
+                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md placeholder-gray-400 text-white"></textarea>
+          </div>
+          <div class="mb-10 col-span-2">
+            <label for="image" class="block text-sm font-medium text-white mb-2">Image</label>
+            <input th:value="*{image}" th:field="*{image}" type="file" name="image" id="image" class="form-control shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-gray-400">
+          </div>
+        </div>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+      </form>
     </div>
-    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-  </form>
+  </section>
 </div>
 
 </body>

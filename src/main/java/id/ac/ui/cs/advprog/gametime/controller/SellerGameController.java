@@ -83,8 +83,7 @@ public class SellerGameController {
     @PostMapping("/delete/{id}")
     public String deleteGamePost(@PathVariable String id) {
         Game game = gameService.getGameById(id);
-        imageService.deleteImage(game.getImageName());
-        gameService.deleteGameById(game.getId().toString());
+        gameService.lazyDeleteGame(game);
         return SELLER_GAME_PAGE;
     }
 
@@ -106,7 +105,17 @@ public class SellerGameController {
 
         Game game = gameService.getGameById(id);
         game.setTitle(gameDto.getTitle());
-        game.setImageName(game.getImageName());
+
+        if (gameDto.getImage() != null && !gameDto.getImage().isEmpty()) {
+            Image uploadedImage = imageService.uploadImage(gameDto.getImage());
+            if (game.getImageName() != null) {
+                imageService.deleteImage(game.getImageName());
+            }
+            game.setImageName(uploadedImage.getName());
+        } else {
+            game.setImageName(game.getImageName());
+        }
+
         game.setStock(gameDto.getStock());
         game.setPrice(gameDto.getPrice());
         game.setCategory(gameDto.getCategory());
