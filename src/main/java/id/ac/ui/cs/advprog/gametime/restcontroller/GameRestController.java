@@ -31,7 +31,7 @@ public class GameRestController {
     }
 
     @GetMapping("")
-    public List<Game> fetchAll(@RequestParam(value = "keyword", required = false) String keyword) {
+    public List<Game> fetchAll() {
         return gameService.getAllGames();
     }
 
