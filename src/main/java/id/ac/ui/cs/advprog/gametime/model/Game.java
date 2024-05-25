@@ -44,6 +44,6 @@ public class Game {
     private boolean gameDeleted = false;
 
     @Column
-    private float avgRating;
+    private float avgRating = 0.0f;
 }
 
