@@ -75,8 +75,9 @@ public class GameReviewController {
     }
 
     @PostMapping("/{gameId}/editReview/{reviewId}")
-    public String editReviewPost(@ModelAttribute Review reviewInput, @PathVariable String reviewId, @PathVariable String gameId){
+    public String editReviewPost(@ModelAttribute("editReview") Review reviewInput, @PathVariable String reviewId, @PathVariable String gameId){
         Review review = reviewService.getReviewById(UUID.fromString(reviewId));
+
         review.setReviewTitle(reviewInput.getReviewTitle());
         review.setRating(reviewInput.getRating());
         review.setReviewText(reviewInput.getReviewText());
@@ -88,7 +89,8 @@ public class GameReviewController {
     @GetMapping("/{gameId}/editReview/{reviewId}")
     public String editReviewPage(Model model, @PathVariable String reviewId, @PathVariable String gameId){
         Review review = reviewService.getReviewById(UUID.fromString(reviewId));
-        model.addAttribute("review", review);
+        model.addAttribute("editReview", review);
+        model.addAttribute("reviewId", reviewId);
         return "game/buyer/review/editReview";
     }
 
