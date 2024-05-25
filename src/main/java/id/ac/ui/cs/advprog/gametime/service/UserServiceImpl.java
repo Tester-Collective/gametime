@@ -42,7 +42,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(String username, String email, String password, String matchingPassword) {
+    public User registerUser(String username, String email, String password, String matchingPassword,
+            boolean isSeller) {
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || matchingPassword.isEmpty()) {
             throw new IllegalArgumentException("Please fill all the form");
         } else if (isEmailExist(email)) {
@@ -58,6 +59,7 @@ public class UserServiceImpl implements UserService {
                     .username(username)
                     .password(new BCryptPasswordEncoder().encode(password))
                     .email(email)
+                    .isSeller(isSeller)
                     .build();
 
             return userRepository.save(user);
