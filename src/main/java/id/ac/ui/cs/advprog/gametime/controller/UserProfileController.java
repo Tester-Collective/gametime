@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import id.ac.ui.cs.advprog.gametime.dto.UserDto;
@@ -76,5 +74,12 @@ public class UserProfileController {
         model.addAttribute("user", userService.findByUsername(username));
         model.addAttribute("can_edit", username.equals(authentication.getName()));
         return "profile/view";
+    }
+
+    @GetMapping("")
+    public String viewLoggedInProfile(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return "redirect:/profile/" + authentication.getName();
     }
 }
