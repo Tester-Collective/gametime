@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.gametime.service;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,24 +36,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getLoggedInUser() {
+        return userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElse(null);
+    }
+
+    @Override
     public User registerUser(String username, String email, String password, String matchingPassword) {
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || matchingPassword.isEmpty()) {
             throw new IllegalArgumentException("Please fill all the form");
         } else if (isEmailExist(email)) {
             throw new IllegalArgumentException("Email already exist");
+        } else if (username.equals("edit")) {
+            throw new IllegalArgumentException("Username already exist");
         } else if (isUsernameExist(username)) {
             throw new IllegalArgumentException("Username already exist");
         } else if (!password.equals(matchingPassword)) {
             throw new IllegalArgumentException("Password doesn't match");
         } else {
-            User user = new User();
-
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setPassword(new BCryptPasswordEncoder().encode(password));
-            user.setBalance(0);
-            user.setSeller(false);
-            user.setAdmin(false);
+            User user = new User.Builder()
+                    .username(username)
+                    .password(new BCryptPasswordEncoder().encode(password))
+                    .email(email)
+                    .build();
 
             return userRepository.save(user);
         }

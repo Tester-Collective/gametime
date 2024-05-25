@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class OrderController {
 
     @GetMapping("")
     public String order() {
-        return "game/buyer/order/order_page";
+        return "game/buyer/order/order";
     }
 
     @PostMapping("/pay")
