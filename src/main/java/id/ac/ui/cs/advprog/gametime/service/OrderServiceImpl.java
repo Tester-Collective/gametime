@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
-import enums.OrderStatus;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.Order;

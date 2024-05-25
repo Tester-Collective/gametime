@@ -36,15 +36,11 @@ class TransactionTest {
         gameInCart.setGameInCartId(UUID.randomUUID());
         gamesincart.add(gameInCart);
         cart.setGames(gamesincart);
+        order.setGameQuantity(Map.of(game, 1));
         order.setCart(cart);
         order.setOrderId(UUID.randomUUID());
     }
 
-    @Test
-    void testGetGames() {
-        Transaction transaction = new Transaction(UUID.randomUUID(), user, order);
-        assertEquals(games, transaction.getGames());
-    }
     @Test
     void testSetTransactionId() {
         Transaction transaction = new Transaction();
@@ -86,5 +82,79 @@ class TransactionTest {
     void testNegativeSetStatus() {
         Transaction transaction = new Transaction();
         assertThrows(IllegalArgumentException.class, () -> transaction.setStatus("INVALID_STATUS"));
+    }
+    @Test
+    void testSetTransactionDate() {
+        Transaction transaction = new Transaction();
+        transaction.setTransactionDate("01-01-2020 00:00:00");
+        assertEquals("01-01-2020 00:00:00", transaction.getTransactionDate());
+    }
+    @Test
+    void testGetTotalPrice() {
+        Transaction transaction = new Transaction();
+        transaction.setOrder(order);
+        assertEquals(50, transaction.getTotalPrice());
+    }
+    @Test
+    void testConstructor() {
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Transaction(transactionId, user, order);
+        assertEquals(transactionId, transaction.getTransactionId());
+        assertEquals(user, transaction.getUser());
+        assertEquals(order, transaction.getOrder());
+        assertEquals(TransactionStatus.FAILED.getValue(), transaction.getStatus());
+    }
+    @Test
+    void testConstructorWithStatus() {
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Transaction(transactionId, user, order, TransactionStatus.SUCCESS.getValue());
+        assertEquals(transactionId, transaction.getTransactionId());
+        assertEquals(user, transaction.getUser());
+        assertEquals(order, transaction.getOrder());
+        assertEquals(TransactionStatus.SUCCESS.getValue(), transaction.getStatus());
+    }
+    @Test
+    void testGetTransactionId() {
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Transaction();
+        transaction.setTransactionId(transactionId);
+        assertEquals(transactionId, transaction.getTransactionId());
+    }
+    @Test
+    void testGetUser() {
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        assertEquals(user, transaction.getUser());
+    }
+    @Test
+    void testGetOrder() {
+        Transaction transaction = new Transaction();
+        transaction.setOrder(order);
+        assertEquals(order, transaction.getOrder());
+    }
+    @Test
+    void testGetStatus() {
+        Transaction transaction = new Transaction();
+        transaction.setStatus(TransactionStatus.FAILED.getValue());
+        assertEquals(TransactionStatus.FAILED.getValue(), transaction.getStatus());
+    }
+    @Test
+    void testGetTransactionDate() {
+        Transaction transaction = new Transaction();
+        transaction.setTransactionDate("01-01-2020 00:00:00");
+        assertEquals("01-01-2020 00:00:00", transaction.getTransactionDate());
+    }
+    @Test
+    void testGetTransactionDateWithConstructor() {
+        Transaction transaction = new Transaction();
+        assertNotNull(transaction.getTransactionDate());
+    }
+    @Test
+    void testGetTotalPriceWithEmptyOrder() {
+        Transaction transaction = new Transaction();
+        Order order = new Order();
+        order.setGameQuantity(Map.of());
+        transaction.setOrder(order);
+        assertEquals(0, transaction.getTotalPrice());
     }
 }
