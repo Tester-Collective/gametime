@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
@@ -32,6 +33,10 @@ public class GameReviewController {
 
     @GetMapping("/{gameId}")
     public String gameDetails(Model model, @PathVariable String gameId){
+
+        List<Review> userReviews = reviewService.findReviewsByGameIdAndUserId(UUID.fromString(gameId), userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getUserID());
+
+        model.addAttribute("userReviews", userReviews);
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(gameId)));
         model.addAttribute("game", gameService.getGameById(gameId));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(gameId)));
@@ -66,7 +71,7 @@ public class GameReviewController {
     @PostMapping("/{gameId}/deleteReview/{reviewId}")
     public String deleteReviewPost(@PathVariable String reviewId, @PathVariable String gameId){
         reviewService.deleteReviewById(UUID.fromString(reviewId));
-        return GAME_DETAILS_PAGE;
+        return "redirect:/game/buyer/details/" + gameId;
     }
 
     @PostMapping("/{gameId}/editReview/{reviewId}")
@@ -77,7 +82,7 @@ public class GameReviewController {
         review.setReviewText(reviewInput.getReviewText());
 
         reviewService.updateReview(UUID.fromString(reviewId), review);
-        return GAME_DETAILS_PAGE;
+        return "redirect:/game/buyer/details/" + gameId;
     }
 
     @GetMapping("/{gameId}/editReview/{reviewId}")
