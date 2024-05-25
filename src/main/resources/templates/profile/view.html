@@ -12,22 +12,32 @@
     <div th:include="navbar::navbar" class="shadow-2xl">
     </div>
 
-    <div class="flex flex-col justify-between items-center container mx-auto my-8 mt-24 gap-8">
-        <div class="flex items-center gap-8">
-            <img class="rounded-full object-contain w-24" th:src="@{/image/{name}(name=${user.getProfilePicture()})}"
+    <div class="flex flex-col justify-between items-center container mx-auto my-8 mt-32 gap-8">
+        <div class="flex items-center gap-8" th:if="${user != null}">
+            <img class="rounded-full object-contain w-24" th:if="${user.getProfilePicture() != null}"
+                th:src="@{/image/{name}(name=${user?.getProfilePicture()})}" alt="Game Image">
+            <img class="rounded-full object-contain w-24" th:if="${user.getProfilePicture() == null}"
+                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
                 alt="Game Image">
             <div>
-                <div class="flex justiy-center items-center gap-4">
-                    <h1 th:text="${user.getUsername()}" class="text-4xl font-bold"></h1>
-                    <p th:if="${user.isSeller() && !user.isAdmin()}" class="bg-red-500 px-3 py-1 rounded-xl">Seller</p>
-                    <p th:if="${user.isAdmin()}">Admin</p>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-4">
+                        <h1 th:text="${user?.getUsername()}" class="text-4xl font-bold"></h1>
+                        <p th:if="${user?.isSeller() && !user?.isAdmin()}" class="bg-red-500 px-3 py-1 rounded-xl">
+                            Seller
+                        </p>
+                        <p th:if="${user?.isAdmin()}">Admin</p>
+                    </div>
                 </div>
-                <p th:text="${user.getEmail()}"></p>
+                <p th:text="${user?.getEmail()}"></p>
             </div>
         </div>
         <div class="flex flex-col gap-4">
-            <h1 class="text-xl">Bio</h1>
-            <p th:text="${user.getBio()}"></p>
+            <div class="bg-red-500 px-4 py-2 rounded-xl text-white text-xl" th:if="${user == null}">
+                <strong>User not found</strong>
+            </div>
+            <h1 class="text-xl" th:if="${user != null}">Bio</h1>
+            <p th:text="${user?.getBio()}"></p>
         </div>
     </div>
 
