@@ -83,12 +83,12 @@ public class UserServiceTest {
 
         user.setUsername("test");
         user.setPassword("test");
-        user.setAdmin(true);
+        user.setSeller(true);
 
         when(userRepository.findByUsername("test")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.empty());
 
-        User userRegistered = userService.registerUser("test", "test@test.com", "test", "test");
+        User userRegistered = userService.registerUser("test", "test@test.com", "test", "test", true);
 
         verify(userRepository).save(user);
 
@@ -96,7 +96,6 @@ public class UserServiceTest {
         assertEquals(userRegistered.getPassword(), "test");
         assertEquals(userRegistered.getEmail(), "test@test.com");
         assertEquals(userRegistered.getBalance(), 0);
-        assertEquals(userRegistered.isAdmin(), true);
-        assertEquals(userRegistered.isSeller(), false);
+        assertEquals(userRegistered.isSeller(), true);
     }
 }

@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Edit Review</title>
+    <link rel="stylesheet" href="/output.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="bg-tokyo-night-bg dark flex flex-col items-center justify-center h-full">
 
+<div th:include="navbar::navbar" class="shadow-2xl">
+</div>
+
+<div class="container mx-auto p-4">
+    <section class="bg-tokyo-night-bg">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16 flex flex-col">
+            <h2 class="mb-6 text-3xl font-bold text-tokyo-night-variable text-start">Need a change of mind about the game? </h2>
+            <form th:action="@{/game/buyer/details/{gameId}/editReview/{reviewId}(gameId=${editReview.game.id}, reviewId=${reviewId})}" th:object="${editReview}" method="post" class="w-3/4">
+                <div class="w-full mb-7 text-3xl">
+                    <div class="flex">
+                        <input type="hidden" name="rating" th:field="*{rating}" th:value="*{rating}" id="rating" value="0.0">
+                        <span class="star text-gray-600">&#9733;</span>
+                        <span class="star text-gray-600">&#9733;</span>
+                        <span class="star text-gray-600">&#9733;</span>
+                        <span class="star text-gray-600">&#9733;</span>
+                        <span class="star text-gray-600">&#9733;</span>
+                    </div>
+                </div>
+                <div class="w-full mb-7">
+                    <label for="title" class="mb-2 text-sm font-medium text-gray-900 dark:text-white hidden">Title</label>
+                    <input th:field="*{reviewTitle}" th:value="*{reviewTitle}" type="text" name="title" id="title" class="px-5 h-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Review Title" required="">
+                </div>
+                <div class="w-full mb-7">
+                    <label for="reviewText" class="mb-2 text-sm font-medium text-white hidden">Review</label>
+                    <textarea th:field="*{reviewText}" th:value="*{reviewText}" id="reviewText" placeholder="Enter game's review"
+                              class="px-5 pt-5 h-36 text-white placeholder-gray-400 bg-gray-700 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 rounded-md"></textarea>
+                </div>
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-blue-700">
+                    Edit Review
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
+
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+            const value = Array.from(stars).indexOf(this) + 1;
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('text-yellow-300');
+                } else {
+                    s.classList.remove('text-yellow-300');
+                }
+            });
+        });
+
+        star.addEventListener('mouseleave', function() {
+            const value = parseInt(ratingInput.value);
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('text-yellow-300');
+                } else {
+                    s.classList.remove('text-yellow-300');
+                }
+            });
+        });
+
+        star.addEventListener('click', function() {
+            const value = Array.from(stars).indexOf(this) + 1;
+
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('text-yellow-300');
+                } else {
+                    s.classList.remove('text-yellow-300');
+                }
+            });
+
+            ratingInput.value = value;
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 </html>
