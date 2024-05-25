@@ -9,7 +9,9 @@ public interface UserService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    User registerUser(String username, String email, String password, String matchingPassword);
+    User getLoggedInUser();
+
+    User registerUser(String username, String email, String password, String matchingPassword, boolean isSeller);
 
     User findByUsername(String username);
 

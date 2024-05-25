@@ -23,7 +23,6 @@ public class SellerReviewController {
     @Autowired
     private UserService userService;
 
-    private static final String SELLER_REVIEW_PAGE = "redirect:/review/seller";
 
     @GetMapping("")
     public String index(Model model) {
@@ -34,7 +33,7 @@ public class SellerReviewController {
         List<Review> seller_reviews  = reviewService.findReviewsByGameSeller(seller);
         model.addAttribute("reviews", seller_reviews);
 
-        return "review/sellerResponses/index";
+        return "game/seller/sellerResponse/index";
     }
 
 
@@ -43,14 +42,14 @@ public class SellerReviewController {
         Review review = reviewService.getReviewById(reviewId);
         UUID responseId = UUID.randomUUID();
         review.addSellerResponse(responseId, response);
-        return"redirect:review/sellerResponses/index";
+        return"redirect:game/seller/sellerResponse/index";
     }
 
     @PostMapping("/delete/{reviewId}/{responseId}")
     public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId) {
         Review review = reviewService.getReviewById(reviewId);
         review.removeSellerResponse(responseId);
-        return "redirect:review/sellerResponses/index";
+        return "redirect:game/seller/sellerResponse/index";
     }
 
 
