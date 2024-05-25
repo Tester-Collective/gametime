@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/input.css", "/output.css", "/", "/auth/register", "/profile/**").permitAll()
-                        .requestMatchers("/profile/edit").authenticated()
+                        .requestMatchers("/game/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated())
                 .formLogin(httpSecurityFormLoginConfigurer -> {
                     httpSecurityFormLoginConfigurer
