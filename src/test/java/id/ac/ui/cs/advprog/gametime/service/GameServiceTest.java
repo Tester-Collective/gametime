@@ -91,7 +91,7 @@ class GameServiceTest {
 
     @Test
     void testGetAllGames() {
-        when(gameRepository.findByOrderByTitle()).thenReturn(gameList);
+        when(gameRepository.findGamesByGameDeletedAndStockGreaterThanOrderByTitle(false, 0)).thenReturn(gameList);
         List<Game> result = gameService.getAllGames();
         assertEquals(gameList, result);
     }
@@ -111,15 +111,6 @@ class GameServiceTest {
     void testFindGamesBySeller_Positive() {
         when(gameRepository.findGamesBySeller(user)).thenReturn(gameList);
         List<Game> result = gameService.findGamesBySeller(user);
-        assertEquals(gameList, result);
-    }
-
-    @Test
-    void getAllGames() {
-        gameList.sort(Comparator.comparing(Game::getTitle));
-
-        when(gameRepository.findByOrderByTitle()).thenReturn(gameList);
-        List<Game> result = gameService.getAllGames();
         assertEquals(gameList, result);
     }
 
