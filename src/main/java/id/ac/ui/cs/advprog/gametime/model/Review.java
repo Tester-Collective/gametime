@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Entity
@@ -25,18 +27,20 @@ public class Review {
     @Column(name="seller_response")
     private Map<UUID, String> sellerResponses;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String reviewText;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "userID")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "game_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "game_id")
     private Game game;
 
-
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime reviewDate;
+    
     public Review(){
         this.reviewId = UUID.randomUUID();
         this.sellerResponses = new HashMap<>() ;
@@ -61,6 +65,8 @@ public class Review {
         this.sellerResponses.remove(responseId);
     }
 
-
-
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d yyyy HH:mm");
+        return reviewDate.format(formatter);
+    }
 }

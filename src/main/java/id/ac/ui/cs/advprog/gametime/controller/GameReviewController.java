@@ -1,9 +1,13 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Review;
+import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.ReviewService;
@@ -21,29 +25,39 @@ public class GameReviewController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private UserService userService;
+
     private static final String GAME_DETAILS_PAGE = "redirect:/game/buyer/details";
-
-
 
     @GetMapping("/{gameId}")
     public String gameDetails(Model model, @PathVariable String gameId){
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(gameId)));
         model.addAttribute("game", gameService.getGameById(gameId));
-        return GAME_DETAILS_PAGE;
+        model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(gameId)));
+        model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(gameId)));
+        return "game/buyer/details";
     }
 
     @PostMapping("/{gameId}/addReview")
-    public String addReviewPost(@ModelAttribute Review reviewInput, @PathVariable String gameId){
-        UUID reviewId = UUID.randomUUID();
-        Review review = new Review(reviewId, reviewInput.getReviewTitle(), reviewInput.getRating(), reviewInput.getReviewText());
-        reviewService.addReview(review);
+    public String addReviewPost(@ModelAttribute("review") Review reviewInput, @PathVariable String gameId){
+        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Game game = gameService.getGameById(gameId);
 
-        return GAME_DETAILS_PAGE;
+        reviewInput.setGame(game);
+        reviewInput.setUser(user);
+        reviewInput.setReviewDate(LocalDateTime.now());
+
+        reviewService.addReview(reviewInput);
+
+        return "redirect:/game/buyer/details/" + gameId;
     }
 
     @GetMapping("/{gameId}/addReview")
     public String addReviewPage(Model model, @PathVariable String gameId){
         Review review = new Review();
+        review.setGame(gameService.getGameById(gameId));
+        review.setRating(0);
         model.addAttribute("review", review);
         return "game/buyer/review/addReview";
 

@@ -1,5 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.controller;
-import id.ac.ui.cs.advprog.gametime.model.GameInCart;
+import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.TransactionService;
@@ -27,20 +27,24 @@ public class SellerTransactionController {
                 .getContext()
                 .getAuthentication()
                 .getName());
-        List<Transaction> transactions = transactionService.findAllTransactionofSeller(seller);
-        List<Integer> revenues = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            int revenue = 0;
-            for (GameInCart game : transaction.getGamesInCart()){
-                if (game.getGame().getSeller().equals(seller)){
-                    revenue += game.getGame().getPrice() * game.getQuantity();
+        if (seller.isSeller()) {
+            List<Transaction> transactions = transactionService.findAllTransactionofSeller(seller);
+            List<Integer> revenues = new ArrayList<>();
+            for (Transaction transaction : transactions) {
+                int revenue = 0;
+                for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+                    if (game.getSeller().equals(seller)) {
+                        revenue += game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
+                    }
                 }
+                revenues.add(revenue);
             }
-            revenues.add(revenue);
+            model.addAttribute("revenues", revenues);
+            model.addAttribute("seller", seller);
+            model.addAttribute("transactions", transactions);
+            return "game/seller/transaction/sellerTransactionHistory";
+        }else{
+            return "redirect:/game/buyer";
         }
-        model.addAttribute("revenues", revenues);
-        model.addAttribute("seller", seller);
-        model.addAttribute("transactions", transactions);
-        return "game/seller/transaction/sellerTransactionHistory";
     }
 }

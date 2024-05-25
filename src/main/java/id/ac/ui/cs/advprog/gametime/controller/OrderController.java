@@ -1,10 +1,8 @@
 package id.ac.ui.cs.advprog.gametime.controller;
-
-import id.ac.ui.cs.advprog.gametime.model.Game;
-import id.ac.ui.cs.advprog.gametime.model.GameInCart;
-import id.ac.ui.cs.advprog.gametime.model.Order;
-import id.ac.ui.cs.advprog.gametime.service.OrderService;
-import id.ac.ui.cs.advprog.gametime.service.UserService;
+import enums.OrderStatus;
+import id.ac.ui.cs.advprog.gametime.model.*;
+import id.ac.ui.cs.advprog.gametime.service.*;
+import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,48 +11,66 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequestMapping("/order")
 @Controller
 public class OrderController {
     @Autowired
-    private OrderService orderService;
-    
-    @Autowired
     private UserService userService;
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private GameService gameService;
+    @Autowired
+    private TransactionService transactionService;
+    @Autowired
+    private CartStockManagementStrategy cartStockManagementStrategy;
 
     @GetMapping("")
-    public String order(Model model) {
-        UUID userId = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName()).getUserID();
-        Order order = orderService.getOrderByUserId(userId);
-
-        int totalPrice = 0;
-        int totalQuantity = 0;
-        for (GameInCart game : order.getCart().getGames()) {
-            totalPrice += game.getGame().getPrice() * game.getQuantity();
-            totalQuantity += game.getQuantity();
-        }
-
-        model.addAttribute("order", order);
-        model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("totalQuantity", totalQuantity);
-
-        return "game/buyer/order/order_page";
+    public String order() {
+        return "game/buyer/order/order";
     }
 
-    @PostMapping("/checkout")
-    public String checkout() {
-        UUID userId = userService.findByUsername(SecurityContextHolder
+    @PostMapping("/pay")
+    public String removeGameFromCart() {
+        User user = userService.findByUsername(SecurityContextHolder
                 .getContext()
                 .getAuthentication()
-                .getName()).getUserID();
-        Order order = orderService.getOrderByUserId(userId);
-        orderService.createOrder(order);
+                .getName());
 
-        return "redirect:/order";
+        int totalPrice = 0;
+        Cart cart = cartService.getCartByUser(user);
+        for (GameInCart gameInCart : cart.getGames()) {
+            cartStockManagementStrategy.checkStockAvailability(gameInCart);
+            totalPrice += gameInCart.getGame().getPrice() * gameInCart.getQuantity();
+        }
+
+        if (user.getBalance() < totalPrice) {
+            return "redirect:/game/buyer?error=Insufficient balance";
+        }
+
+        user.setBalance(user.getBalance() - totalPrice);
+
+        Order order = new Order();
+        order.setCart(cart);
+        order.setOrderStatus(OrderStatus.WAITING_PAYMENT.getValue());
+        order.setOrderDate(LocalDateTime.now());
+        for (GameInCart gameInCart : cart.getGames()) {
+            order.getGameQuantity().put(gameInCart.getGame(), gameInCart.getQuantity());
+            gameService.decreaseStock(gameInCart.getGame(), gameInCart.getQuantity());
+            gameInCart.getGame().getSeller().setBalance(gameInCart.getGame().getSeller().getBalance() + gameInCart.getGame().getPrice() * gameInCart.getQuantity());
+        }
+        orderService.setStatus(OrderStatus.SUCCESS.getValue(), order);
+
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order, OrderStatus.SUCCESS.getValue());
+        transactionService.create(transaction);
+
+        cartService.clearCart(user);
+
+        return "redirect:/game/buyer";
     }
 }

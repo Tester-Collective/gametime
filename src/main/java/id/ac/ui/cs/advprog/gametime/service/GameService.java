@@ -10,12 +10,12 @@ public interface GameService {
 
     Game getGameById(String id);
 
-    Game addGame(Game game);
-
-    Game updateGame(String id, Game game);
+    Game saveGame(Game game);
 
     List<Game> getAllGames();
 
     public List<Game> findGamesBySeller(User seller);
 
+    Game decreaseStock(Game game, int sub);
+    public boolean lazyDeleteGame(Game game);
 }

@@ -61,7 +61,11 @@ public class ReviewServiceImpl implements ReviewService {
         for (Review review : reviews) {
             totalRating += review.getRating();
         }
-        return Math.round(totalRating / reviews.size());
+        return Math.round((totalRating / reviews.size()) * 10) / 10.0f;
+    }
+
+    public Integer getReviewCountByGame(UUID gameId) {
+        return reviewRepository.countByGame_Id(gameId);
     }
 
 }

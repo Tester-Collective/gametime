@@ -21,5 +21,7 @@ public interface FilterRepository extends JpaRepository<Game, UUID> {
 
     List<Game> findByPriceBetweenOrderByTitle(int minPrice, int maxPrice);
 
+    List<Game> findByPriceEqualsOrderByTitle(int price);
+
     List<Game> findByOrderByTitle();
 }
