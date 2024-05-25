@@ -21,12 +21,6 @@ public class Review {
     @Column(nullable = false)
     private float rating;
 
-    @ElementCollection
-    @CollectionTable(name = "seller_response", joinColumns = @JoinColumn(name = "review_id"))
-    @MapKeyColumn(name = "response_id")
-    @Column(name="seller_response")
-    private Map<UUID, String> sellerResponses;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reviewText;
 
@@ -43,26 +37,17 @@ public class Review {
     
     public Review(){
         this.reviewId = UUID.randomUUID();
-        this.sellerResponses = new HashMap<>() ;
     }
     public Review(UUID reviewId, String title, float rating, String reviewText){
         this.reviewId = reviewId;
         this.reviewTitle = title;
         this.reviewText = reviewText;
-        this.sellerResponses = new HashMap<>();
 
         if (rating <= 5.0 && rating >= 0.0){
             this.rating = rating;
         } else{
             throw new IllegalArgumentException();
         }
-    }
-    public void addSellerResponse(UUID responseId, String response){
-        this.sellerResponses.put(responseId, response);
-    }
-
-    public void removeSellerResponse(UUID responseId){
-        this.sellerResponses.remove(responseId);
     }
 
     public String getFormattedDate() {
