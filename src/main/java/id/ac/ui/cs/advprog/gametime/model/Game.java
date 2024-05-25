@@ -43,7 +43,7 @@ public class Game {
     @Column
     private boolean gameDeleted = false;
 
-    @Column
+    @Column(columnDefinition = "FLOAT DEFAULT 0.0")
     private float avgRating = 0.0f;
 }
 
