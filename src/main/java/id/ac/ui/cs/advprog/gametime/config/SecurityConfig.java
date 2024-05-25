@@ -22,7 +22,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register", "/profile/**").permitAll()
+                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register/**", "/profile/**")
+                        .permitAll()
                         .requestMatchers("/game/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated())
                 .formLogin(httpSecurityFormLoginConfigurer -> {

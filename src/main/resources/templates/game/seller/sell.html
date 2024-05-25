@@ -19,19 +19,19 @@
                     <div class="mb-5 col-span-2">
                         <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
                         <input th:field="*{title}"  placeholder="Enter game title"
-                               type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+                               type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
                     </div>
                     <div class="mb-5">
                         <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                        <input th:field="*{price}" type="number" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+                        <input th:field="*{price}" type="number" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
                     </div>
                     <div class="mb-5">
                         <label for="stock" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
-                        <input th:field="*{stock}" type="number" id="stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+                        <input th:field="*{stock}" type="number" id="stock" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
                     </div>
                     <div class="mb-5">
                         <label for="platform" class="block text-sm font-medium text-white mb-2">Platform</label>
-                        <select th:field="*{platform}" id="platform"
+                        <select th:field="*{platform}" id="platform" required
                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
                             <option value="" class="text-gray-400">Select Platform</option>
                             <option th:value="PC" name="PC">PC</option>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="mb-5">
                         <label for="genre" class="block text-sm font-medium text-white mb-2">Genre</label>
-                        <select th:field="*{category}" id="genre"
+                        <select th:field="*{category}" id="genre" required
                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-white">
                             <option class="text-gray-400" value="">Select Genre</option>
                             <option th:each="category : ${categories}" th:value="${category.id}" name="genre"
@@ -52,12 +52,12 @@
                     </div>
                     <div class="mb-5 col-span-2">
                         <label for="description" class="block text-sm font-medium text-white mb-2">Description</label>
-                        <textarea th:field="*{description}" id="description" placeholder="Enter game description"
+                        <textarea required th:field="*{description}" id="description" placeholder="Enter game description"
                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md placeholder-gray-400 text-white"></textarea>
                     </div>
                     <div class="mb-10 col-span-2">
                         <label for="image" class="block text-sm font-medium text-white mb-2">Image</label>
-                        <input th:field="*{image}" type="file" name="image" id="image" class="form-control shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-gray-400">
+                        <input required th:field="*{image}" type="file" name="image" id="image" class="form-control shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 bg-gray-700 rounded-md text-gray-400">
                     </div>
                 </div>
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>

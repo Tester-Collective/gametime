@@ -35,10 +35,7 @@ public class SellerGameController {
 
     @GetMapping("")
     public String index(Model model) {
-        User seller = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User seller = userService.getLoggedInUser();
         List<Game> soldGames = gameService.findGamesBySeller(seller);
         if (soldGames.isEmpty()) {
             return "game/seller/empty";
@@ -56,10 +53,7 @@ public class SellerGameController {
 
         model.addAttribute("gameDto", gameDto);
         model.addAttribute("categories", categories);
-        model.addAttribute("seller", userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName()));
+        model.addAttribute("seller", userService.getLoggedInUser());
         return "game/seller/sell";
     }
 
@@ -71,10 +65,7 @@ public class SellerGameController {
         game.setTitle(gameDto.getTitle());
         game.setDescription(gameDto.getDescription());
         game.setPrice(gameDto.getPrice());
-        game.setSeller(userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName()));
+        game.setSeller(userService.getLoggedInUser());
         game.setCategory(gameDto.getCategory());
         game.setStock(gameDto.getStock());
         game.setPlatform(gameDto.getPlatform());
@@ -103,10 +94,7 @@ public class SellerGameController {
 
     @PostMapping("/edit/{id}")
     public String editGamePost(@ModelAttribute("editGame") GameDto gameDto, @PathVariable String id) {
-        User seller = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User seller = userService.getLoggedInUser();
 
         Game game = gameService.getGameById(id);
         game.setTitle(gameDto.getTitle());

@@ -1,6 +1,9 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
 import enums.TransactionStatus;
+import id.ac.ui.cs.advprog.gametime.model.state.InitialState;
+import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
+import id.ac.ui.cs.advprog.gametime.service.TransactionService;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -30,6 +33,8 @@ public class Transaction {
     private String status;
     @Column(nullable = false)
     private String transactionDate;
+    @Transient
+    private TransactionState state = new InitialState();
     public Transaction(UUID transactionId,User user,Order order) {
         this.transactionId = transactionId;
         this.user = user;
@@ -58,6 +63,11 @@ public class Transaction {
     }
 
     public Transaction() {
+        this.status = TransactionStatus.FAILED.getValue();
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formatDateTime = dateTime.format(format);
+        this.transactionDate = formatDateTime;
     }
     public Integer getTotalPrice() {
         Integer totalPrice = 0;
@@ -65,5 +75,9 @@ public class Transaction {
             totalPrice += game.getPrice() * order.getGameQuantity().get(game);
         }
         return totalPrice;
+    }
+
+    public void processState(TransactionService service) {
+        state.handle(this,service);
     }
 }
