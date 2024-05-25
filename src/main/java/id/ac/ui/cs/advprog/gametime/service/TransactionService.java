@@ -12,5 +12,10 @@ public interface TransactionService {
     public Transaction updateStatus(UUID id, String status);
     public List<Transaction> findAllTransactionofSeller(User seller);
     public List<Transaction> findAllTransactionofUser(User user);
+    public boolean hasSufficientBalance(Transaction transaction);
+    public void decreaseUserBalance(Transaction transaction);
+    public void decreaseGameStock(Transaction transaction);
+    public void saveTransaction(Transaction transaction);
+    public void updateSellerBalance(Transaction transaction);
 
 }

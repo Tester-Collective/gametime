@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.gametime.service;
 import id.ac.ui.cs.advprog.gametime.model.Game;
-import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
@@ -21,7 +20,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction create(Transaction transaction) {
-        return transactionRepository.save(transaction);
+        transaction.processState(this);
+        return transaction;
+    }
+    public void saveTransaction(Transaction transaction) {
+        transactionRepository.save(transaction);
     }
     public Transaction get(UUID id) {
         Transaction transaction = transactionRepository.findById(id).orElse(null);
@@ -57,6 +60,36 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
         return result;
+    }
+    @Override
+    public boolean hasSufficientBalance(Transaction transaction) {
+        User user = transaction.getUser();
+        int total = transaction.getTotalPrice();
+        return user.getBalance() >= total;
+    }
+    @Override
+    public void decreaseUserBalance(Transaction transaction) {
+        User user = transaction.getUser();
+        int total = 0;
+        for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+            total += game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
+        }
+        user.setBalance(user.getBalance() - total);
+    }
+    @Override
+    public void decreaseGameStock(Transaction transaction) {
+        for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+            game.setStock(game.getStock() - transaction.getOrder().getGameQuantity().get(game));
+        }
+    }
+
+    @Override
+    public void updateSellerBalance(Transaction transaction) {
+        for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+            User seller = game.getSeller();
+            int total = game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
+            seller.setBalance(seller.getBalance() + total);
+        }
     }
 
 }
