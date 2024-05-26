@@ -14,22 +14,27 @@ public class FilterServiceImpl implements FilterService {
     @Autowired
     private FilterRepository filterRepository;
 
+    @Override
     public List<Game> getGamesByKeyword(String keyword) {
         return new ArrayList<>(filterRepository.findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(false,  keyword, 0));
     }
 
+    @Override
     public List<Game> getTopThreeFreeGames() {
         return filterRepository.findTop3ByPriceEqualsOrderByAvgRatingDesc(0);
     }
 
+    @Override
     public List<Game> getGamesByPlatformOrderByRating(String platform) {
         return new ArrayList<>(filterRepository.findTop6ByGameDeletedAndPlatformAndStockGreaterThanOrderByAvgRatingDesc(false, platform, 0));
     }
 
+    @Override
     public List<Game> getGamesTop6OrderByRating() {
         return new ArrayList<>(filterRepository.findTop6ByGameDeletedAndStockGreaterThanOrderByAvgRatingDesc(false, 0));
     }
 
+    @Override
     public List<Game> getAllGamesWithConstraint() {
         return new ArrayList<>(filterRepository.findByGameDeletedAndStockGreaterThanOrderByTitle(false, 0));
     }
