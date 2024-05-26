@@ -70,7 +70,7 @@
                             </svg>
                         </span>
                     </div>
-                    <div class="max-h-40 max-w-80 flex justify-center items-center overflow-hidden rounded-t-2xl">
+                    <div class="max-h-40 max-w-80 flex justify-center items-center overflow-hidden rounded-t-2xl w80 h-40">
                         <a th:href="@{/game/buyer/details/{id}(id=${game.id})}">
                             <img class="rounded-t-2xl object-contain" th:src="@{/image/{name}(name=${game.imageName})}" alt="Game Image">
                         </a>
@@ -181,7 +181,7 @@
                             </svg>
                         </span>
                     </div>
-                    <div class="max-h-40 max-w-80 flex justify-center items-center overflow-hidden rounded-t-2xl">
+                    <div class="max-h-40 max-w-80 flex justify-center items-center overflow-hidden rounded-t-2xl w-80 h-40">
                         <a th:href="@{/game/buyer/details/{id}(id=${gameTop6.id})}">
                             <img class="rounded-t-2xl object-contain" th:src="@{/image/{name}(name=${gameTop6.imageName})}" alt="Game Image">
                         </a>
@@ -298,7 +298,7 @@
             platformDiv.innerHTML = platformIcon;
 
             const imageDiv = document.createElement('div');
-            imageDiv.classList.add('max-h-40', 'max-w-80', 'flex', 'justify-center', 'items-center', 'overflow-hidden', 'rounded-t-2xl');
+            imageDiv.classList.add('max-h-40', 'max-w-80', 'flex', 'justify-center', 'items-center', 'overflow-hidden', 'rounded-t-2xl', 'w-80', 'h-40');
             const imageLink = document.createElement('a');
             imageLink.href = `/game/buyer/details/${game.id}`;
             const img = document.createElement('img');

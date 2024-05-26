@@ -1,7 +1,13 @@
 FROM docker.io/library/eclipse-temurin:21-jdk-alpine AS builder
 
+RUN apk add --no-cache nodejs npm
+
 WORKDIR /src/gametime
 COPY . .
+RUN npm install
+
+RUN npx tailwindcss -i src/main/resources/static/input.css -o src/main/resources/static/output.css
+
 RUN chmod +x ./gradlew
 RUN ./gradlew clean bootJar
 

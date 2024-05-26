@@ -1,10 +1,8 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.File;
-import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.repository.FileRepository;
 import id.ac.ui.cs.advprog.gametime.repository.ImageRepository;
-import id.ac.ui.cs.advprog.gametime.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,8 +36,8 @@ public class ImageServiceImpl implements ImageService {
 
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
             if (hex.length() == 1) {
                 hexString.append('0');
             }
@@ -56,6 +54,9 @@ public class ImageServiceImpl implements ImageService {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             String originalFileName = file.getOriginalFilename();
+            if (originalFileName == null) {
+                throw new IllegalArgumentException("File must have an original filename");
+            }
             byte[] fileTimeStampBytes = Long.toString(date.getTime()).getBytes(StandardCharsets.UTF_8);
             byte[] fileNameBytes = originalFileName.getBytes(StandardCharsets.UTF_8);
             messageDigest.update(fileTimeStampBytes);
