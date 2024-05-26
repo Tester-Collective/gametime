@@ -1,8 +1,10 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.model.File;
+import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.repository.FileRepository;
 import id.ac.ui.cs.advprog.gametime.repository.ImageRepository;
+import id.ac.ui.cs.advprog.gametime.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +26,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
-        Optional<File> file = fileRepository.findByName(fileName);
-        String filePath = file.orElseThrow().getFilePath();
-        return Files.readAllBytes(new java.io.File(filePath).toPath());
+        Optional<Image> image = imageRepository.findByName(fileName);
+        return ImageUtil.decompressImage(image.orElseThrow().getImageData());
     }
 
     @Override
@@ -47,9 +48,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public File uploadImageToFileSystem(MultipartFile file) throws IOException {
+    public Image uploadImageToFileSystem(MultipartFile file) throws IOException {
         Date date = new Date();
-        File image = new File();
+        Image image = new Image();
 
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -65,16 +66,14 @@ public class ImageServiceImpl implements ImageService {
 
             String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
             String name = bytesToHex(digest) + fileExtension;
-            String folderPath = System.getProperty("user.dir") + "/src/main/resources/static/images/";
-            String path = folderPath + name;
 
             image.setName(name);
-            image.setFilePath(path);
             image.setType(file.getContentType());
-            fileRepository.save(image);
-            file.transferTo(new java.io.File(path));
+            image.setImageData(ImageUtil.compressImage(file.getBytes()));
+            imageRepository.save(image);
+            imageRepository.save(image);
 
-            if (image.getFilePath() != null) {
+            if (image.getImageData() != null) {
                 return image;
             }
             return null;

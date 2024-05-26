@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import id.ac.ui.cs.advprog.gametime.model.File;
+import id.ac.ui.cs.advprog.gametime.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,7 @@ public class UserProfileController {
             currentUser.setBio(userDto.getBio());
         }
         if (userDto.getProfilePicture().getSize() != 0) {
-            File uploadedImage = imageService.uploadImageToFileSystem(userDto.getProfilePicture());
+            Image uploadedImage = imageService.uploadImageToFileSystem(userDto.getProfilePicture());
             if (currentUser.getProfilePicture() != null) {
                 imageService.deleteImage(currentUser.getProfilePicture());
             }

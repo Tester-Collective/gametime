@@ -56,7 +56,7 @@ public class SellerGameController {
 
     @PostMapping("/sell")
     public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException {
-        File image1 = imageService.uploadImageToFileSystem(image);
+        Image image1 = imageService.uploadImageToFileSystem(image);
 
         Game game = new Game();
         game.setTitle(gameDto.getTitle());
@@ -98,7 +98,7 @@ public class SellerGameController {
         game.setTitle(gameDto.getTitle());
 
         if (gameDto.getImage() != null && !gameDto.getImage().isEmpty()) {
-            File uploadedImage = imageService.uploadImageToFileSystem(gameDto.getImage());
+            Image uploadedImage = imageService.uploadImageToFileSystem(gameDto.getImage());
             if (game.getImageName() != null) {
                 imageService.deleteImage(game.getImageName());
             }
