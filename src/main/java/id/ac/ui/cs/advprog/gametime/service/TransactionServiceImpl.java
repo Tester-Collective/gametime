@@ -3,6 +3,7 @@ import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
+import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.repository.GameRepository;
 import org. springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private GameService gameService;
 
     @Override
     public Transaction create(Transaction transaction) {
@@ -79,7 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void decreaseGameStock(Transaction transaction) {
         for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
-            game.setStock(game.getStock() - transaction.getOrder().getGameQuantity().get(game));
+            gameService.decreaseStock(game, transaction.getOrder().getGameQuantity().get(game));
         }
     }
 

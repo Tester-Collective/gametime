@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import enums.TransactionStatus;
 import id.ac.ui.cs.advprog.gametime.model.state.InitialState;
 import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
@@ -83,5 +85,14 @@ public class Transaction {
 
     public void processState(TransactionService service) {
         state.handle(this,service);
+    }
+    @JsonProperty("gameQuantity")
+    public Map<String, Integer> getGameQuantityForJson() {
+        Map<String, Integer> games = new HashMap<>();
+        for (Map.Entry<Game, Integer> entry : order.getGameQuantity().entrySet()) {
+            Game game = entry.getKey();
+            games.put(game.getTitle() + " - " + game.getPlatform(), entry.getValue());
+        }
+        return games;
     }
 }
