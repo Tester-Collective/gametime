@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
 import id.ac.ui.cs.advprog.gametime.model.Category;
+import id.ac.ui.cs.advprog.gametime.service.CategoryService;
 import id.ac.ui.cs.advprog.gametime.service.ReviewService;
 import org.springframework.ui.Model;
 import id.ac.ui.cs.advprog.gametime.model.Game;
@@ -21,12 +22,19 @@ public class HomeController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @GetMapping("")
-    public String home(Model model,
-                       @RequestParam(required = false) Category category) {
+    public String home(Model model) {
         List<Game> games;
-        games = filterService.filterGame(null, null, null, 0, 0);
+        games = filterService.getTopThreeFreeGames();
+
+        List<Game> gamesTop6;
+        gamesTop6 = filterService.getGamesTop6OrderByRating();
+
         model.addAttribute("games", games);
+        model.addAttribute("gamesTop6", gamesTop6);
         model.addAttribute("reviewService", reviewService);
         return "home";
     }
