@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta th:name="_csrf" th:content="${_csrf.token}">
     <meta th:name="_csrf_header" th:content="${_csrf.headerName}">
-    <title>Order Page</title>
+    <title>Cart Page</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/output.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
@@ -16,77 +16,84 @@
 <div class="flex flex-col justify-between items-center container mx-auto my-8">
     <div class="mt-24 mb-8">
         <div class="relative overflow-x-auto shadow-md rounded-lg">
-            <table class="w-full table-fixed text-sm text-left rtl:text-right text-gray-400">
-                <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                <tr>
-                    <th scope="col" class="px-16 py-3 text-start">
-                        <span class="sr-only">Image</span>
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-start">
-                        Game
-                    </th>
-                    <th scope="col" class="px-6 pl-3 py-3">
-                        Qty
-                    </th>
-                    <th scope="col" class="px-6 py-3 ">
-                        Price
-                    </th>
-                    <th scope="col" class="px-6 py-3 ">
-                        Action
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="game : ${games}" class="bg-card-bg border-b border-gray-700 hover:bg-gray-600" th:id="'game-' + ${game.game.id}">
-                    <td class="p-4">
-                        <a th:href="@{/game/buyer/details/{id}(id=${game.game.id})}">
-                            <img th:src="@{/image/{imageName}(imageName=${game.game.imageName})}" class="w-16 md:w-32 max-w-full max-h-full" alt="Game Image">
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 font-semibold text-white">
-                        <span th:text="${game.game.title}"></span>
-                    </td>
-                    <td class="px-2 py-4">
-                        <div class="flex flex-row w-full">
-                            <button th:attr="onclick=|javascript:decreaseQuantity('${game.game.id}', event)|" class="font-medium hover:underline text-white">-</button>
-                            <p class="px-2 text-white">
-                                <span th:id="'quantity-' + ${game.game.id}" th:text="${game.quantity}"></span>
-                            </p>
-                            <button th:attr="onclick=|javascript:increaseQuantity('${game.game.id}', event)|" class="font-medium hover:underline text-white">+</button>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 font-semibold text-white">
-                        <span th:id="'price-per-game-' + ${game.game.id}" th:text="'Rp' + ${game.game.price * game.quantity}"></span>
-                        <span class="hidden" th:id="'price-'+ ${game.game.id}" th:text="${game.game.price}"></span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <button th:attr="onclick=|javascript:removeFromCart('${game.game.id}', event)|" class=" font-medium text-red-500 hover:underline">Remove</button>
-                    </td>
-                </tr>
-                </tbody>
-                <tfoot class="text-xs uppercase bg-gray-700 text-gray-400">
-                <tr>
-                    <td colspan="1" class="px-16 py-3">
-                        Total
-                    </td>
-                    <td class="px-6">
-                        <button class="clearButtons font-medium text-red-600 hover:underline">Clear</button>
-                    </td>
-                    <td class="px-6 py-3 font-semibold text-white ">
-                        <span id="total-quantity" th:text="${totalQuantity}"></span>
-                    </td>
-                    <td class="px-6 py-3 font-semibold text-white">
-                        <span id="total-price" th:text="'Rp' + ${totalPrice}"></span>
-                    </td>
-                    <td class="px-6 py-3">
-                        <form method="get" th:action="@{/order}">
-                            <button type="submit" class="font-medium text-green-500 hover:underline">CHECKOUT</button>
-                        </form>
-                    </td>
+            <section th:if="${totalQuantity == 0}">
+                <div>
+                    <p class="py-36 text-4xl font-extrabold tracking-tight text-white">Find Games In Game Page</p>
+                </div>
+            </section>
+            <section th:if="${totalQuantity != 0}">
+                <table class="w-full table-fixed text-sm text-left rtl:text-right text-gray-400">
+                    <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-16 py-3 text-start">
+                            <span class="sr-only">Image</span>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-start">
+                            Game
+                        </th>
+                        <th scope="col" class="px-6 pl-3 py-3">
+                            Qty
+                        </th>
+                        <th scope="col" class="px-6 py-3 ">
+                            Price
+                        </th>
+                        <th scope="col" class="px-6 py-3 ">
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="game : ${games}" class="bg-card-bg border-b border-gray-700 hover:bg-gray-600" th:id="'game-' + ${game.game.id}">
+                        <td class="p-4">
+                            <a th:href="@{/game/buyer/details/{id}(id=${game.game.id})}">
+                                <img th:src="@{/image/{imageName}(imageName=${game.game.imageName})}" class="w-16 md:w-32 max-w-full max-h-full" alt="Game Image">
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 font-semibold text-white">
+                            <span th:text="${game.game.title}"></span>
+                        </td>
+                        <td class="px-2 py-4">
+                            <div class="flex flex-row w-full">
+                                <button th:attr="onclick=|javascript:decreaseQuantity('${game.game.id}', event)|" class="font-medium hover:underline text-white">-</button>
+                                <p class="px-2 text-white">
+                                    <span th:id="'quantity-' + ${game.game.id}" th:text="${game.quantity}"></span>
+                                </p>
+                                <button th:attr="onclick=|javascript:increaseQuantity('${game.game.id}', event)|" class="font-medium hover:underline text-white">+</button>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-semibold text-white">
+                            <span th:id="'price-per-game-' + ${game.game.id}" th:text="'Rp' + ${game.game.price * game.quantity}"></span>
+                            <span class="hidden" th:id="'price-'+ ${game.game.id}" th:text="${game.game.price}"></span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button th:attr="onclick=|javascript:removeFromCart('${game.game.id}', event)|" class=" font-medium text-red-500 hover:underline">Remove</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot class="text-xs uppercase bg-gray-700 text-gray-400">
+                    <tr>
+                        <td colspan="1" class="px-16 py-3">
+                            Total
+                        </td>
+                        <td class="px-6">
+                            <button class="clearButtons font-medium text-red-600 hover:underline">Clear</button>
+                        </td>
+                        <td class="px-6 py-3 font-semibold text-white ">
+                            <span id="total-quantity" th:text="${totalQuantity}"></span>
+                        </td>
+                        <td class="px-6 py-3 font-semibold text-white">
+                            <span id="total-price" th:text="'Rp' + ${totalPrice}"></span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <form method="get" th:action="@{/order}">
+                                <button type="submit" class="font-medium text-green-500 hover:underline">CHECKOUT</button>
+                            </form>
+                        </td>
 
-                </tr>
-                </tfoot>
-            </table>
+                    </tr>
+                    </tfoot>
+                </table>
+            </section>
         </div>
     </div>
 </div>
@@ -144,7 +151,6 @@
             const newTotalQuantity = await axios.get(`/api/cart/total-quantity`);
             const newTotalPrice = await axios.get(`/api/cart/total-price`);
 
-            // Update the UI to reflect the change
             if (newQuantity.data === 0) {
                 const rowToRemove = document.getElementById(`game-${gameId}`);
                 if (rowToRemove) {
@@ -169,7 +175,6 @@
                 }
             });
             console.log(response.data);
-            // Optionally update the UI to reflect removal
             const rowToRemove = document.getElementById(`game-${gameId}`);
             if (rowToRemove) {
                 rowToRemove.remove();
@@ -182,6 +187,7 @@
             console.error(error);
         }
     }
+
     function updateQuantity(gameId, newQuantity, newTotalQuantity, newTotalPrice) {
         const quantityElement = document.getElementById(`quantity-${gameId}`);
         const priceElement = document.getElementById(`price-${gameId}`);
@@ -205,6 +211,9 @@
 
         if (totalPriceElement) {
             totalPriceElement.textContent = `Rp${newTotalPrice.toString()}`;
+        }
+        if (newTotalQuantity === 0) {
+            location.reload()
         }
     }
 
@@ -234,8 +243,7 @@
                 }
             });
             console.log(response.data);
-            // Optionally update the UI to reflect cart clear
-            location.reload(); // or update the cart summary if necessary
+            location.reload();
         } catch (error) {
             console.error(error);
         }

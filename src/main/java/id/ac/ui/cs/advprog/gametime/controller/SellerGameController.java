@@ -7,14 +7,11 @@ import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,8 +39,7 @@ public class SellerGameController {
         }
 
         model.addAttribute("games", soldGames);
-        model.addAttribute("seller", seller);
-        model.addAttribute("user", userService.getLoggedInUser());
+        model.addAttribute("user", seller);
         return "game/seller/index";
     }
 
@@ -54,7 +50,7 @@ public class SellerGameController {
 
         model.addAttribute("gameDto", gameDto);
         model.addAttribute("categories", categories);
-        model.addAttribute("seller", userService.getLoggedInUser());
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/sell";
     }
 
@@ -125,11 +121,16 @@ public class SellerGameController {
 
     @GetMapping("/{id}")
     public String gameDetails(Model model, @PathVariable String id){
+
+
+
+        model.addAttribute("reviewService", reviewService );
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(id)));
         model.addAttribute("game", gameService.getGameById(id));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(id)));
         model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(id)));
         model.addAttribute("user", userService.getLoggedInUser());
+        model.addAttribute("reviewService", reviewService);
         return "game/seller/details";
     }
 }

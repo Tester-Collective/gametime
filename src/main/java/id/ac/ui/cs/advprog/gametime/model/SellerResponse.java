@@ -20,4 +20,8 @@ public class SellerResponse {
 
     @Column
     private String response;
+
+    public SellerResponse(){
+        this.responseId = UUID.randomUUID();
+    }
 }
