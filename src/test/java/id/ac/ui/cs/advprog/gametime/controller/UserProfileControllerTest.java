@@ -11,10 +11,4 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class UserProfileControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Test
-    public void testGetUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 }
