@@ -121,6 +121,10 @@ public class SellerGameController {
 
     @GetMapping("/{id}")
     public String gameDetails(Model model, @PathVariable String id){
+
+
+
+        model.addAttribute("reviewService", reviewService );
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(id)));
         model.addAttribute("game", gameService.getGameById(id));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(id)));

@@ -119,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
         sellerResponseRepository.deleteById(responseId);
     }
 
-    public SellerResponse getSellerResponse(UUID reviewId){
+    public SellerResponse getSellerResponseByReviewId(UUID reviewId){
         return sellerResponseRepository.findByReview_ReviewId(reviewId);
     }
 

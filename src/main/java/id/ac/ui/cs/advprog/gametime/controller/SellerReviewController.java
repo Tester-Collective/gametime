@@ -9,15 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @Controller
-@RequestMapping("/game/seller/reviews")
+@RequestMapping("/game/seller")
 public class SellerReviewController {
     @Autowired
     private ReviewService reviewService;
@@ -25,35 +22,17 @@ public class SellerReviewController {
     private UserService userService;
 
 
-    @GetMapping("")
-    public String index(Model model) {
-        User seller = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
-        List<Review> sellerReviews = reviewService.findReviewsByGameSeller(seller);
-        List<SellerResponse> sellerResponses = new ArrayList<>();
-        for (Review review : sellerReviews) {
-            SellerResponse sellerResponse = reviewService.getSellerResponse(review.getReviewId());
-            sellerResponses.add(sellerResponse);
-        }
-
-        model.addAttribute("sellerResponses", sellerResponses);
-        return "game/seller/sellerResponse/index";
-    }
-
-
-    @PostMapping("/add/{reviewId}")
-    public String addResponse(@PathVariable UUID reviewId, String response) {
+    @PostMapping("/{gameId}/add-response/{reviewId}")
+    public String addResponse(@PathVariable UUID reviewId, @PathVariable UUID gameId, @RequestParam("seller-response")String sellerResponse) {
         Review review = reviewService.getReviewById(reviewId);
-        reviewService.addSellerResponse(review, response);
-        return"redirect:game/seller/sellerResponse/index";
+        reviewService.addSellerResponse(review, sellerResponse);
+        return "redirect:/game/seller/" + gameId;
     }
 
-    @PostMapping("/delete/{reviewId}/{responseId}")
-    public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId) {
+    @PostMapping("{gameId}/delete-response/{reviewId}/{responseId}")
+    public String deleteResponse(@PathVariable UUID reviewId, @PathVariable UUID responseId, @PathVariable UUID gameId){
         reviewService.deleteSellerResponse(responseId);
-        return "redirect:game/seller/sellerResponse/index";
+        return "redirect:/game/seller/" + gameId;
     }
 
 
