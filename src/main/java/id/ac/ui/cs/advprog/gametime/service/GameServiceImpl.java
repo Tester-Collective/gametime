@@ -44,4 +44,8 @@ public class GameServiceImpl implements GameService {
         gameRepository.save(game);
         return true;
     }
+
+    public List<Game> findGamesByKeyword(String keyword) {
+        return gameRepository.findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(false, keyword, 0);
+    }
 }
