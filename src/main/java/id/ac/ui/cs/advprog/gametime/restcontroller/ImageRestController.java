@@ -23,7 +23,7 @@ public class ImageRestController {
     private ImageService imageService;
     @PostMapping("")
     public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException {
-        File uploadImage = imageService.uploadImageToFileSystem(image);
+        Image uploadImage = imageService.uploadImageToFileSystem(image);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }

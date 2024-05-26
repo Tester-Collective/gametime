@@ -13,6 +13,6 @@ public interface ImageService {
 
     public void deleteImage(String fileName);
 
-    public File uploadImageToFileSystem(MultipartFile file) throws IOException;
+    public Image uploadImageToFileSystem(MultipartFile file) throws IOException;
 
 }
