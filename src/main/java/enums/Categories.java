@@ -11,9 +11,7 @@ public enum Categories {
     SINGLE_PLAYER("SINGLE_PLAYER"),
     MULTIPLAYER("MULTIPLAYER"),
     STRATEGY("STRATEGY"),
-    SIMULATION("SIMULATION"),
     SPORTS("SPORTS"),
-    RACING("RACING"),
     HORROR("HORROR"),
     SURVIVAL("SURVIVAL"),
     MMORPG("MMORPG"),
@@ -21,8 +19,6 @@ public enum Categories {
     BATTLEROYALE("BATTLE_ROYALE"),
     FPS("FPS"),
     TPS("TPS"),
-    TOWERDEFENSE("TOWER_DEFENSE"),
-    CARD("CARD"),
     BOARD("BOARD"),
     PUZZLE("PUZZLE"),
     EDUCATIONAL("EDUCATIONAL"),
@@ -31,9 +27,7 @@ public enum Categories {
     CASUAL("CASUAL"),
     ARCADE("ARCADE"),
     FIGHTING("FIGHTING"),
-    SHOOTER("SHOOTER"),
-    OPEN_WORLD("OPEN_WORLD"),
-    SANDBOX("SANDBOX");
+    OPEN_WORLD("OPEN_WORLD");
 
     private final String value;
     private Categories(String value) {
