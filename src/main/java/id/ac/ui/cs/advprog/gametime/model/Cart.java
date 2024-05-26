@@ -44,7 +44,7 @@ public class Cart {
         games.clear();
     }
 
-    private void validateQuantity(int quantity) {
+    public void validateQuantity(int quantity) {
         if (quantity < 0) {
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
