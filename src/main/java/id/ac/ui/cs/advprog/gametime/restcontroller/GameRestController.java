@@ -48,7 +48,7 @@ public class GameRestController {
 
     @GetMapping("reviews/rating/{id}")
     public float getAverageRatingByGameId(@PathVariable String id) {
-        return reviewService.calculateGameRatingAverage(UUID.fromString(id));
+        return gameService.getGameById(id).getAvgRating();
     }
 
     @GetMapping("reviews/count/{id}")
