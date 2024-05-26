@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public enum Platform {
     PC("PC"),
-    PS4("PS4"),
     PS5("PS5"),
     XBOX("XBOX"),
     SWITCH("SWITCH"),
