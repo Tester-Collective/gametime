@@ -45,6 +45,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    List<ReviewObserver> getObservers() {
+        return observers;
+    }
+
 
     public void deleteReviewById(UUID id) {
         Review review = getReviewById(id);
