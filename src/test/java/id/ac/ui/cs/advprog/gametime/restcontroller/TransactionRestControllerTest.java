@@ -103,7 +103,7 @@ class TransactionRestControllerTest {
         List<Transaction> result = transactionRestController.getAllBuyerTransactions();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<String> jsonTransactions = transactions.stream()
+        List<String> jsonTransactions = result.stream()
                 .map(transaction -> {
                     try {
                         return objectMapper.writeValueAsString(transaction);
