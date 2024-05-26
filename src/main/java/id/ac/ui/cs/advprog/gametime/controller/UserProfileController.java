@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
+import id.ac.ui.cs.advprog.gametime.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,9 @@ import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.ImageService;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Controller
 @RequestMapping("/profile")
@@ -37,13 +41,13 @@ public class UserProfileController {
     }
 
     @PostMapping("/edit")
-    public String postEditProfile(@ModelAttribute UserDto userDto, Model model, RedirectAttributes redirectAttributes) {
+    public String postEditProfile(@ModelAttribute UserDto userDto, Model model, RedirectAttributes redirectAttributes) throws IOException {
         User currentUser = userService.getLoggedInUser();
         if (!userDto.getBio().isEmpty()) {
             currentUser.setBio(userDto.getBio());
         }
         if (userDto.getProfilePicture().getSize() != 0) {
-            Image uploadedImage = imageService.uploadImage(userDto.getProfilePicture());
+            File uploadedImage = imageService.uploadImageToFileSystem(userDto.getProfilePicture());
             if (currentUser.getProfilePicture() != null) {
                 imageService.deleteImage(currentUser.getProfilePicture());
             }
