@@ -44,44 +44,52 @@
 </div>
 
 <script>
-    const stars = document.querySelectorAll('.star');
-    const ratingInput = document.getElementById('rating');
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+        const initialRating = parseInt(ratingInput.value);
 
-    stars.forEach(star => {
-        star.addEventListener('mouseenter', function() {
-            const value = Array.from(stars).indexOf(this) + 1;
-            stars.forEach((s, index) => {
-                if (index < value) {
-                    s.classList.add('text-yellow-300');
-                } else {
-                    s.classList.remove('text-yellow-300');
-                }
-            });
+        // Initialize stars based on initial rating value
+        stars.forEach((star, index) => {
+            if (index < initialRating) {
+                star.classList.add('text-yellow-300');
+            }
         });
 
-        star.addEventListener('mouseleave', function() {
-            const value = parseInt(ratingInput.value);
-            stars.forEach((s, index) => {
-                if (index < value) {
-                    s.classList.add('text-yellow-300');
-                } else {
-                    s.classList.remove('text-yellow-300');
-                }
-            });
-        });
-
-        star.addEventListener('click', function() {
-            const value = Array.from(stars).indexOf(this) + 1;
-
-            stars.forEach((s, index) => {
-                if (index < value) {
-                    s.classList.add('text-yellow-300');
-                } else {
-                    s.classList.remove('text-yellow-300');
-                }
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function() {
+                const value = Array.from(stars).indexOf(this) + 1;
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('text-yellow-300');
+                    } else {
+                        s.classList.remove('text-yellow-300');
+                    }
+                });
             });
 
-            ratingInput.value = value;
+            star.addEventListener('mouseleave', function() {
+                const value = parseInt(ratingInput.value);
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('text-yellow-300');
+                    } else {
+                        s.classList.remove('text-yellow-300');
+                    }
+                });
+            });
+
+            star.addEventListener('click', function() {
+                const value = Array.from(stars).indexOf(this) + 1;
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('text-yellow-300');
+                    } else {
+                        s.classList.remove('text-yellow-300');
+                    }
+                });
+                ratingInput.value = value;
+            });
         });
     });
 </script>

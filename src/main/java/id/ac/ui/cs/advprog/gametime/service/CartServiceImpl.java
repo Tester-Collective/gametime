@@ -1,7 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
 import id.ac.ui.cs.advprog.gametime.service.strategy.CartStockManagementStrategy;
-import id.ac.ui.cs.advprog.gametime.service.strategy.QuantityManagementStrategy;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.User;
@@ -29,9 +28,6 @@ public class CartServiceImpl implements CartService{
     public Cart getCartByUser(User user) {
         return cartRepository.findCartByCustomer(user);
     }
-
-    @Autowired
-    private QuantityManagementStrategy quantityManagementStrategy;
 
     @Override
     public GameInCart getGameInCartByGameId(String gameId, String cartId) {
@@ -65,7 +61,6 @@ public class CartServiceImpl implements CartService{
     @Override
     public void decreaseGameQuantity(User user, GameInCart game) {
         Cart cart = cartRepository.findCartByCustomer(user);
-        quantityManagementStrategy.validateQuantity(game.getQuantity());
         cart.decreaseGameQuantity(game);
         gameInCartRepository.save(game);
     }
@@ -77,6 +72,28 @@ public class CartServiceImpl implements CartService{
         cart.clearCart();
         cartRepository.save(cart);
         gameInCartRepository.deleteAllByCart_CartId(cart.getCartId());
+    }
+
+    @Override
+    public Integer getTotalPrice(User user) {
+        Cart cart = cartRepository.findCartByCustomer(user);
+        List<GameInCart> games = cart.getGames();
+        int totalPrice = 0;
+        for (GameInCart game : games) {
+            totalPrice += game.getGame().getPrice() * game.getQuantity();
+        }
+        return totalPrice;
+    }
+
+    @Override
+    public Integer getTotalQuantity(User user) {
+        Cart cart = cartRepository.findCartByCustomer(user);
+        List<GameInCart> games = cart.getGames();
+        int totalQuantity = 0;
+        for (GameInCart game : games) {
+            totalQuantity += game.getQuantity();
+        }
+        return totalQuantity;
     }
 
     @Override
