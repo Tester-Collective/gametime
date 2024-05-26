@@ -163,4 +163,52 @@ public class CartRestControllerTest {
         assertEquals(0, response);
     }
 
+    @Test
+    public void testClearCart() {
+        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+
+        ResponseEntity<?> response = cartRestController.clearCart();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void addGameToCartIfGameInCartIsNotNull() {
+        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+        when(cartService.getCartByUser(user)).thenReturn(cart);
+        when(cartService.getGameInCartByGameId(anyString(), anyString())).thenReturn(gameInCart);
+
+        ResponseEntity<?> response = cartRestController.addGameToCart(game.getId().toString());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void increaseGameQuantityIfGameInCartIsNull() {
+        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+        when(cartService.getCartByUser(user)).thenReturn(cart);
+        when(cartService.getGameInCartByGameId(anyString(), anyString())).thenReturn(null);
+
+        ResponseEntity<?> response = cartRestController.increaseGameQuantity(game.getId().toString());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void decreaseGameQuantityIfGameInCartIsNull() {
+        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+        when(cartService.getCartByUser(user)).thenReturn(cart);
+        when(cartService.getGameInCartByGameId(anyString(), anyString())).thenReturn(null);
+
+        ResponseEntity<?> response = cartRestController.decreaseGameQuantity(game.getId().toString());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void removeGameFromCartIfGameInCartIsNull() {
+        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+        when(cartService.getCartByUser(user)).thenReturn(cart);
+        when(cartService.getGameInCartByGameId(anyString(), anyString())).thenReturn(null);
+
+        ResponseEntity<?> response = cartRestController.removeGameFromCart(game.getId().toString());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 }
