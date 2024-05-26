@@ -132,7 +132,16 @@
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>PC</a>
                         </li>
                         <li @click="selected = 'PS5'; open = false; fetchGames('PS5')">
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>PS5</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>Playstation</a>
+                        </li>
+                        <li @click="selected = 'XBOX'; open = false; fetchGames('XBOX')">
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>Xbox</a>
+                        </li>
+                        <li @click="selected = 'MOBILE'; open = false; fetchGames('MOBILE')">
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>Mobile</a>
+                        </li>
+                        <li @click="selected = 'SWITCH'; open = false; fetchGames('SWITCH')">
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click.prevent>Switch</a>
                         </li>
                     </ul>
                 </div>
