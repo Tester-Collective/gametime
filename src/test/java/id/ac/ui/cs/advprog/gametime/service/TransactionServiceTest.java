@@ -5,6 +5,8 @@ import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Order;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.model.state.SuccessState;
+import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
 import id.ac.ui.cs.advprog.gametime.repository.GameRepository;
 import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -324,5 +326,22 @@ public class TransactionServiceTest {
         assertEquals(TransactionStatus.FAILED.getValue(), createdTransaction.getStatus());
     }
 
-
+    @Test
+    void testCreateTransactionProcessState() {
+        user.setBalance(100);
+        seller.setBalance(0);
+        transaction.setUser(user);
+        transaction.processState(transactionService);
+        assertEquals(TransactionStatus.SUCCESS.getValue(), transaction.getStatus());
+        assertEquals(0, user.getBalance());
+    }
+    @Test
+    void testNegativeCreateTransactionProcessState() {
+        user.setBalance(40);
+        seller.setBalance(0);
+        transaction.setUser(user);
+        transaction.processState(transactionService);
+        assertEquals(TransactionStatus.FAILED.getValue(), transaction.getStatus());
+        assertEquals(40, user.getBalance());
+    }
 }
