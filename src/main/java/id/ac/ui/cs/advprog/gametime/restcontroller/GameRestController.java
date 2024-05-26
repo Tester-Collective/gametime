@@ -22,6 +22,9 @@ public class GameRestController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private FilterService filterService;
+
     @GetMapping("{id}")
     public Game getGameById(@PathVariable String id) {
         return gameService.getGameById(id);
@@ -29,12 +32,12 @@ public class GameRestController {
 
     @GetMapping("")
     public List<Game> fetchAll() {
-        return gameService.getAllGames();
+        return filterService.getAllGamesWithConstraint();
     }
 
     @GetMapping("/filter")
     public CompletableFuture<List<Game>> filter(@RequestParam("query") String keyword) {
-        List<Game> games = gameService.findGamesByKeyword(keyword);
+        List<Game> games = filterService.getGamesByKeyword(keyword);
         return CompletableFuture.completedFuture(games);
     }
 
