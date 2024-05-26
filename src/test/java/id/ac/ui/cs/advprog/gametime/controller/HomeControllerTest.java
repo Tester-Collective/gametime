@@ -1,12 +1,9 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
+import id.ac.ui.cs.advprog.gametime.facade.HomeFacade;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Review;
 import id.ac.ui.cs.advprog.gametime.model.User;
-import id.ac.ui.cs.advprog.gametime.service.FilterService;
-import id.ac.ui.cs.advprog.gametime.service.ReviewFilterService;
-import id.ac.ui.cs.advprog.gametime.service.ReviewService;
-import id.ac.ui.cs.advprog.gametime.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HomeControllerTest {
 
     @Mock
-    private FilterService filterService;
-
-    @Mock
-    private ReviewService reviewService;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private ReviewFilterService reviewFilterService;
+    private HomeFacade homeFacade;
 
     @InjectMocks
     private HomeController homeController;
@@ -57,23 +45,22 @@ public class HomeControllerTest {
         List<Review> topSixReviews = Arrays.asList(new Review(), new Review(), new Review(), new Review(), new Review(), new Review());
         User loggedInUser = new User(); // Replace with actual User object if available
 
-        when(filterService.getTopThreeFreeGames()).thenReturn(topThreeFreeGames);
-        when(filterService.getGamesTop6OrderByRating()).thenReturn(topSixGamesByRating);
-        when(reviewFilterService.findTop6ByRatingGreaterThanEqual(4)).thenReturn(topSixReviews);
-        when(userService.getLoggedInUser()).thenReturn(loggedInUser);
+        when(homeFacade.getTopThreeFreeGames()).thenReturn(topThreeFreeGames);
+        when(homeFacade.getGamesTop6OrderByRating()).thenReturn(topSixGamesByRating);
+        when(homeFacade.getTop6Reviews()).thenReturn(topSixReviews);
+        when(homeFacade.getLoggedInUser()).thenReturn(loggedInUser);
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
                 .andExpect(model().attribute("games", topThreeFreeGames))
                 .andExpect(model().attribute("gamesTop6", topSixGamesByRating))
-                .andExpect(model().attribute("reviewService", reviewService))
                 .andExpect(model().attribute("reviews", topSixReviews))
-                .andExpect(model().attribute("user", loggedInUser)); // Replace with actual User object if available
+                .andExpect(model().attribute("user", loggedInUser));
 
-        verify(filterService, times(1)).getTopThreeFreeGames();
-        verify(filterService, times(1)).getGamesTop6OrderByRating();
-        verify(reviewFilterService, times(1)).findTop6ByRatingGreaterThanEqual(4);
-        verify(userService, times(1)).getLoggedInUser();
+        verify(homeFacade, times(1)).getTopThreeFreeGames();
+        verify(homeFacade, times(1)).getGamesTop6OrderByRating();
+        verify(homeFacade, times(1)).getTop6Reviews();
+        verify(homeFacade, times(1)).getLoggedInUser();
     }
 }
