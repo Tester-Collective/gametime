@@ -21,9 +21,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private CartService cartService;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
@@ -73,7 +70,6 @@ public class UserServiceImpl implements UserService {
             Cart cart = new Cart();
             cart.setCustomer(user);
             cartRepository.save(cart);
-
 
             return savedUser;
         }

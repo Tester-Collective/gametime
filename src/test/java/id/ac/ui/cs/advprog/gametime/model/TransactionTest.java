@@ -1,11 +1,7 @@
 package id.ac.ui.cs.advprog.gametime.model;
 import enums.TransactionStatus;
-import id.ac.ui.cs.advprog.gametime.model.state.FailedState;
 import id.ac.ui.cs.advprog.gametime.model.state.InitialState;
 import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
-import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
-import id.ac.ui.cs.advprog.gametime.service.TransactionService;
-import id.ac.ui.cs.advprog.gametime.service.TransactionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -208,19 +204,5 @@ class TransactionTest {
         Integer revenue = 100;
         transaction.setSellerRevenue(revenue);
         assertEquals(transaction.getSellerRevenue(),revenue);
-    }
-    @Test
-    void testProcessState(){
-        Transaction transaction = new Transaction();
-        TransactionState newstate = new InitialState();
-        transaction.setState(newstate);
-        Order order = new Order();
-        transaction.setUser(user);
-        Map<Game,Integer> gameQuantity = Map.of(game,2);
-        order.setGameQuantity(gameQuantity);
-        transaction.setOrder(order);
-        TransactionServiceImpl service = new TransactionServiceImpl();
-        transaction.processState(service);
-        assertEquals(transaction.getState(),newstate);
     }
 }

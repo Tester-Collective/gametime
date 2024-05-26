@@ -1,12 +1,14 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
+import enums.TransactionStatus;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.Order;
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
 import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.model.state.SuccessState;
+import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
 import id.ac.ui.cs.advprog.gametime.repository.GameRepository;
 import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
-import id.ac.ui.cs.advprog.gametime.service.TransactionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,14 +29,19 @@ public class TransactionServiceTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    private GameService gameService;
+
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
     private User user;
     private User seller;
+    private User seller2;
     private Transaction transaction;
     private UUID transactionId;
     private Game game;
+    private Game game2;
     private Order order;
 
     @BeforeEach
@@ -42,18 +49,22 @@ public class TransactionServiceTest {
         MockitoAnnotations.openMocks(this);
 
         user = new User();
-        user.setBalance(100);
         user.setUserID(UUID.randomUUID());
         user.setEmail("test@test.com");
         user.setPassword("test");
         user.setUsername("test");
 
         seller = new User();
-        seller.setBalance(100);
         seller.setUserID(UUID.randomUUID());
         seller.setEmail("test2@test.com");
         seller.setPassword("test2");
         seller.setUsername("test2");
+
+        seller2 = new User();
+        seller2.setUserID(UUID.randomUUID());
+        seller2.setEmail("test3@test.com");
+        seller2.setPassword("test3");
+        seller2.setUsername("test3");
 
         game = new Game();
         game.setId(UUID.randomUUID());
@@ -63,6 +74,14 @@ public class TransactionServiceTest {
         game.setPrice(50);
         game.setStock(5);
 
+        game2 = new Game();
+        game2.setId(UUID.randomUUID());
+        game2.setSeller(seller2);
+        game2.setTitle("Mock Game 2");
+        game2.setDescription("Mock Game 2 Description");
+        game2.setPrice(50);
+        game2.setStock(5);
+
         order = new Order();
         order.setGameQuantity(Map.of(game, 2));
         order.setOrderId(UUID.randomUUID());
@@ -70,7 +89,6 @@ public class TransactionServiceTest {
         transactionId = UUID.randomUUID();
         transaction = new Transaction(transactionId, user, order);
     }
-
 
     @Test
     void testGetTransaction() {
@@ -196,10 +214,24 @@ public class TransactionServiceTest {
     }
 
     @Test
+    void testFindAllTransactionOfSellerNoSellersGame() {
+        List<Game> games = Collections.singletonList(game2);
+        when(gameRepository.findGamesBySeller(seller)).thenReturn(games);
+
+        transaction.setOrder(order);
+        List<Transaction> transactions = Collections.singletonList(transaction);
+        when(transactionRepository.findAll()).thenReturn(transactions);
+
+        List<Transaction> foundTransactions = transactionService.findAllTransactionofSeller(seller);
+
+        assertNotNull(foundTransactions);
+        assertTrue(foundTransactions.isEmpty());
+    }
+
+    @Test
     void testPositiveHasSufficientBalance() {
         user.setBalance(100);
         transaction.setUser(user);
-        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
 
         boolean hasSufficientBalance = transactionService.hasSufficientBalance(transaction);
 
@@ -208,13 +240,108 @@ public class TransactionServiceTest {
 
     @Test
     void testNegativeHasSufficientBalance() {
-        user.setBalance(40);  // Insufficient balance
+        user.setBalance(40);
         transaction.setUser(user);
-        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
 
         boolean hasSufficientBalance = transactionService.hasSufficientBalance(transaction);
 
         assertFalse(hasSufficientBalance);
     }
 
+    @Test
+    void testPositiveDecreaseUserBalance() {
+        user.setBalance(100);
+        transaction.setUser(user);
+
+        transactionService.decreaseUserBalance(transaction);
+
+        assertEquals(0, user.getBalance());
+    }
+
+    @Test
+    void testNegativeDecreaseUserBalance() {
+        user.setBalance(40);
+        transaction.setUser(user);
+
+        transactionService.decreaseUserBalance(transaction);
+
+        assertEquals(40, user.getBalance());
+    }
+
+    @Test
+    void testPositiveUpdateSellerBalance() {
+        user.setBalance(100);
+        seller.setBalance(0);
+        transaction.setUser(user);
+        when(gameRepository.findGamesBySeller(seller)).thenReturn(Collections.singletonList(game));
+
+        transactionService.updateSellerBalance(transaction);
+
+        assertEquals(100, seller.getBalance());
+    }
+
+    @Test
+    void testNegativeUpdateSellerBalance() {
+        user.setBalance(40);
+        transaction.setUser(user);
+        when(gameRepository.findGamesBySeller(seller)).thenReturn(Collections.singletonList(game));
+
+        transactionService.updateSellerBalance(transaction);
+
+        assertEquals(0, seller.getBalance());
+    }
+
+    @Test
+    void testPositiveDecreaseGameStock() {
+        user.setBalance(100);
+        transaction.setUser(user);
+
+        transactionService.decreaseGameStock(transaction);
+
+        verify(gameService, times(1)).decreaseStock(game, 2);
+    }
+
+    @Test
+    void testNegativeDecreaseGameStock() {
+        user.setBalance(40);
+        transaction.setUser(user);
+
+        transactionService.decreaseGameStock(transaction);
+
+        verify(gameService, times(0)).decreaseStock(game, 2);
+    }
+    @Test
+    void testPositiveCreateTransaction() {
+        Transaction createdTransaction = transactionService.create(transaction);
+
+        assertNotNull(createdTransaction);
+        assertEquals(transaction.getTransactionId(), createdTransaction.getTransactionId());
+        verify(transactionRepository, times(1)).save(transaction);
+    }
+    @Test
+    void testCreateFailedTransaction() {
+        user.setBalance(40);
+        transaction.setUser(user);
+        Transaction createdTransaction = transactionService.create(transaction);
+        assertEquals(TransactionStatus.FAILED.getValue(), createdTransaction.getStatus());
+    }
+
+    @Test
+    void testCreateTransactionProcessState() {
+        user.setBalance(100);
+        seller.setBalance(0);
+        transaction.setUser(user);
+        transaction.processState(transactionService);
+        assertEquals(TransactionStatus.SUCCESS.getValue(), transaction.getStatus());
+        assertEquals(0, user.getBalance());
+    }
+    @Test
+    void testNegativeCreateTransactionProcessState() {
+        user.setBalance(40);
+        seller.setBalance(0);
+        transaction.setUser(user);
+        transaction.processState(transactionService);
+        assertEquals(TransactionStatus.FAILED.getValue(), transaction.getStatus());
+        assertEquals(40, user.getBalance());
+    }
 }

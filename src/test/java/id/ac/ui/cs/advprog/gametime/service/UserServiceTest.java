@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
 import id.ac.ui.cs.advprog.gametime.repository.UserRepository;
 
 public class UserServiceTest {
@@ -28,6 +29,9 @@ public class UserServiceTest {
 
     @Mock
     private SecurityContext securityContext;
+
+    @Mock
+    private CartRepository cartRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
