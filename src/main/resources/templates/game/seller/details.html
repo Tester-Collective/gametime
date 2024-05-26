@@ -6,6 +6,7 @@
     <meta th:name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Game Detail</title>
     <link rel="stylesheet" href="/output.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body class="flex items-center justify-center bg-tokyo-night-bg text-white">
 <div th:include="navbar::navbar"></div>
@@ -151,21 +152,20 @@
                                 </span>
                         </p>
 
-                        <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                        <p  th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}"   class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
                                 <span>
                                     No response from Seller
                                 </span>
                         </p>
-                        <div th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) != null}" class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-2">
+                        <div id="sellerResponse" th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) != null}" class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-2">
                             <p  class="text-base font-normal text-green-500 dark:text-gray-400 w-128">
-                                <span th:text="${reviewService.getSellerResponseByReviewId(review.reviewId).getResponse()}">
+                                <span th:id="'noResponse-' + ${reviewService.getSellerResponseByReviewId(review.reviewId).responseId}" th:text="'Seller response: ' + ${reviewService.getSellerResponseByReviewId(review.reviewId).getResponse()}">
                                 </span>
                             </p>
-                            <div class="inline-flex rounded-md shadow-sm">
-                                <form id= "deleteForm" method="post" th:action="@{/game/seller/{gameId}/delete-response/{reviewId}/{responseId}(gameId =${game.id}, reviewId =${review.reviewId}, responseId=${reviewService.getSellerResponseByReviewId(review.reviewId).getResponseId()})}">
-                                    <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
-                                </form>
+                            <div th:id="'buttonResponse-' + ${reviewService.getSellerResponseByReviewId(review.reviewId).responseId}" class="inline-flex rounded-md shadow-sm">
+                                <button th:attr="onclick=|javascript:removeSellerResponse('${reviewService.getSellerResponseByReviewId(review.reviewId).getResponseId()}', '${review.reviewId}', event)|" type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
                             </div>
+
                             <div class="flex items-center gap-4">
                             </div>
                         </div>
@@ -201,8 +201,17 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script>
+
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    }
+
+    function getCsrfHeader() {
+        return document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const addToCartForms = document.querySelectorAll('.add-to-cart-form');
         addToCartForms.forEach(form => {
@@ -240,6 +249,27 @@
             button.addEventListener('click', toggleModal);
         });
     });
+
+    async function removeSellerResponse(responseId, reviewId, event){
+        event.preventDefault();
+        try {
+            const response = await axios.post(`/api/review/delete-response/${responseId}`, {}, {
+                headers: {
+                    [getCsrfHeader()]: getCsrfToken()
+                }
+            });
+            var noResponse = document.getElementById(`noResponse-${responseId}`);
+            var div = document.getElementById(`buttonResponse-${responseId}`);
+            if (noResponse) {
+                noResponse.textContent = 'No response from Seller';
+                div.remove();
+            console.log(response.data);
+
+            }
+        } catch (error){
+            console.error(error);
+        }
+    }
 
     function toggleModal() {
         const modal = document.getElementById('default-modal');
