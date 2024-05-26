@@ -1,12 +1,16 @@
 package id.ac.ui.cs.advprog.gametime.model;
 import enums.TransactionStatus;
+import id.ac.ui.cs.advprog.gametime.model.state.FailedState;
+import id.ac.ui.cs.advprog.gametime.model.state.InitialState;
+import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
+import id.ac.ui.cs.advprog.gametime.repository.TransactionRepository;
+import id.ac.ui.cs.advprog.gametime.service.TransactionService;
+import id.ac.ui.cs.advprog.gametime.service.TransactionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransactionTest {
@@ -16,12 +20,13 @@ class TransactionTest {
     private Order order = new Order();
     private Cart cart = new Cart();
     private GameInCart gameInCart = new GameInCart();
+    private Game game = new Game();
+    private User seller = new User();
 
     @BeforeEach
     void setUp() {
-        Game game = new Game();
         game.setId(UUID.randomUUID());
-        game.setSeller(new User());
+        game.setSeller(seller);
         game.setTitle("Mock Game");
         game.setDescription("Mock Game Description");
         game.setPrice(50);
@@ -156,5 +161,66 @@ class TransactionTest {
         order.setGameQuantity(Map.of());
         transaction.setOrder(order);
         assertEquals(0, transaction.getTotalPrice());
+    }
+    @Test
+    void testSetState(){
+        Transaction transaction = new Transaction();
+        TransactionState newstate = new InitialState();
+        transaction.setState(newstate);
+        assertEquals(transaction.getState(),newstate);
+    }
+    @Test
+    void testGetGameQuantityForJson(){
+        Transaction transaction = new Transaction();
+        Order order = new Order();
+        Map<Game,Integer> gameQuantity = Map.of(game,2);
+        order.setGameQuantity(gameQuantity);
+        transaction.setOrder(order);
+        String gamedetail = game.getTitle() + " - " + game.getPlatform();
+        Map<String,Integer> jsonResult = Map.of(gamedetail,2);
+        assertEquals(transaction.getGameQuantityForJson(),jsonResult);
+    }
+    @Test
+    void testCalculateSellerGameQuantityAndRevenue(){
+        Transaction transaction = new Transaction();
+        Order order = new Order();
+        Map<Game,Integer> gameQuantity = Map.of(game,2);
+        order.setGameQuantity(gameQuantity);
+        transaction.setOrder(order);
+        transaction.setStatus(TransactionStatus.SUCCESS.getValue());
+        transaction.calculateSellerGameQuantityAndRevenue(seller);
+        String gamedetail = game.getTitle() + " - " + game.getPlatform();
+        Integer revenue = game.getPrice() * 2;
+        Map<String,Integer> jsonResult = Map.of(gamedetail,2);
+        assertEquals(transaction.getSellerGameQuantity(),jsonResult);
+        assertEquals(transaction.getSellerRevenue(),revenue);
+    }
+    @Test
+    void testSetSellerGameQuantity(){
+        Transaction transaction = new Transaction();
+        Map<String,Integer> sellerGameQuantity = Map.of("Mock Game - Mock Platform",2);
+        transaction.setSellerGameQuantity(sellerGameQuantity);
+        assertEquals(transaction.getSellerGameQuantity(),sellerGameQuantity);
+    }
+    @Test
+    void testSetSellerRevenue(){
+        Transaction transaction = new Transaction();
+        Integer revenue = 100;
+        transaction.setSellerRevenue(revenue);
+        assertEquals(transaction.getSellerRevenue(),revenue);
+    }
+    @Test
+    void testProcessState(){
+        Transaction transaction = new Transaction();
+        TransactionState newstate = new InitialState();
+        transaction.setState(newstate);
+        Order order = new Order();
+        transaction.setUser(user);
+        Map<Game,Integer> gameQuantity = Map.of(game,2);
+        order.setGameQuantity(gameQuantity);
+        transaction.setOrder(order);
+        TransactionServiceImpl service = new TransactionServiceImpl();
+        transaction.processState(service);
+        assertEquals(transaction.getState(),newstate);
     }
 }

@@ -102,7 +102,6 @@ public class Transaction {
     public void calculateSellerGameQuantityAndRevenue(User seller) {
         Map<String, Integer> games = new HashMap<>();
         int revenue = 0;
-        String status = this.status;
         for (Map.Entry<Game, Integer> entry : order.getGameQuantity().entrySet()) {
             Game game = entry.getKey();
             if (game.getSeller().equals(seller)) {
