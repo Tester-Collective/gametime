@@ -68,8 +68,9 @@ public class UserProfileController {
     @GetMapping("/{username}")
     public String viewProfile(@PathVariable String username, Model model) {
         User currentUser = userService.findByUsername(username);
+        User loggedInUser = userService.getLoggedInUser();
         model.addAttribute("viewUser", currentUser);
-        model.addAttribute("can_edit", username.equals(currentUser.getUsername()));
+        model.addAttribute("can_edit", username.equals(loggedInUser.getUsername()));
         return "profile/view";
     }
 

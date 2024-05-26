@@ -24,7 +24,7 @@
                         Seller
                     </p>
                     <p th:if="${viewUser?.isAdmin()}" class="bg-blue-500 px-3 py-1 rounded-xl">Admin</p>
-                    <a href="/profile/edit">
+                    <a href="/profile/edit" th:if="${can_edit}">
                         <img src="https://static-00.iconduck.com/assets.00/edit-icon-511x512-ir85i9io.png"
                             alt="Edit Profile" class="w-6 h-6">
                     </a>
