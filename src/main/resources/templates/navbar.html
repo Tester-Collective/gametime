@@ -1,63 +1,116 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Navbar</title>
     <link rel="stylesheet" href="/output.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 </head>
-<body>
-<div th:fragment="navbar">
-    <nav class="navbar bg-navbar-bg fixed w-full z-20 top-0 start-0">
-        <div class="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4">
-            <a href="/" class="flex flex-col items-start">
-                <span class="text-2xl font-semibold text-start whitespace-nowrap text-white">GameTime</span>
-                <span class="text-sm font-semibold text-start whitespace-nowrap text-tokyo-night-terminal-black">by Tester Collective</span>
-            </a>
-            <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
-                <div th:if="${user != null}" class="relative">
-                    <button id="dropdownAvatarButton" type="button" class="block rounded-full w-12 h-12 focus:outline-none" onclick="toggleDropdown()">
-                        <img th:src="@{/image/{imageName}(imageName=${user.profilePicture})}" alt="avatar" class="w-12 h-12 rounded-full">
-                    </button>
-                    <!-- Dropdown menu -->
-                    <div id="dropdownAvatar" class="dropdown-content hidden absolute right-0 mt-2 w-48 bg-tokyo-night-variable text-gray-900 rounded-lg shadow-lg py-2 z-50">
-                        <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
-                        <a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
-                    </div>
-                </div>
-                <button th:if="${user == null}" type="button" class="block rounded-lg px-4 py-2 border border-gray-400 bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-gray-300">
-                    Sign up
-                </button>
-                <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 bg-navbar-bg">
-                    <li>
-                        <a href="/" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:p-0 hover:text-blue-800" aria-current="page">Home</a>
-                    </li>
-                    <li>
-                        <span th:if="${user.isSeller == false}">
-                            <a href="/game/buyer" class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Games</a>
-                        </span>
-                        <span th:if="${user.isSeller == true}">
-                            <a href="/game/seller" class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Games</a>
-                        </span>
-                    </li>
-                    <li>
-                        <a href="/cart" class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-<script src="/dropdown.js"></script>
+<body>
+    <div th:fragment="navbar">
+        <nav class="navbar bg-navbar-bg fixed w-full z-20 top-0 start-0">
+            <div class="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4">
+                <a href="/" class="flex flex-col items-start">
+                    <span class="text-2xl font-semibold text-start whitespace-nowrap text-white">GameTime</span>
+                    <span class="text-sm font-semibold text-start whitespace-nowrap text-tokyo-night-terminal-black">by
+                        Tester Collective</span>
+                </a>
+                <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
+                    <div th:if="${user != null}" class="relative">
+                        <button id="dropdownAvatarButton" type="button"
+                            class="block rounded-full w-12 h-12 focus:outline-none">
+                            <div class="flex items-center justify-center gap-4">
+                                <img alt="avatar"
+                                    src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                                    id="profile-picture" class="w-12 h-12 rounded-full">
+                                <p th:text="${user?.getUsername()}" class="text-white text-sm font-semibold"
+                                    id="username">
+                            </div>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-8"
+                            id="dropdown">
+                            <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
+                            <a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
+                        </div>
+                    </div>
+                    <button th:if="${user == null}" type="button"
+                        class="block rounded-lg px-4 py-2 border border-gray-400 bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-gray-300">
+                        Sign up
+                    </button>
+                    <button data-collapse-toggle="navbar-sticky" type="button"
+                        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                        aria-controls="navbar-sticky" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 17 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M1 1h15M1 7h15M1 13h15" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+                    <ul
+                        class="flex flex-col p-4 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 bg-navbar-bg">
+                        <li>
+                            <a href="/"
+                                class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:p-0 hover:text-blue-800"
+                                aria-current="page">Home</a>
+                        </li>
+                        <li>
+                            <span th:if="${user.isSeller == false}">
+                                <a href="/game/buyer"
+                                    class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Games</a>
+                            </span>
+                            <span th:if="${user.isSeller == true}">
+                                <a href="/game/seller"
+                                    class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Games</a>
+                            </span>
+                        </li>
+                        <li>
+                            <a href="/cart"
+                                class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    const dropdownButton = document.querySelector('#dropdownAvatarButton');
+                    const dropdown = document.querySelector('#dropdown');
+
+                    dropdownButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdown.classList.toggle('hidden');
+                    });
+
+                    window.addEventListener('click', (e) => {
+                        if (!dropdownButton.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.classList.add('hidden');
+                        }
+                    });
+                });
+
+                const profilePicture = document.getElementById('profile-picture');
+                const userName = document.querySelector('#username');
+
+                fetch(`/api/profile/${userName.textContent}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.profilePicture != "") {
+                            fetch(`/image/${data.profilePicture}`)
+                                .then(response => response.blob())
+                                .then(blob => {
+                                    profilePicture.src = URL.createObjectURL(blob);
+                                });
+                        }
+                    });
+            </script>
+        </nav>
+    </div>
 </body>
+
 </html>
