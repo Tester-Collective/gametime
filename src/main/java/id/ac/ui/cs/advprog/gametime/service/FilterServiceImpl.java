@@ -14,32 +14,23 @@ public class FilterServiceImpl implements FilterService {
     @Autowired
     private FilterRepository filterRepository;
 
-    public List<Game> filterGame(String keyword, Category category, String platform, int minPrice, int maxPrice) {
-        SortedSet<Game> gamesSet = new TreeSet<>(Comparator.comparing(Game::getTitle));
-
-        if (category != null) {
-            gamesSet.addAll(filterRepository.findByCategoryOrderByTitle(category));
-        }
-
-        if (platform != null) {
-            gamesSet.addAll(filterRepository.findByPlatformOrderByTitle(platform));
-        }
-
-        if (minPrice != 0 && maxPrice != Integer.MAX_VALUE) {
-            gamesSet.addAll(filterRepository.findByPriceBetweenOrderByTitle(minPrice, maxPrice));
-        } else if (maxPrice == 0) {
-            gamesSet.addAll(filterRepository.findByPriceEqualsOrderByTitle(maxPrice));
-        }
-
-        if (keyword != null && !keyword.isEmpty()) {
-            gamesSet.addAll(filterRepository.findByTitleIgnoreCaseOrderByTitle(keyword));
-        }
-
-        if ((keyword == null || keyword.isEmpty()) && category == null && platform == null && minPrice == 0 && maxPrice == Integer.MAX_VALUE) {
-            gamesSet.addAll(filterRepository.findByOrderByTitle());
-        }
-
-        return new ArrayList<>(gamesSet);
+    public List<Game> getGamesByKeyword(String keyword) {
+        return new ArrayList<>(filterRepository.findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(false,  keyword, 0));
     }
 
+    public List<Game> getTopThreeFreeGames() {
+        return filterRepository.findTop3ByPriceEqualsOrderByAvgRatingDesc(0);
+    }
+
+    public List<Game> getGamesByPlatformOrderByRating(String platform) {
+        return new ArrayList<>(filterRepository.findTop6ByGameDeletedAndPlatformAndStockGreaterThanOrderByAvgRatingDesc(false, platform, 0));
+    }
+
+    public List<Game> getGamesTop6OrderByRating() {
+        return new ArrayList<>(filterRepository.findTop6ByGameDeletedAndStockGreaterThanOrderByAvgRatingDesc(false, 0));
+    }
+
+    public List<Game> getAllGamesWithConstraint() {
+        return new ArrayList<>(filterRepository.findByGameDeletedAndStockGreaterThanOrderByTitle(false, 0));
+    }
 }
