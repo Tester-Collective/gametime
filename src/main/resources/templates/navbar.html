@@ -18,19 +18,16 @@
                         Tester Collective</span>
                 </a>
                 <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
-                    <div th:if="${user != null}" class="relative">
-                        <button id="dropdownAvatarButton" type="button"
-                            class="block rounded-full w-12 h-12 focus:outline-none">
-                            <div class="flex items-center justify-center gap-4">
-                                <img alt="avatar"
-                                    src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                                    id="profile-picture" class="w-12 h-12 rounded-full">
-                                <p th:text="${user?.getUsername()}" class="text-white text-sm font-semibold"
-                                    id="username">
-                            </div>
-                        </button>
+                    <div th:if="${user != null}"
+                        class="flex flex-col items-end md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
+                        <div class="flex items-center justify-center gap-4" id="dropdownAvatarButton">
+                            <img alt="avatar"
+                                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                                id="profile-picture" class="w-12 h-12 rounded-full">
+                            <p th:text="${user?.getUsername()}" class="text-white text-sm font-semibold" id="username">
+                        </div>
                         <!-- Dropdown menu -->
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-8"
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-12"
                             id="dropdown">
                             <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
                             <a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
