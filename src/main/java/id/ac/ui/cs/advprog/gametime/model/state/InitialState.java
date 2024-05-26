@@ -1,9 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model.state;
 
 import id.ac.ui.cs.advprog.gametime.model.Transaction;
-import id.ac.ui.cs.advprog.gametime.model.state.FailedState;
-import id.ac.ui.cs.advprog.gametime.model.state.SuccessState;
-import id.ac.ui.cs.advprog.gametime.model.state.TransactionState;
 import id.ac.ui.cs.advprog.gametime.service.TransactionService;
 
 public class InitialState implements TransactionState {

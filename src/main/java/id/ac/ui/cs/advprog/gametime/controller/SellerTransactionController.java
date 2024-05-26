@@ -23,28 +23,21 @@ public class SellerTransactionController {
     private UserService userService;
     @GetMapping("")
     public String transactionHistory(Model model) {
-        User seller = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
-        if (seller.isSeller()) {
-            List<Transaction> transactions = transactionService.findAllTransactionofSeller(seller);
-            List<Integer> revenues = new ArrayList<>();
-            for (Transaction transaction : transactions) {
-                int revenue = 0;
-                for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
-                    if (game.getSeller().equals(seller)) {
-                        revenue += game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
-                    }
+        User seller = userService.getLoggedInUser();
+        List<Transaction> transactions = transactionService.findAllTransactionofSeller(seller);
+        List<Integer> revenues = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            int revenue = 0;
+            for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+                if (game.getSeller().equals(seller)) {
+                    revenue += game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
                 }
-                revenues.add(revenue);
             }
-            model.addAttribute("revenues", revenues);
-            model.addAttribute("seller", seller);
-            model.addAttribute("transactions", transactions);
-            return "game/seller/transaction/sellerTransactionHistory";
-        }else{
-            return "redirect:/game/buyer";
+            revenues.add(revenue);
         }
+        model.addAttribute("revenues", revenues);
+        model.addAttribute("seller", seller);
+        model.addAttribute("transactions", transactions);
+        return "game/seller/transaction/sellerTransactionHistory";
     }
 }

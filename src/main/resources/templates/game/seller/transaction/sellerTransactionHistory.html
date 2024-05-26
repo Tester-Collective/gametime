@@ -23,31 +23,38 @@
                 <th scope="col" class="py-3 px-6">Status</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="transaction : ${transactions}" class="bg-gray-800 border-b border-gray-700 hover:bg-gray-600">
-                <td class="py-4 px-6">
-                    <span th:text="${transaction.transactionDate}"></span>
-                </td>
-                <td class="py-4 px-6 font-medium text-white whitespace-nowrap">
-                    <span th:text="${transaction.transactionId}"></span>
-                </td>
-                <td class="py-4 px-6">
-                    <ul>
-                        <li th:each="cartItem : ${transaction.getOrder().getGameQuantity().keySet()}" th:if="${cartItem.seller == seller}" th:text="${cartItem.title} + ' - ' + ${cartItem.platform}"></li>
-                    </ul>
-                </td>
-                <td th:each="revenue, status : ${revenues}" class="py-4 px-6">
-                    <span th:if="${transaction.status == 'FAILED'}" th:text="'0'"></span>
-                    <span th:unless="${transaction.status == 'FAILED'}" th:text="${revenue}"></span>
-                </td>
-                <td class="py-4 px-6">
-                    <span th:text="${transaction.status}" th:classappend="${'SUCCESS'.equals(transaction.status) ? 'text-green-500' : 'text-red-500'}"></span>
-                </td>
-            </tr>
+            <tbody id="transactionDetailsBody">
             </tbody>
         </table>
     </div>
 </div>
+<script>
+    fetch('/api/transactions/seller')
+        .then(response => response.json())
+        .then(transactions => {
+            const transactionDetailsBody = document.getElementById('transactionDetailsBody');
+            let htmlString = '';
 
+            transactions.forEach(transaction => {
+                const games = Object.entries(transaction.sellerGameQuantity);
+                const gameListHTML = games.map(([gameDetails, quantity]) =>
+                    `<li>${gameDetails}</li>` // gameDetails already contains "title - platform"
+                ).join('');
+
+                htmlString += `\n<tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-600">
+                <td class="py-4 px-6">${transaction.transactionDate}</td>
+                <td class="py-4 px-6 font-medium text-white">${transaction.transactionId}</td>
+                <td class="py-4 px-6"><ul>${gameListHTML}</ul></td>
+                <td class="py-4 px-6">${transaction.sellerRevenue}</td>
+                <td class="py-4 px-6">
+                    <span class="${transaction.status === 'SUCCESS' ? 'text-green-500' : 'text-red-500'}">${transaction.status}</span>
+                </td>
+                </tr>
+            `;
+                transactionDetailsBody.innerHTML = htmlString;
+            });
+        })
+        .catch(error => console.error('Error fetching transactions:', error));
+</script>
 </body>
 </html>
