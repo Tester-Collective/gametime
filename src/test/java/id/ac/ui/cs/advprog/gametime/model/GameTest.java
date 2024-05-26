@@ -86,4 +86,11 @@ class GameTest {
         this.game.setGameDeleted(true);
         assertTrue(this.game.isGameDeleted());
     }
+
+    @Test
+    void testGetAvgRating() {
+        this.game = new Game();
+        this.game.setAvgRating(4.5f);
+        assertEquals(4.5, this.game.getAvgRating());
+    }
 }
