@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register/**", "/profile/**")
+                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register/**", "/profile/**", "/error")
                         .permitAll()
                         .requestMatchers("/game/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated())
@@ -31,9 +31,7 @@ public class SecurityConfig {
                             .loginPage("/auth/login")
                             .permitAll()
                             .defaultSuccessUrl("/")
-                            .failureUrl("/auth/login?error=true")
-                            .usernameParameter("username")
-                            .passwordParameter("password");
+                            .failureUrl("/auth/login?error=true");
                 });
 
         return http.build();
