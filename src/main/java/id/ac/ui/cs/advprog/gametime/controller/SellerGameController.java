@@ -43,6 +43,7 @@ public class SellerGameController {
 
         model.addAttribute("games", soldGames);
         model.addAttribute("seller", seller);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/index";
     }
 
@@ -89,6 +90,7 @@ public class SellerGameController {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("editGame", new GameDto(game));
         model.addAttribute("categories", categories);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/edit";
     }
 
@@ -127,6 +129,7 @@ public class SellerGameController {
         model.addAttribute("game", gameService.getGameById(id));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(id)));
         model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(id)));
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/details";
     }
 }
