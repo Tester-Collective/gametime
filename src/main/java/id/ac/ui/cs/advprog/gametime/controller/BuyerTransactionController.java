@@ -21,10 +21,7 @@ public class BuyerTransactionController {
     private UserService userService;
     @GetMapping("")
     public String transactionHistory(Model model) {
-        User user = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User user = userService.getLoggedInUser();
         List<Transaction> transactions = transactionService.findAllTransactionofUser(user);
         model.addAttribute("transactions", transactions);
         return "game/buyer/transaction/buyerTransactionHistory";

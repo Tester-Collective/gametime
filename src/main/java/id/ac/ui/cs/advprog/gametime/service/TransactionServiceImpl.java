@@ -57,6 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
         for (Transaction transaction : transactions) {
             for (Game game : games) {
                 if (transaction.getOrder().getGameQuantity().containsKey(game)) {
+                    transaction.calculateSellerGameQuantityAndRevenue(seller);
                     result.add(transaction);
                     break;
                 }
