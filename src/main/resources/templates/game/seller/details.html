@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" class="dark">
 <head>
     <meta charset="UTF-8">
+    <meta th:name="_csrf" th:content="${_csrf.token}">
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Game Detail</title>
     <link rel="stylesheet" href="/output.css">
 </head>
@@ -9,9 +11,9 @@
 <div th:include="navbar::navbar"></div>
 <div class="py-8 px-10 md:py-16 antialiased mt-20">
     <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-        <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-            <div class="relative shrink-0 w-full h-full mx-auto justify-center items-center overflow-hidden border-gray-600 md:max-w-screen-md">
-                <img class="w-full h-full object-cover absolute inset-0" th:src="@{/image/{name}(name=${game.imageName})}" alt="" />
+        <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16 md:grid md:grid-cols-1 md: justify-items-start">
+            <div class="justify-self-start flex relative shrink-0 h-108 md:h-auto mx-auto lg:justify-start items-center border-gray-600 md:max-w-screen-md">
+                <img class="h-full object-cover w-128 h-128" th:src="@{/image/{name}(name=${game.imageName})}" alt="" />
             </div>
 
             <div class="mt-6 sm:mt-8 lg:mt-0">
@@ -54,17 +56,23 @@
                 <div class="mt-2 sm:items-center sm:gap-4 sm:flex">
                     <p
                             class="text-3xl font-extrabold text-white"
+                            th:if="${game.price != 0}"
                             th:text="'Rp' + ${#numbers.formatDecimal(game.price, 3, 'POINT', 0, 'COMMA')}"
                     >
+                    <p
+                            class="text-3xl font-extrabold text-white"
+                            th:if="${game.price == 0}"
+                    >
+                        FREE
                     </p>
                     <div class="flex items-center gap-1">
                         <p>
                                 <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                      th:classappend="${i <= avgRatingByGame} ? 'text-yellow-400' : 'text-gray-300'">&#9733;
+                                      th:classappend="${i <= game.avgRating} ? 'text-yellow-400' : 'text-gray-300'">&#9733;
                                 </span>
                         </p>
                         <p>
-                                <span th:text="'(' + ${avgRatingByGame} + ')'" class="text-md font-medium text-gray-600">
+                                <span th:text="'(' + ${game.avgRating} + ')'" class="text-md font-medium text-gray-600">
                                 </span>
                         </p>
 
@@ -75,7 +83,7 @@
                     </p>
                 </div>
 
-                <hr class="my-6 md:my-8 border-gray-200" />
+                <hr class="my-6 md:my-8 border-gray-500" />
 
                 <p class="mb-6 text-gray-400" th:text="${game.getDescription()}">
                 </p>
@@ -84,27 +92,33 @@
         </div>
     </div>
 
-    <section class="bg-white py-8 antialiased dark:bg-tokyo-night-bg md:py-16">
+    <section th:if="${reviewCountByGame == 0}" class="max-w-screen-xl mx-auto bg-white py-8 antialiased dark:bg-tokyo-night-bg md:py-16">
         <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-            <div class="my-6 gap-8 sm:flex sm:items-start md:my-8">
-                <div class="shrink-0 space-y-4">
-                    <p class="text-3xl font-semibold leading-none text-gray-900 dark:text-white">
-                        <span th:text="Reviews"></span>
-                    </p>
-                </div>
+            <div class="mt-3 divide-y divide-gray-600">
+                <p class="mb-3 text-3xl font-semibold leading-none text-gray-900 dark:text-white">
+                    <span> No reviews </span>
+                </p>
             </div>
+        </div>
+    </section>
 
-            <div class="mt-4 divide-y divide-gray-200">
-                <div th:each="review : ${reviews}" class="gap-3 pb-6 sm:flex sm:items-start pt-3">
-                    <div class="shrink-0 space-y-2 sm:w-48 md:w-72">
+    <section th:if="${reviewCountByGame != 0}" class="bg-white py-8 antialiased dark:bg-tokyo-night-bg md:py-16">
+        <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+            <!--                All the reviews by all the user of the game-->
+
+            <div class="mt-10 divide-y divide-gray-600">
+                <p class="mb-3 text-3xl font-semibold leading-none text-gray-900 dark:text-white">
+                    <span> All the Game Reviews</span>
+                </p>
+                <div th:each="review : ${reviews}" class="gap-3 pb-6 pt-6 grid grid-cols-3">
+                    <div class="flex items-center gap-0.5 col-span-3">
                         <div class="flex items-center gap-0.5">
-                            <div class="flex items-center gap-0.5">
                                     <span th:each="i : ${#numbers.sequence(1, 5)}"
                                           th:classappend="${i <= review.rating} ? 'text-yellow-400' : 'text-gray-300'">&#9733;
                                     </span>
-                            </div>
                         </div>
-
+                    </div>
+                    <div class="shrink-0 space-y-2 sm:w-48 md:w-72 col-span-1">
                         <div class="space-y-0.5">
                             <p class="text-base font-semibold text-white">
                                     <span th:text="${review.user.username}">
@@ -127,23 +141,124 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 min-w-0 flex-1 space-y-4 sm:mt-0 flex-col">
+                    <div class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-2">
                         <p class="text-base font-semibold text-white">
                                 <span th:text="${review.reviewTitle}">
                                 </span>
                         </p>
-                        <p class="text-base font-normal text-gray-500 dark:text-gray-400">
+                        <p class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
                                 <span th:text="${review.reviewText}">
                                 </span>
                         </p>
 
+                        <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                                <span>
+                                    No response from Seller
+                                </span>
+                        </p>
+                        <div th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) != null}" class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-2">
+                            <p  class="text-base font-normal text-green-500 dark:text-gray-400 w-128">
+                                <span th:text="${reviewService.getSellerResponseByReviewId(review.reviewId).getResponse()}">
+                                </span>
+                            </p>
+                            <div class="inline-flex rounded-md shadow-sm">
+                                <form id= "deleteForm" method="post" th:action="@{/game/seller/{gameId}/delete-response/{reviewId}/{responseId}(gameId =${game.id}, reviewId =${review.reviewId}, responseId=${reviewService.getSellerResponseByReviewId(review.reviewId).getResponseId()})}">
+                                    <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
+                                </form>
+                            </div>
+                            <div class="flex items-center gap-4">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                        </div>
+                    </div>
+                    <div class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-3">
+                        <div class="inline-flex rounded-md shadow-sm">
+                            <form id= "addForm" method="post" th:action="@{/game/seller/{gameId}/add-response/{reviewId}(gameId =${game.id}, reviewId =${review.reviewId})}">
+                                <label for="large-input" class="hidden"></label>
+                                <input name="seller-response" placeholder="Add your response" type="text" id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Respond</button>
+                            </form>
+                        </div>
                         <div class="flex items-center gap-4">
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 </div>
+
+
+<!-- Modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-card-bg rounded-lg shadow-lg p-6 max-w-sm">
+        <h2 class="text-lg font-semibold">Are you sure you want to delete this review?</h2>
+        <div class="mt-4 flex justify-end space-x-2">
+            <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600" onclick="closeModal()">Cancel</button>
+            <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+        addToCartForms.forEach(form => {
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const gameId = form.action.split('/').pop();
+                const csrfToken = formData.get('_csrf');
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({}) // You can send additional data here if needed
+                    });
+
+                    if (response.ok) {
+                        // Item added successfully, open the modal
+                        toggleModal();
+                    } else {
+                        console.error('Failed to add item to cart');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        const closeModalButtons = document.querySelectorAll('[data-modal-hide="default-modal"]');
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', toggleModal);
+        });
+    });
+
+    function toggleModal() {
+        const modal = document.getElementById('default-modal');
+        modal.classList.toggle('hidden');
+    }
+
+    function openModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    function confirmDelete() {
+        document.getElementById('deleteForm').submit();
+    }
+</script>
+
+
 </body>
 </html>

@@ -1,16 +1,15 @@
 package id.ac.ui.cs.advprog.gametime.repository;
 
-import id.ac.ui.cs.advprog.gametime.model.Cart;
-import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.model.File;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
-@Repository
 @Transactional
-public interface CartRepository extends JpaRepository<Cart, UUID> {
-    Cart findCartByCustomer(User user);
-
+@Repository
+public interface FileRepository extends JpaRepository<File, UUID> {
+    Optional<File> findByName(String name);
 }

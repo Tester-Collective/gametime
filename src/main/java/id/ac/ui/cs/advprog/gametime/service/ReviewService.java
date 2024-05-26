@@ -26,7 +26,7 @@ public interface ReviewService{
     Integer getReviewCountByGame(UUID gameId);
     public void deleteSellerResponse(UUID responseId);
     public void addSellerResponse(Review review, String response);
-    public SellerResponse getSellerResponse(UUID reviewId);
+    public SellerResponse getSellerResponseByReviewId(UUID reviewId);
 
 
 

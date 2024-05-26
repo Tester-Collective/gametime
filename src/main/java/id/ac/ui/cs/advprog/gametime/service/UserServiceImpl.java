@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
+import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.repository.CartRepository;
 import id.ac.ui.cs.advprog.gametime.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -61,8 +66,12 @@ public class UserServiceImpl implements UserService {
                     .email(email)
                     .isSeller(isSeller)
                     .build();
+            User savedUser = userRepository.save(user);
+            Cart cart = new Cart();
+            cart.setCustomer(user);
+            cartRepository.save(cart);
 
-            return userRepository.save(user);
+            return savedUser;
         }
     }
 

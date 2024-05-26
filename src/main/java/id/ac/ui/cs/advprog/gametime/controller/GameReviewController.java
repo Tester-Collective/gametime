@@ -36,6 +36,7 @@ public class GameReviewController {
         User user = userService.getLoggedInUser();
         List<Review> userReviews = reviewService.findReviewsByGameIdAndUserId(UUID.fromString(gameId), user.getUserID());
 
+        model.addAttribute("reviewService", reviewService);
         model.addAttribute("userReviews", userReviews);
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(gameId)));
         model.addAttribute("game", gameService.getGameById(gameId));

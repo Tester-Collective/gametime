@@ -17,6 +17,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private GameService gameService;
 
     @Override
     public Transaction create(Transaction transaction) {
@@ -54,6 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
         for (Transaction transaction : transactions) {
             for (Game game : games) {
                 if (transaction.getOrder().getGameQuantity().containsKey(game)) {
+                    transaction.calculateSellerGameQuantityAndRevenue(seller);
                     result.add(transaction);
                     break;
                 }
@@ -73,22 +76,27 @@ public class TransactionServiceImpl implements TransactionService {
         int total = 0;
         for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
             total += game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
+        }if (hasSufficientBalance(transaction)) {
+            user.setBalance(user.getBalance() - total);
         }
-        user.setBalance(user.getBalance() - total);
     }
     @Override
     public void decreaseGameStock(Transaction transaction) {
-        for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
-            game.setStock(game.getStock() - transaction.getOrder().getGameQuantity().get(game));
+        if (hasSufficientBalance(transaction)) {
+            for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+                gameService.decreaseStock(game, transaction.getOrder().getGameQuantity().get(game));
+            }
         }
     }
 
     @Override
     public void updateSellerBalance(Transaction transaction) {
-        for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
-            User seller = game.getSeller();
-            int total = game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
-            seller.setBalance(seller.getBalance() + total);
+        if (hasSufficientBalance(transaction)) {
+            for (Game game : transaction.getOrder().getGameQuantity().keySet()) {
+                User seller = game.getSeller();
+                int total = game.getPrice() * transaction.getOrder().getGameQuantity().get(game);
+                seller.setBalance(seller.getBalance() + total);
+            }
         }
     }
 

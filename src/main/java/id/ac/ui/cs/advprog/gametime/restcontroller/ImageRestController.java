@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.restcontroller;
 
+import id.ac.ui.cs.advprog.gametime.model.File;
 import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +22,15 @@ public class ImageRestController {
     @Autowired
     private ImageService imageService;
     @PostMapping("")
-    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException, NoSuchAlgorithmException {
-        Image uploadImage = imageService.uploadImage(image);
+    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile image) throws IOException {
+        File uploadImage = imageService.uploadImageToFileSystem(image);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
     @GetMapping("/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) {
-        byte[] downloadImage = imageService.downloadImage(fileName);
+    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
+        byte[] downloadImage = imageService.downloadImageFromFileSystem(fileName);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage);

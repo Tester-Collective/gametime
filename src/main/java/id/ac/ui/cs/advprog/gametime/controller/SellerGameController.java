@@ -1,13 +1,9 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
-import id.ac.ui.cs.advprog.gametime.model.Category;
-import id.ac.ui.cs.advprog.gametime.model.Game;
+import id.ac.ui.cs.advprog.gametime.model.*;
 import id.ac.ui.cs.advprog.gametime.dto.GameDto;
-import id.ac.ui.cs.advprog.gametime.model.Image;
-import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +34,12 @@ public class SellerGameController {
         User seller = userService.getLoggedInUser();
         List<Game> soldGames = gameService.findGamesBySeller(seller);
         if (soldGames.isEmpty()) {
+            model.addAttribute("user", seller);
             return "game/seller/empty";
         }
 
         model.addAttribute("games", soldGames);
-        model.addAttribute("seller", seller);
+        model.addAttribute("user", seller);
         return "game/seller/index";
     }
 
@@ -53,13 +50,13 @@ public class SellerGameController {
 
         model.addAttribute("gameDto", gameDto);
         model.addAttribute("categories", categories);
-        model.addAttribute("seller", userService.getLoggedInUser());
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/sell";
     }
 
     @PostMapping("/sell")
-    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) {
-        Image image1 = imageService.uploadImage(image);
+    public String sellGamePost(@ModelAttribute GameDto gameDto, @RequestParam("image") MultipartFile image) throws IOException {
+        File image1 = imageService.uploadImageToFileSystem(image);
 
         Game game = new Game();
         game.setTitle(gameDto.getTitle());
@@ -89,18 +86,19 @@ public class SellerGameController {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("editGame", new GameDto(game));
         model.addAttribute("categories", categories);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/seller/edit";
     }
 
     @PostMapping("/edit/{id}")
-    public String editGamePost(@ModelAttribute("editGame") GameDto gameDto, @PathVariable String id) {
+    public String editGamePost(@ModelAttribute("editGame") GameDto gameDto, @PathVariable String id) throws IOException {
         User seller = userService.getLoggedInUser();
 
         Game game = gameService.getGameById(id);
         game.setTitle(gameDto.getTitle());
 
         if (gameDto.getImage() != null && !gameDto.getImage().isEmpty()) {
-            Image uploadedImage = imageService.uploadImage(gameDto.getImage());
+            File uploadedImage = imageService.uploadImageToFileSystem(gameDto.getImage());
             if (game.getImageName() != null) {
                 imageService.deleteImage(game.getImageName());
             }
@@ -123,10 +121,13 @@ public class SellerGameController {
 
     @GetMapping("/{id}")
     public String gameDetails(Model model, @PathVariable String id){
+        model.addAttribute("reviewService", reviewService );
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(id)));
         model.addAttribute("game", gameService.getGameById(id));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(id)));
         model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(id)));
+        model.addAttribute("user", userService.getLoggedInUser());
+        model.addAttribute("reviewService", reviewService);
         return "game/seller/details";
     }
 }
