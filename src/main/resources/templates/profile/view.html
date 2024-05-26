@@ -15,11 +15,8 @@
     <div class="flex flex-col justify-between items-center container mx-auto my-8 mt-32 gap-8">
         <div class="flex items-center gap-8" th:if="${user != null}">
             <img class="rounded-full object-contain w-24"
-                th:if="${user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()}"
-                th:src="@{/image/{name}(name=${user?.getProfilePicture()})}">
-            <img class="rounded-full object-contain w-24"
-                th:if="${user.getProfilePicture() == null || user.getProfilePicture().isEmpty()}"
-                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg">
+                src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                id="profile-picture" alt="Profile Picture">
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-4">
                     <h1 th:text="${user?.getUsername()}" class="text-4xl font-bold"></h1>
@@ -44,6 +41,22 @@
         </div>
     </div>
 
+    <script>
+        const profilePicture = document.getElementById('profile-picture');
+        const userName = document.querySelector('h1');
+
+        fetch(`/api/profile/${userName.textContent}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.profilePicture != "") {
+                    fetch(`/image/${data.profilePicture}`)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            profilePicture.src = URL.createObjectURL(blob);
+                        });
+                }
+            });
+    </script>
 </body>
 
 </html>
