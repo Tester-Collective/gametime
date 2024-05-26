@@ -6,6 +6,13 @@ import java.util.List;
 
 public interface FilterService {
 
-    List<Game> filterGame(String keyword, Category category, String platform, int minPrice, int maxPrice);
+    List<Game> getGamesByKeyword(String keyword);
 
+    List<Game> getTopThreeFreeGames();
+
+    List<Game> getGamesByPlatformOrderByRating(String platform);
+
+    List<Game> getGamesTop6OrderByRating();
+
+    List<Game> getAllGamesWithConstraint();
 }
