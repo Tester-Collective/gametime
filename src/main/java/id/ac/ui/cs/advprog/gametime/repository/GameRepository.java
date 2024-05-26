@@ -15,4 +15,5 @@ public interface GameRepository extends JpaRepository<Game, UUID> {
     List<Game> findGamesByGameDeletedAndStockGreaterThanOrderByTitle(boolean gameDeleted, int stock);
     List<Game> findGamesBySeller(User seller);
     List<Game> findGamesBySellerAndGameDeletedOrderByTitle(User seller, boolean gameDeleted);
+    List<Game> findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(boolean gameDeleted, String keyword, int stock);
 }

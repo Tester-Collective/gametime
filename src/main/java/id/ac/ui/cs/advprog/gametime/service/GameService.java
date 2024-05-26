@@ -18,4 +18,6 @@ public interface GameService {
 
     Game decreaseStock(Game game, int sub);
     public boolean lazyDeleteGame(Game game);
+
+    public List<Game> findGamesByKeyword(String keyword);
 }

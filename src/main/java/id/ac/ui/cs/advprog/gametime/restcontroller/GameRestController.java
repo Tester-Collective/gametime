@@ -20,9 +20,6 @@ public class GameRestController {
     private GameService gameService;
 
     @Autowired
-    private FilterService filterService;
-
-    @Autowired
     private ReviewService reviewService;
 
     @GetMapping("{id}")
@@ -37,7 +34,7 @@ public class GameRestController {
 
     @GetMapping("/filter")
     public CompletableFuture<List<Game>> filter(@RequestParam("query") String keyword) {
-        List<Game> games = filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
+        List<Game> games = gameService.findGamesByKeyword(keyword);
         return CompletableFuture.completedFuture(games);
     }
 
@@ -48,7 +45,7 @@ public class GameRestController {
 
     @GetMapping("reviews/rating/{id}")
     public float getAverageRatingByGameId(@PathVariable String id) {
-        return reviewService.calculateGameRatingAverage(UUID.fromString(id));
+        return gameService.getGameById(id).getAvgRating();
     }
 
     @GetMapping("reviews/count/{id}")
