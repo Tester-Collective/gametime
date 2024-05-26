@@ -234,6 +234,27 @@
             </div>
         </div>
     </div>
+
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-gray-100 dark:text-gray-100">Reviews</h1>
+
+        <div th:each="review : ${reviews}" class="bg-card-bg rounded-lg shadow-md p-6 mb-4">
+            <div class="flex items-center mb-4">
+                <div class="flex items-center">
+                    <p>
+                        <span th:each="i : ${#numbers.sequence(1, 5)}"
+                              th:classappend="${i <= review.rating} ? 'text-yellow-400' : 'text-gray-300'">&#9733;
+                        </span>
+                    </p>
+                    <span th:text="'(' + ${review.rating} + ')'" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3"></span>
+                </div>
+                <div class="ml-4 text-gray-300 text-sm" th:text="${review.getUser().getUsername()}">Username</div>
+            </div>
+            <div class="mb-2 text-white font-semibold text-xl" th:text="${review.game.title}">Game Name</div>
+            <div class="mb-2 text-white pt-2" th:text="${review.reviewTitle}">Review Name</div>
+            <div class="text-gray-200" th:text="${review.reviewText}">Comment text goes here...</div>
+        </div>
+    </div>
 </section>
 
 
