@@ -31,9 +31,7 @@ public class SecurityConfig {
                             .loginPage("/auth/login")
                             .permitAll()
                             .defaultSuccessUrl("/")
-                            .failureUrl("/auth/login?error=true")
-                            .usernameParameter("username")
-                            .passwordParameter("password");
+                            .failureUrl("/auth/login?error=true");
                 });
 
         return http.build();
