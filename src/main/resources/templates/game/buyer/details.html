@@ -176,6 +176,7 @@
                                 </span>
                             </p>
 
+
                             <div class="flex items-center gap-4">
                             </div>
                         </div>
@@ -192,6 +193,16 @@
                             </div>
                             <div class="flex items-center gap-4">
                             </div>
+
+                            <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                                <span>
+                                    No response from Seller
+                                </span>
+                            </p>
+                            <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) != null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                                <span th:text="'Seller response: ' + ${reviewService.getSellerResponseByReviewId(review.reviewId).response}">
+                                </span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -258,6 +269,16 @@
                             <div class="flex items-center gap-4">
                             </div>
                         </div>
+
+                        <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                                <span>
+                                    No response from Seller
+                                </span>
+                        </p>
+                        <p th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) != null}" class="text-base font-normal text-gray-500 dark:text-gray-400 w-128">
+                                <span th:text="'Seller response: ' + ${reviewService.getSellerResponseByReviewId(review.reviewId).response}">
+                                </span>
+                        </p>
                     </div>
                 </div>
 
