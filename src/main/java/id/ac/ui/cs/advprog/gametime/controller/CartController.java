@@ -28,10 +28,7 @@ public class CartController {
     public String index(Model model) {
         int totalPrice = 0;
         int totalQuantity = 0;
-        User customer = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User customer = userService.getLoggedInUser();
         Cart cart = cartService.getCartByUser(customer);
         List<GameInCart> games = (cart.getGames() != null) ? cart.getGames() : new ArrayList<>();
         games.sort(Comparator.comparing(g -> g.getGame().getTitle()));
@@ -42,6 +39,7 @@ public class CartController {
             model.addAttribute("games", games);
             model.addAttribute("totalPrice", totalPrice);
             model.addAttribute("totalQuantity", totalQuantity);
+            model.addAttribute("user", customer);
         return "game/buyer/cart/index";
     }
 }
