@@ -48,12 +48,12 @@ public class FilterServiceTest {
 
     @Test
     void testGetTopThreeFreeGames() {
-        when(filterRepository.findTop3ByPriceEqualsOrderByAvgRatingDesc(0)).thenReturn(games);
+        when(filterRepository.findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(0, false, 0)).thenReturn(games);
 
         List<Game> result = filterService.getTopThreeFreeGames();
 
         assertEquals(games, result);
-        verify(filterRepository, times(1)).findTop3ByPriceEqualsOrderByAvgRatingDesc(0);
+        verify(filterRepository, times(1)).findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(0,false,0);
     }
 
     @Test

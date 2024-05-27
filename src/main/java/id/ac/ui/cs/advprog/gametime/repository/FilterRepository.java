@@ -14,7 +14,7 @@ public interface FilterRepository extends JpaRepository<Game, UUID> {
 
     List<Game> findByGameDeletedAndStockGreaterThanOrderByTitle(boolean gameDeleted, int stock);
 
-    List<Game> findTop3ByPriceEqualsOrderByAvgRatingDesc(int price);
+    List<Game> findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(int price, boolean isDeleted, int stock);
 
     List<Game> findTop6ByGameDeletedAndStockGreaterThanOrderByAvgRatingDesc(boolean gameDeleted, int stock);
 

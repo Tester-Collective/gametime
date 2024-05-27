@@ -1,4 +1,5 @@
-import id.ac.ui.cs.advprog.gametime.controller.SellerGameController;
+package id.ac.ui.cs.advprog.gametime.controller;
+
 import id.ac.ui.cs.advprog.gametime.dto.GameDto;
 import id.ac.ui.cs.advprog.gametime.model.*;
 import id.ac.ui.cs.advprog.gametime.service.*;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -25,16 +27,13 @@ class SellerGameControllerTest {
     GameService gameService;
 
     @Mock
-    CategoryService categoryService;
+    CartService cartService;
 
     @Mock
     UserService userService;
 
     @Mock
     ImageService imageService;
-
-    @Mock
-    ReviewService reviewService;
 
     @Mock
     MultipartFile image;
@@ -51,12 +50,14 @@ class SellerGameControllerTest {
     void shouldDisplaySellerGamesWhenPresent() {
         User seller = new User();
         Game game = new Game();
+        Cart cart = new Cart();
         game.setSeller(seller);
         List<Game> soldGames = new ArrayList<>();
         soldGames.add(game);
 
         when(userService.getLoggedInUser()).thenReturn(seller);
         when(gameService.findGamesBySeller(seller)).thenReturn(soldGames);
+        when(cartService.getCartByUser(seller)).thenReturn(cart);
 
         sellerGameController.index(model);
 
@@ -115,7 +116,14 @@ class SellerGameControllerTest {
 
     @Test
     void shouldHandleGameDeletePostSuccessfully() {
+        User seller = new User();
+        Cart cart = new Cart();
+        cart.setCartId(UUID.fromString("635efa62-9375-454e-ab7c-7dcf17f74dd7"));
+        GameInCart gameInCart = new GameInCart();
+        when(cartService.getCartByUser(seller)).thenReturn(cart);
         when(gameService.getGameById(anyString())).thenReturn(new Game());
+        when(cartService.getGameInCartByGameId("1", cart.getCartId().toString())).thenReturn(gameInCart);
+        when(userService.getLoggedInUser()).thenReturn(seller);
 
         sellerGameController.deleteGamePost("1");
 

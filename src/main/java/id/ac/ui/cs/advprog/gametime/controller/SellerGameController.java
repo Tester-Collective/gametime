@@ -27,6 +27,8 @@ public class SellerGameController {
     private ImageService imageService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private CartService cartService;
     private static final String SELLER_GAME_PAGE = "redirect:/game/seller";
 
     @GetMapping("")
@@ -75,8 +77,13 @@ public class SellerGameController {
 
     @PostMapping("/delete/{id}")
     public String deleteGamePost(@PathVariable String id) {
+        User user = userService.getLoggedInUser();
         Game game = gameService.getGameById(id);
         gameService.lazyDeleteGame(game);
+        Cart cart = cartService.getCartByUser(user);
+        GameInCart gameInCart = cartService.getGameInCartByGameId(id, cart.getCartId().toString());
+        cartService.removeGameFromCart(user, gameInCart);
+
         return SELLER_GAME_PAGE;
     }
 

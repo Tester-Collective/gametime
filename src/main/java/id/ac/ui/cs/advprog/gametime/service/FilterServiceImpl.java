@@ -20,7 +20,7 @@ public class FilterServiceImpl implements FilterService {
 
     @Override
     public List<Game> getTopThreeFreeGames() {
-        return filterRepository.findTop3ByPriceEqualsOrderByAvgRatingDesc(0);
+        return filterRepository.findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(0, false, 0);
     }
 
     @Override
