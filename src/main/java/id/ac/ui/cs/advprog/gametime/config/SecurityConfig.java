@@ -18,11 +18,11 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register/**", "/profile/**", "/error")
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/input.css", "/output.css", "/", "/auth/register/**", "/profile/**", "/error", "/image/**")
                         .permitAll()
                         .requestMatchers("/game/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated())
