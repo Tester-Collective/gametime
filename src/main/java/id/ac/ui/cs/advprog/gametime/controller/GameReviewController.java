@@ -33,14 +33,16 @@ public class GameReviewController {
 
     @GetMapping("/{gameId}")
     public String gameDetails(Model model, @PathVariable String gameId){
+        User user = userService.getLoggedInUser();
+        List<Review> userReviews = reviewService.findReviewsByGameIdAndUserId(UUID.fromString(gameId), user.getUserID());
 
-        List<Review> userReviews = reviewService.findReviewsByGameIdAndUserId(UUID.fromString(gameId), userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getUserID());
-
+        model.addAttribute("reviewService", reviewService);
         model.addAttribute("userReviews", userReviews);
         model.addAttribute("reviews", reviewService.findReviewsByGameId(UUID.fromString(gameId)));
         model.addAttribute("game", gameService.getGameById(gameId));
         model.addAttribute("reviewCountByGame", reviewService.getReviewCountByGame(UUID.fromString(gameId)));
         model.addAttribute("avgRatingByGame", reviewService.calculateGameRatingAverage(UUID.fromString(gameId)));
+        model.addAttribute("user", user);
         return "game/buyer/details";
     }
 
@@ -64,6 +66,7 @@ public class GameReviewController {
         review.setGame(gameService.getGameById(gameId));
         review.setRating(0);
         model.addAttribute("review", review);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/buyer/review/addReview";
 
     }
@@ -91,6 +94,7 @@ public class GameReviewController {
         Review review = reviewService.getReviewById(UUID.fromString(reviewId));
         model.addAttribute("editReview", review);
         model.addAttribute("reviewId", reviewId);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/buyer/review/editReview";
     }
 

@@ -5,10 +5,14 @@ import id.ac.ui.cs.advprog.gametime.model.SellerResponse;
 import id.ac.ui.cs.advprog.gametime.model.User;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import id.ac.ui.cs.advprog.gametime.observer.ReviewObserver;
 
 public interface ReviewService{
+    void addObserver(ReviewObserver observer);
+    void removeObserver(ReviewObserver observer);
+    void notifyObservers(Review review);
+
     void deleteReviewById(UUID id);
     Review getReviewById(UUID id);
     Review addReview(Review review);
@@ -22,7 +26,7 @@ public interface ReviewService{
     Integer getReviewCountByGame(UUID gameId);
     public void deleteSellerResponse(UUID responseId);
     public void addSellerResponse(Review review, String response);
-    public SellerResponse getSellerResponse(UUID reviewId);
+    public SellerResponse getSellerResponseByReviewId(UUID reviewId);
 
 
 

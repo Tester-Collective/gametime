@@ -1,13 +1,17 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
+import id.ac.ui.cs.advprog.gametime.event.ReviewEvent;
 import id.ac.ui.cs.advprog.gametime.model.Review;
 import id.ac.ui.cs.advprog.gametime.model.SellerResponse;
 import id.ac.ui.cs.advprog.gametime.model.User;
+import id.ac.ui.cs.advprog.gametime.observer.ReviewObserver;
 import id.ac.ui.cs.advprog.gametime.repository.ReviewRepository;
 import id.ac.ui.cs.advprog.gametime.repository.SellerResponseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,8 +25,36 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private SellerResponseRepository sellerResponseRepository;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    private final List<ReviewObserver> observers = new ArrayList<>();
+
+    @Override
+    public void addObserver(ReviewObserver observer) {
+        observers.add(observer);
+    }
+    @Override
+    public void removeObserver(ReviewObserver observer) {
+        observers.remove(observer);
+    }
+    @Override
+    public void notifyObservers(Review review) {
+        for (ReviewObserver observer : observers) {
+            observer.updateReview(review);
+        }
+    }
+
+    List<ReviewObserver> getObservers() {
+        return observers;
+    }
+
+
     public void deleteReviewById(UUID id) {
+        Review review = getReviewById(id);
         reviewRepository.deleteById(id);
+        notifyObservers(review);
+        eventPublisher.publishEvent(new ReviewEvent(this, review));
     }
 
     public Review getReviewById(UUID id) {
@@ -30,12 +62,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public Review addReview(Review review) {
-        return reviewRepository.save(review);
+        Review savedReview = reviewRepository.save(review);
+        notifyObservers(savedReview);
+        eventPublisher.publishEvent(new ReviewEvent(this, savedReview));
+        return savedReview;
     }
 
     public Review updateReview(UUID id, Review review) {
         review.setReviewId(id);
-        return reviewRepository.save(review);
+        Review updatedReview = reviewRepository.save(review);
+        notifyObservers(updatedReview);
+        eventPublisher.publishEvent(new ReviewEvent(this, updatedReview));
+        return updatedReview;
     }
 
     public List<Review> getAllReviews() {
@@ -85,7 +123,7 @@ public class ReviewServiceImpl implements ReviewService {
         sellerResponseRepository.deleteById(responseId);
     }
 
-    public SellerResponse getSellerResponse(UUID reviewId){
+    public SellerResponse getSellerResponseByReviewId(UUID reviewId){
         return sellerResponseRepository.findByReview_ReviewId(reviewId);
     }
 

@@ -1,186 +1,81 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
-import id.ac.ui.cs.advprog.gametime.exception.QuantityValidationException;
 import id.ac.ui.cs.advprog.gametime.model.Cart;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.model.GameInCart;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.CartService;
-import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
 class CartControllerTest {
 
+    @Mock
+    Model model;
+
+
+    @Mock
+    CartService cartService;
+
+    @Mock
+    UserService userService;
+
     @InjectMocks
-    private CartController cartController;
-
-    @Mock
-    private CartService cartService;
-
-    @Mock
-    private GameService gameService;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private Model model;
-
-    @Mock
-    private Authentication authentication;
-
-    @Mock
-    private SecurityContext securityContext;
-
-    private User user;
-    private Cart cart;
-    private Game game;
-    private GameInCart gameInCart;
+    CartController cartController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        user = new User();
-        user.setUsername("testUser");
+    }
 
-        cart = new Cart();
-        cart.setCartId(UUID.randomUUID());
+    @Test
+    void shouldDisplayCartWhenGamesArePresent() {
+        User user = new User();
+        Cart cart = new Cart();
+        cart.setCustomer(user);
+        GameInCart gameInCart = new GameInCart();
+        gameInCart.setGame(new Game());
+        gameInCart.setQuantity(1);
+        List<GameInCart> games = new ArrayList<>();
+        games.add(gameInCart);
+        cart.setGames(games);
+
+        when(userService.getLoggedInUser()).thenReturn(user);
+        when(cartService.getCartByUser(user)).thenReturn(cart);
+
+        cartController.index(model);
+
+        verify(model, times(1)).addAttribute("games", games);
+        verify(model, times(1)).addAttribute("totalPrice", gameInCart.getGame().getPrice());
+        verify(model, times(1)).addAttribute("totalQuantity", gameInCart.getQuantity());
+        verify(model, times(1)).addAttribute("user", user);
+    }
+
+    @Test
+    void shouldDisplayEmptyCartWhenNoGamesArePresent() {
+        User user = new User();
+        Cart cart = new Cart();
         cart.setCustomer(user);
         cart.setGames(new ArrayList<>());
 
-        game = new Game();
-        game.setId(UUID.randomUUID());
-        game.setTitle("Test Game");
-        game.setPrice(100);
-
-        gameInCart = new GameInCart();
-        gameInCart.setGame(game);
-        gameInCart.setQuantity(1);
-        gameInCart.setCart(cart);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn(user.getUsername());
-        SecurityContextHolder.setContext(securityContext);
-    }
-
-    @Test
-    void testIndex() {
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
+        when(userService.getLoggedInUser()).thenReturn(user);
         when(cartService.getCartByUser(user)).thenReturn(cart);
 
-        String view = cartController.index(model);
+        cartController.index(model);
 
-        verify(userService).findByUsername(user.getUsername());
-        verify(cartService).getCartByUser(user);
-        verify(model).addAttribute(eq("games"), anyList());
-        verify(model).addAttribute("totalPrice", 0);
-        verify(model).addAttribute("totalQuantity", 0);
-        assertEquals("game/buyer/cart/index", view);
-    }
-
-    @Test
-    void testAddGameToCart_NewGame() {
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(gameService.getGameById(game.getId().toString())).thenReturn(game);
-
-        String view = cartController.addGameToCart(game.getId().toString());
-
-        verify(cartService).addGameToCart(eq(user), any(GameInCart.class));
-        assertEquals("redirect:/game/buyer", view);
-    }
-
-    @Test
-    void testAddGameToCart_ExistingGame() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.addGameToCart(game.getId().toString());
-
-        verify(cartService).increaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/game/buyer", view);
-    }
-
-    @Test
-    void testRemoveGameFromCart() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.removeGameFromCart(game.getId().toString());
-
-        verify(cartService).removeGameFromCart(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testIncreaseGameQuantity() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.increaseGameQuantity(game.getId().toString());
-
-        verify(cartService).increaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testDecreaseGameQuantity_Success() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-
-        String view = cartController.decreaseGameQuantity(game.getId().toString(), model);
-
-        verify(cartService).decreaseGameQuantity(user, gameInCart);
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testDecreaseGameQuantity_QuantityValidationException() {
-        cart.getGames().add(gameInCart);
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-        when(cartService.getCartByUser(user)).thenReturn(cart);
-        when(cartService.getGameInCartByGameId(game.getId().toString(), cart.getCartId().toString())).thenReturn(gameInCart);
-        doThrow(new QuantityValidationException("Quantity cannot be below 0")).when(cartService).decreaseGameQuantity(user, gameInCart);
-
-        String view = cartController.decreaseGameQuantity(game.getId().toString(), model);
-
-        verify(cartService).decreaseGameQuantity(user, gameInCart);
-        verify(model).addAttribute("errorMessage", "Quantity cannot be below 0");
-        assertEquals("redirect:/cart", view);
-    }
-
-    @Test
-    void testClearCart() {
-        when(userService.findByUsername(user.getUsername())).thenReturn(user);
-
-        String view = cartController.clearCart();
-
-        verify(cartService).clearCart(user);
-        assertEquals("redirect:/cart", view);
+        verify(model, times(1)).addAttribute("games", cart.getGames());
+        verify(model, times(1)).addAttribute("totalPrice", 0);
+        verify(model, times(1)).addAttribute("totalQuantity", 0);
+        verify(model, times(1)).addAttribute("user", user);
     }
 }

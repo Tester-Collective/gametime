@@ -1,21 +1,22 @@
 package id.ac.ui.cs.advprog.gametime.service;
 
-import id.ac.ui.cs.advprog.gametime.model.Category;
 import id.ac.ui.cs.advprog.gametime.model.Game;
 import id.ac.ui.cs.advprog.gametime.repository.FilterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class FilterServiceTest {
 
     @Mock
@@ -24,89 +25,65 @@ public class FilterServiceTest {
     @InjectMocks
     private FilterServiceImpl filterService;
 
-    private List<Game> gameList;
+    private List<Game> games;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        gameList = new ArrayList<>();
-
-        Category FPS = new Category();
-        FPS.setId(UUID.randomUUID());
-        FPS.setName("FPS");
-
-        Category STRATEGY = new Category();
-        STRATEGY.setId(UUID.randomUUID());
-        STRATEGY.setName("Strategy");
-
+    void setUp() {
         Game game1 = new Game();
-        game1.setId(UUID.randomUUID());
-        game1.setTitle("Test Game 1");
-        game1.setCategory(FPS);
-        game1.setPlatform("PC");
-        game1.setPrice(50);
-
         Game game2 = new Game();
-        game2.setId(UUID.randomUUID());
-        game2.setTitle("Another Test Game");
-        game2.setCategory(STRATEGY);
-        game2.setPlatform("Console");
-        game2.setPrice(0);
-
-        gameList.add(game1);
-        gameList.add(game2);
-    }
-
-    // Test commit because Rafif used different github account (ACCIDENTALLY)
-    @Test
-    public void testFilterGameByCategory() {
-        Category FPS = new Category();
-        FPS.setId(UUID.randomUUID());
-        FPS.setName("FPS");
-
-        when(filterRepository.findByCategoryOrderByTitle(FPS)).thenReturn(List.of(gameList.getFirst()));
-
-        List<Game> result = filterService.filterGame(null, FPS, null, 0, Integer.MAX_VALUE);
-        assertThat(result).hasSize(1).contains(gameList.getFirst());
+        Game game3 = new Game();
+        games = Arrays.asList(game1, game2, game3);
     }
 
     @Test
-    public void testFilterGameByPlatform() {
-        when(filterRepository.findByPlatformOrderByTitle("PC")).thenReturn(List.of(gameList.getFirst()));
+    void testGetGamesByKeyword() {
+        String keyword = "test";
+        when(filterRepository.findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(false, keyword, 0)).thenReturn(games);
 
-        List<Game> result = filterService.filterGame(null, null, "PC", 0, Integer.MAX_VALUE);
-        assertThat(result).hasSize(1).contains(gameList.getFirst());
+        List<Game> result = filterService.getGamesByKeyword(keyword);
+
+        assertEquals(games, result);
+        verify(filterRepository, times(1)).findGamesByGameDeletedAndTitleContainingIgnoreCaseAndStockGreaterThanOrderByTitle(false, keyword, 0);
     }
 
     @Test
-    public void testFilterGameByPriceRange() {
-        when(filterRepository.findByPriceBetweenOrderByTitle(40, 55)).thenReturn(List.of(gameList.getFirst()));
+    void testGetTopThreeFreeGames() {
+        when(filterRepository.findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(0, false, 0)).thenReturn(games);
 
-        List<Game> result = filterService.filterGame(null, null, null, 40, 55);
-        assertThat(result).hasSize(1).contains(gameList.getFirst());
+        List<Game> result = filterService.getTopThreeFreeGames();
+
+        assertEquals(games, result);
+        verify(filterRepository, times(1)).findTop3ByPriceAndGameDeletedEqualsAndStockGreaterThanOrderByAvgRatingDesc(0,false,0);
     }
 
     @Test
-    public void testFilterGameByPriceFree() {
-        when(filterRepository.findByPriceEqualsOrderByTitle(0)).thenReturn(List.of(gameList.get(1)));
+    void testGetGamesByPlatformOrderByRating() {
+        String platform = "PC";
+        when(filterRepository.findTop6ByGameDeletedAndPlatformAndStockGreaterThanOrderByAvgRatingDesc(false, platform, 0)).thenReturn(games);
 
-        List<Game> result = filterService.filterGame(null, null, null, 0, 0);
-        assertThat(result).hasSize(1).contains(gameList.get(1));
+        List<Game> result = filterService.getGamesByPlatformOrderByRating(platform);
+
+        assertEquals(games, result);
+        verify(filterRepository, times(1)).findTop6ByGameDeletedAndPlatformAndStockGreaterThanOrderByAvgRatingDesc(false, platform, 0);
     }
 
     @Test
-    public void testFilterGameByTitleKeyword() {
-        when(filterRepository.findByTitleIgnoreCaseOrderByTitle("test")).thenReturn(gameList);
+    void testGetGamesTop6OrderByRating() {
+        when(filterRepository.findTop6ByGameDeletedAndStockGreaterThanOrderByAvgRatingDesc(false, 0)).thenReturn(games);
 
-        List<Game> result = filterService.filterGame("test", null, null, 0, Integer.MAX_VALUE);
-        assertThat(result).hasSize(2).containsExactlyInAnyOrderElementsOf(gameList);
+        List<Game> result = filterService.getGamesTop6OrderByRating();
+
+        assertEquals(games, result);
+        verify(filterRepository, times(1)).findTop6ByGameDeletedAndStockGreaterThanOrderByAvgRatingDesc(false, 0);
     }
 
     @Test
-    public void testFilterGameWithNoCriteria() {
-        when(filterRepository.findByOrderByTitle()).thenReturn(gameList);
+    void testGetAllGamesWithConstraint() {
+        when(filterRepository.findByGameDeletedAndStockGreaterThanOrderByTitle(false, 0)).thenReturn(games);
 
-        List<Game> result = filterService.filterGame(null, null, null, 0, Integer.MAX_VALUE);
-        assertThat(result).hasSize(2).containsExactlyInAnyOrderElementsOf(gameList);
+        List<Game> result = filterService.getAllGamesWithConstraint();
+
+        assertEquals(games, result);
+        verify(filterRepository, times(1)).findByGameDeletedAndStockGreaterThanOrderByTitle(false, 0);
     }
 }

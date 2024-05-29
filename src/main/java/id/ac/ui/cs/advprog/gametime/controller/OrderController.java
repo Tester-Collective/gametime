@@ -24,14 +24,13 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private GameService gameService;
-    @Autowired
     private TransactionService transactionService;
     @Autowired
     private CartStockManagementStrategy cartStockManagementStrategy;
 
     @GetMapping("")
-    public String order() {
+    public String order(Model model) {
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/buyer/order/order";
     }
 
@@ -43,31 +42,29 @@ public class OrderController {
         Cart cart = cartService.getCartByUser(user);
         for (GameInCart gameInCart : cart.getGames()) {
             cartStockManagementStrategy.checkStockAvailability(gameInCart);
-            totalPrice += gameInCart.getGame().getPrice() * gameInCart.getQuantity();
+            totalPrice += gameInCart.getQuantity() * gameInCart.getGame().getPrice();
         }
-
-        if (user.getBalance() < totalPrice) {
-            return "redirect:/game/buyer?error=Insufficient balance";
-        }
-
-        user.setBalance(user.getBalance() - totalPrice);
 
         Order order = new Order();
         order.setCart(cart);
         order.setOrderStatus(OrderStatus.WAITING_PAYMENT.getValue());
         order.setOrderDate(LocalDateTime.now());
+
         for (GameInCart gameInCart : cart.getGames()) {
             order.getGameQuantity().put(gameInCart.getGame(), gameInCart.getQuantity());
-            gameService.decreaseStock(gameInCart.getGame(), gameInCart.getQuantity());
-            gameInCart.getGame().getSeller().setBalance(gameInCart.getGame().getSeller().getBalance() + gameInCart.getGame().getPrice() * gameInCart.getQuantity());
         }
         orderService.setStatus(OrderStatus.SUCCESS.getValue(), order);
 
-        Transaction transaction = new Transaction(UUID.randomUUID(), user, order, OrderStatus.SUCCESS.getValue());
+        boolean hasSufficientBalance = user.getBalance() >= totalPrice;
+        Transaction transaction = new Transaction(UUID.randomUUID(), user, order);
         transactionService.create(transaction);
+
+        if (!hasSufficientBalance) {
+            return "redirect:/game/buyer?alert=insufficientBalance";
+        }
 
         cartService.clearCart(user);
 
-        return "redirect:/game/buyer";
+        return "redirect:/game/buyer?alert=orderSuccess";
     }
 }

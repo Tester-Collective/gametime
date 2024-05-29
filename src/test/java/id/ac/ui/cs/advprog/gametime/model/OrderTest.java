@@ -4,6 +4,7 @@ import enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -101,4 +102,10 @@ class OrderTest {
         assertEquals(OrderStatus.CANCELLED.getValue(), order1.getOrderStatus());
     }
 
+    @Test
+    void testOrderDate() {
+        // order date is localDateTime
+        order1.setOrderDate(LocalDateTime.parse("2020-05-01T00:00:00"));
+        assertEquals(LocalDateTime.parse("2020-05-01T00:00:00"), order1.getOrderDate());
+    }
 }

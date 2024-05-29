@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.gametime.model;
 
+import enums.Categories;
 import enums.Platform;
 import org.junit.jupiter.api.Test;
 
@@ -85,5 +86,47 @@ class GameTest {
         this.game = new Game();
         this.game.setGameDeleted(true);
         assertTrue(this.game.isGameDeleted());
+    }
+
+    @Test
+    void testGetAvgRating() {
+        this.game = new Game();
+        this.game.setAvgRating(4.5f);
+        assertEquals(4.5, this.game.getAvgRating());
+    }
+
+    @Test
+    void testSetPlatformPC() {
+        this.game = new Game();
+        this.game.setPlatform(Platform.PC.getValue());
+        assertEquals(Platform.PC.getValue(), this.game.getPlatform());
+        assertTrue(Platform.contains(this.game.getPlatform()));
+    }
+
+    @Test
+    void testSetPlatformNegative() {
+        this.game = new Game();
+        this.game.setPlatform("PS4");
+        assertFalse(Platform.contains(this.game.getPlatform()));
+    }
+
+    @Test
+    void testSetCategory() {
+        Category category = new Category();
+        category.setName(Categories.ACTION.getValue());
+        this.game = new Game();
+        this.game.setCategory(category);
+        assertEquals(category, this.game.getCategory());
+        assertTrue(Categories.contains(this.game.getCategory().getName()));
+    }
+
+    @Test
+    void testSetCategoryNegative() {
+        Category category = new Category();
+        category.setName("NON_EXISTENT_CATEGORY");
+        this.game = new Game();
+        this.game.setCategory(category);
+        assertEquals(category, this.game.getCategory());
+        assertFalse(Categories.contains(this.game.getCategory().getName()));
     }
 }

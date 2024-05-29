@@ -6,12 +6,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/output.css">
 </head>
-<body class="bg-tokyo-night-bg dark flex flex-col items-center justify-center h-full">
+<body class="bg-tokyo-night-bg dark flex flex-col items-center h-full">
 
 <div th:include="navbar::navbar" class="shadow-2xl">
 </div>
 
-<div class="flex flex-col justify-between items-center container mx-auto">
+<div class="flex flex-col justify-between items-center container mx-auto translate-y-28">
     <div class="mb-8">
         <a href="/game/seller/sell">
             <button class="relative inline-flex items-center justify-center p-0.5 mb-5 overflow-hidden text-lg font-medium text-tokyo-night-variable rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800 transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-150 hover:text-white mt-5 origin-bottom-left">
@@ -101,5 +101,6 @@
         });
     });
 </script>
+<script src="/dropdown.js"></script>
 </body>
 </html>

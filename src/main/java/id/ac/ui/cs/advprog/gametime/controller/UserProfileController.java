@@ -1,6 +1,9 @@
 package id.ac.ui.cs.advprog.gametime.controller;
 
+import id.ac.ui.cs.advprog.gametime.model.File;
+import id.ac.ui.cs.advprog.gametime.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import id.ac.ui.cs.advprog.gametime.dto.UserDto;
-import id.ac.ui.cs.advprog.gametime.model.Image;
 import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.ImageService;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/profile")
@@ -37,13 +41,14 @@ public class UserProfileController {
     }
 
     @PostMapping("/edit")
-    public String postEditProfile(@ModelAttribute UserDto userDto, Model model, RedirectAttributes redirectAttributes) {
+    public String postEditProfile(@ModelAttribute UserDto userDto, Model model, RedirectAttributes redirectAttributes)
+            throws IOException {
         User currentUser = userService.getLoggedInUser();
         if (!userDto.getBio().isEmpty()) {
             currentUser.setBio(userDto.getBio());
         }
         if (userDto.getProfilePicture().getSize() != 0) {
-            Image uploadedImage = imageService.uploadImage(userDto.getProfilePicture());
+            Image uploadedImage = imageService.uploadImageToFileSystem(userDto.getProfilePicture());
             if (currentUser.getProfilePicture() != null) {
                 imageService.deleteImage(currentUser.getProfilePicture());
             }
@@ -64,13 +69,19 @@ public class UserProfileController {
     @GetMapping("/{username}")
     public String viewProfile(@PathVariable String username, Model model) {
         User currentUser = userService.findByUsername(username);
-        model.addAttribute("user", currentUser);
-        model.addAttribute("can_edit", username.equals(currentUser.getUsername()));
+        User loggedInUser = userService.getLoggedInUser();
+        model.addAttribute("viewUser", currentUser);
+        model.addAttribute("can_edit", username.equals(loggedInUser.getUsername()));
         return "profile/view";
     }
 
     @GetMapping("")
     public String viewLoggedInProfile(Model model) {
-        return "redirect:/profile/" + userService.getLoggedInUser().getUsername();
+        User user = userService.getLoggedInUser();
+        if (user != null) {
+            return "redirect:/profile/" + user.getUsername();
+        } else {
+            return "redirect:/auth/login";
+        }
     }
 }

@@ -21,11 +21,15 @@ public class BuyerGameController {
     @Autowired
     private FilterService filterService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("")
     public String index(Model model, @Param("keyword") String keyword) {
-        List<Game> games = filterService.filterGame(keyword, null, null, 0, Integer.MAX_VALUE);
+        List<Game> games = filterService.getGamesByKeyword(keyword);
         model.addAttribute("games", games);
         model.addAttribute("reviewService", reviewService);
+        model.addAttribute("user", userService.getLoggedInUser());
         return "game/buyer/index";
     }
 

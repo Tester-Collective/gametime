@@ -112,4 +112,14 @@ public class CartTest {
         this.cart.clearCart();
         assertTrue(this.cart.getGames().isEmpty());
     }
+
+    @Test
+    void testValidateQuantityPositve() {
+        assertDoesNotThrow(() -> this.cart.validateQuantity(0));
+    }
+
+    @Test
+    void testValidateQuantityNegative() {
+        assertThrows(IllegalArgumentException.class, () -> this.cart.validateQuantity(-1));
+    }
 }

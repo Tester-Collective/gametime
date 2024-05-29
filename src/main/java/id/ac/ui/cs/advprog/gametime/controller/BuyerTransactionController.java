@@ -4,7 +4,6 @@ import id.ac.ui.cs.advprog.gametime.model.User;
 import id.ac.ui.cs.advprog.gametime.service.TransactionService;
 import id.ac.ui.cs.advprog.gametime.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,17 +15,18 @@ import java.util.List;
 @RequestMapping("/game/buyer/transaction")
 public class BuyerTransactionController {
     @Autowired
-    private TransactionService transactionService;
-    @Autowired
     private UserService userService;
+    @Autowired
+    private TransactionService transactionService;
     @GetMapping("")
     public String transactionHistory(Model model) {
-        User user = userService.findByUsername(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName());
+        User user = userService.getLoggedInUser();
         List<Transaction> transactions = transactionService.findAllTransactionofUser(user);
-        model.addAttribute("transactions", transactions);
+        if (transactions.isEmpty()) {
+            model.addAttribute("user", user);
+            return "game/buyer/transaction/empty";
+        }
+        model.addAttribute("user", user);
         return "game/buyer/transaction/buyerTransactionHistory";
     }
 }
