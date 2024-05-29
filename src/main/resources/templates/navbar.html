@@ -23,7 +23,7 @@
                         <div class="flex items-center justify-center gap-4" id="dropdownAvatarButton">
                             <img alt="avatar"
                                 src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                                id="profile-picture" class="w-12 h-12 max-w-12 max-h-12 rounded-full">
+                                id="profile-picture" class="w-12 h-12 max-w-12 max-h-12 rounded-full object-cover">
                             <p th:text="${user?.getUsername()}" class="text-white text-sm font-semibold" id="username">
                         </div>
                         <!-- Dropdown menu -->
@@ -108,7 +108,7 @@
                 fetch(`/api/profile/${userName.textContent}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.profilePicture != "") {
+                        if (data.profilePicture !== "") {
                             fetch(`/image/${data.profilePicture}`)
                                 .then(response => response.blob())
                                 .then(blob => {
