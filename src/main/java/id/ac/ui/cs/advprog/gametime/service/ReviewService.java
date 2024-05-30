@@ -7,12 +7,9 @@ import id.ac.ui.cs.advprog.gametime.model.User;
 import java.util.List;
 import java.util.UUID;
 import id.ac.ui.cs.advprog.gametime.observer.ReviewObserver;
+import id.ac.ui.cs.advprog.gametime.observer.ReviewSubject;
 
-public interface ReviewService{
-    void addObserver(ReviewObserver observer);
-    void removeObserver(ReviewObserver observer);
-    void notifyObservers(Review review);
-
+public interface ReviewService extends ReviewSubject {
     void deleteReviewById(UUID id);
     Review getReviewById(UUID id);
     Review addReview(Review review);

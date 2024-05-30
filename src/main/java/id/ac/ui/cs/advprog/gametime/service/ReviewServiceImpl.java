@@ -28,8 +28,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    private final List<ReviewObserver> observers = new ArrayList<>();
-
     @Override
     public void addObserver(ReviewObserver observer) {
         observers.add(observer);
@@ -45,7 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    List<ReviewObserver> getObservers() {
+    public List<ReviewObserver> getObservers() {
         return observers;
     }
 
