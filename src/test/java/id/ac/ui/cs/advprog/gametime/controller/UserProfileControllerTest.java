@@ -48,7 +48,7 @@ public class UserProfileControllerTest {
         mockMvc.perform(get("/profile/test"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("profile/view"))
-                .andExpect(model().attribute("viewUser", user))
+                .andExpect(model().attribute("user", user))
                 .andExpect(model().attribute("can_edit", true));
     }
 }

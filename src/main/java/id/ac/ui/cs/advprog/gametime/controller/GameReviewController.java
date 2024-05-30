@@ -28,7 +28,7 @@ public class GameReviewController {
     @Autowired
     private UserService userService;
 
-    private static final String GAME_DETAILS_PAGE = "redirect:/game/buyer/details";
+    private static final String GAME_DETAILS_PAGE = "redirect:/game/buyer/details/";
 
     @GetMapping("/{gameId}")
     public String gameDetails(Model model, @PathVariable String gameId){
