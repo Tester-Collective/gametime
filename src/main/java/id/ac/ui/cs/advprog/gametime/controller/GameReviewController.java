@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import id.ac.ui.cs.advprog.gametime.service.GameService;
 import id.ac.ui.cs.advprog.gametime.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +28,7 @@ public class GameReviewController {
     @Autowired
     private UserService userService;
 
-    private static final String GAME_DETAILS_PAGE = "redirect:/game/buyer/details";
+    private static final String GAME_DETAILS_PAGE = "redirect:/game/buyer/details/";
 
     @GetMapping("/{gameId}")
     public String gameDetails(Model model, @PathVariable String gameId){
@@ -57,7 +56,7 @@ public class GameReviewController {
 
         reviewService.addReview(reviewInput);
 
-        return "redirect:/game/buyer/details/" + gameId;
+        return GAME_DETAILS_PAGE + gameId;
     }
 
     @GetMapping("/{gameId}/addReview")
@@ -74,7 +73,7 @@ public class GameReviewController {
     @PostMapping("/{gameId}/deleteReview/{reviewId}")
     public String deleteReviewPost(@PathVariable String reviewId, @PathVariable String gameId){
         reviewService.deleteReviewById(UUID.fromString(reviewId));
-        return "redirect:/game/buyer/details/" + gameId;
+        return GAME_DETAILS_PAGE + gameId;
     }
 
     @PostMapping("/{gameId}/editReview/{reviewId}")
@@ -86,7 +85,7 @@ public class GameReviewController {
         review.setReviewText(reviewInput.getReviewText());
 
         reviewService.updateReview(UUID.fromString(reviewId), review);
-        return "redirect:/game/buyer/details/" + gameId;
+        return GAME_DETAILS_PAGE + gameId;
     }
 
     @GetMapping("/{gameId}/editReview/{reviewId}")

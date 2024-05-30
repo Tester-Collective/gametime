@@ -23,19 +23,19 @@
                         <div class="flex items-center justify-center gap-4" id="dropdownAvatarButton">
                             <img alt="avatar"
                                 src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                                id="profile-picture" class="w-12 h-12 rounded-full">
+                                id="profile-picture" class="w-12 h-12 max-w-12 max-h-12 rounded-full object-cover">
                             <p th:text="${user?.getUsername()}" class="text-white text-sm font-semibold" id="username">
                         </div>
                         <!-- Dropdown menu -->
-                        <div class="z-50 hidden my-4 text-base list-none bg-card-bg border border-gray-400 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 hover:bg-gray-700 dark:divide-gray-600 absolute right-0 top-12" id="dropdown">
-                            <a href="/profile" class="block px-4 py-2 text-gray-400 hover:bg-gray-700 rounded-lg">Profile</a>
-                            <a href="/auth/logout" class="block px-4 py-2 text-gray-400 hover:bg-gray-700 rounded-lg">Logout</a>
+                        <div class="translate-x-6 -translate-y-1 w-36 -z-10 hidden my-4 text-base text-center list-none bg-navbar-bg  divide-y divide-gray-400 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-12" id="dropdown">
+                            <a href="/profile" class="block px-4 py-2 text-gray-300 hover:bg-gray-500 hover:text-white hover:underline">Profile</a>
+                            <a href="/auth/logout" class="block px-4 py-2 text-gray-300 hover:bg-red-500 rounded-b-lg hover:text-white hover:underline">Logout</a>
                         </div>
                     </div>
                     <a th:if="${user == null}" href="/auth/register">
                         <button type="button"
-                            class="block rounded-lg px-4 py-2 border border-gray-400 bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-gray-300">
-                            Sign up
+                            class="block font-bold text-white rounded-lg px-4 py-2 bg-blue-600 hover:bg-blue-500">
+                            Get Started!
                         </button>
                     </a>
                     <button data-collapse-toggle="navbar-sticky" type="button"
@@ -108,7 +108,7 @@
                 fetch(`/api/profile/${userName.textContent}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.profilePicture != "") {
+                        if (data.profilePicture !== "") {
                             fetch(`/image/${data.profilePicture}`)
                                 .then(response => response.blob())
                                 .then(blob => {

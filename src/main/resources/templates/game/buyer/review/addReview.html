@@ -16,7 +16,7 @@
         <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16 flex flex-col">
             <h2 class="mb-6 text-3xl font-bold text-tokyo-night-variable text-start">How was the game?</h2>
             <form th:action="@{/game/buyer/details/{gameId}/addReview(gameId=${review.game.id})}" th:object="${review}" method="post" class="w-3/4">
-                <div class="w-full mb-7 text-3xl">
+                <div class="w-full mb-7 text-5xl">
                     <div class="flex">
                         <input type="hidden" name="rating" th:field="*{rating}" id="rating" value="0.0">
                         <span class="star text-gray-600">&#9733;</span>

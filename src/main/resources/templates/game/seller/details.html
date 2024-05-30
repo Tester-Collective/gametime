@@ -163,7 +163,7 @@
                                 </span>
                             </p>
                             <div th:id="'buttonResponse-' + ${reviewService.getSellerResponseByReviewId(review.reviewId).responseId}" class="inline-flex rounded-md shadow-sm">
-                                <button th:attr="onclick=|javascript:removeSellerResponse('${reviewService.getSellerResponseByReviewId(review.reviewId).getResponseId()}', '${review.reviewId}', event)|" type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
+                                <button th:attr="onclick=|javascript:removeSellerResponse('${reviewService.getSellerResponseByReviewId(review.reviewId).getResponseId()}', '${review.reviewId}', event)|" type="submit" class="-translate-x-1 mt-5 text-white bg-gray-800 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -173,10 +173,10 @@
                         </div>
                     </div>
                     <div class="space-y-0.5 min-w-0 flex-1 sm:mt-0 flex-col col-span-3">
-                        <div class="inline-flex rounded-md shadow-sm">
+                        <div th:if="${reviewService.getSellerResponseByReviewId(review.reviewId) == null}" class="inline-flex rounded-md shadow-sm mt-5">
                             <form id= "addForm" method="post" th:action="@{/game/seller/{gameId}/add-response/{reviewId}(gameId =${game.id}, reviewId =${review.reviewId})}">
                                 <label for="large-input" class="hidden"></label>
-                                <input name="seller-response" placeholder="Add your response" type="text" id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <input name="seller-response" placeholder="Add your response" type="text" id="large-input" class="mb-3 block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Respond</button>
                             </form>
                         </div>
